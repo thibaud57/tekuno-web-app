@@ -26,10 +26,10 @@ jobs:
       - name: Create environment files
         run: |
           mkdir -p src/environments
-          echo "export const environment = {
+          echo 'export const environment = {
             production: true,
-            firebaseConfig: ${{ toJSON(secrets.FIREBASE_CONFIG) }}
-          }" > src/environments/environment.ts
+            firebaseConfig: '"$(echo '${{ secrets.FIREBASE_CONFIG }}' | jq -c .)"'
+          }' > src/environments/environment.ts
 
       - name: Install Dependencies
         run: |
