@@ -24,11 +24,12 @@ jobs:
             firebaseConfig: '"$(echo '${{ secrets.FIREBASE_CONFIG }}' | jq -c .)"'
           }' > src/environments/environment.ts
 
-      - name: Afficher le contenu de environment.ts
-        run: |
-          cat src/environments/environment.ts
+      - name: Install Dependencies and Build
+        run: npm ci && npm run build
 
-      - run: npm ci && npm run build
+      - name: Run Tests
+        run: npm run test -- --watch=false --browsers=ChromeHeadless
+
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
