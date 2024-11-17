@@ -50,6 +50,7 @@ GoogleService-Info.plist
 # Firebase Hosting
 **/.firebase
 firebase-debug.log
+firestore-debug.log
 
 # Environment
 **/src/environments

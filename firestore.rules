@@ -2,17 +2,18 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Vérifier si l'utilisateur est authentifié
+    // Fonction pour vérifier si l'utilisateur est authentifié
     function isAuthenticated() {
       return request.auth != null;
     }
     
-    // Règle de base - restreindre l'accès
+    // Règles de base pour restreindre l'accès
     match /{document=**} {
-      allow read: if isAuthenticated();
-      allow write: if isAuthenticated();
+      allow read, write: if isAuthenticated();
     }
   }
 }
+
 // Utiliser firebase deploy --only firestore:rules pour déployer les règles
 // TODO: Ajouter les règles de sécurité pour la production
+
