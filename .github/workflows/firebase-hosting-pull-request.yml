@@ -29,10 +29,14 @@ jobs:
 
       - name: Verify build output
         run: |
+          echo "=== Contenu de dist/ ==="
           ls -la dist
+          echo "=== Contenu de dist/tekuno-web-app/ ==="
+          ls -la dist/tekuno-web-app
+          echo "=== Contenu de dist/tekuno-web-app/browser/ ==="
           ls -la dist/tekuno-web-app/browser
-          echo "Checking for index.html..."
-          test -f dist/tekuno-web-app/browser/index.html
+          echo "=== Vérification de index.html ==="
+          find dist -name "index.html"
 
       - name: Run Tests
         run: npm run test -- --watch=false --browsers=ChromeHeadless
