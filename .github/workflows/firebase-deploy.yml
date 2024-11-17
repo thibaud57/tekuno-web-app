@@ -18,11 +18,23 @@ jobs:
           node-version: '20.x'
 
       - name: Install Main Dependencies
-        run: npm ci
+        run: |
+          npm install
+          git status
+          if [[ -n $(git status -s) ]]; then
+            echo "package-lock.json a été mis à jour. Veuillez le commiter."
+            exit 1
+          fi
 
       - name: Install Functions Dependencies
         working-directory: ./functions
-        run: npm ci
+        run: |
+          npm install
+          git status
+          if [[ -n $(git status -s) ]]; then
+            echo "package-lock.json dans /functions a été mis à jour. Veuillez le commiter."
+            exit 1
+          fi
 
       - name: Lint
         run: npm run lint
