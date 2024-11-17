@@ -2,10 +2,15 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
+    // Vérifier si l'utilisateur est authentifié
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Règle de base - restreindre l'accès
     match /{document=**} {
-      // Pour le développement/test uniquement!
-      // NE PAS utiliser en production!
-      allow read, write: if true;
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated();
     }
   }
 }
