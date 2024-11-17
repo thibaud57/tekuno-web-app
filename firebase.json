@@ -15,7 +15,7 @@
     "rules": "storage.rules"
   },
   "hosting": {
-    "public": "dist/tekuno-web-app",
+    "public": "dist/tekuno-web-app/browser",
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "rewrites": [
       {
