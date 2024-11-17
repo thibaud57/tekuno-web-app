@@ -1,0 +1,38 @@
+# Node modules
+node_modules
+
+# Build outputs
+dist
+build
+out-tsc
+
+# Environment files
+src/environments/*.ts
+
+# Angular specific
+.angular
+.angular/cache
+
+# Git
+.git
+
+# IDE specific
+.vscode
+.idea
+
+# Logs
+*.log
+
+# Coverage directory used by tools like istanbul
+coverage
+
+# Temporary files
+*.tmp
+*.temp
+
+# Ignore all files in the root directory except for specific ones
+/*
+!.prettierrc
+!.prettierignore
+!package.json
+!tsconfig.json 

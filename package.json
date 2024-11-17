@@ -12,7 +12,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "ng lint && cd functions && npm run lint",
-    "prettier": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json,css,scss,html,md}\""
+    "prettier": "prettier --write \"**/*.{ts,tsx,js,jsx,json,css,scss,html,md}\" --ignore-path .prettierignore"
   },
   "dependencies": {
     "-": "^0.0.1",
@@ -21,6 +21,7 @@
     "@angular/common": "18.0.1",
     "@angular/compiler": "18.0.1",
     "@angular/core": "18.0.1",
+    "@angular/fire": "^18.0.1",
     "@angular/forms": "18.0.1",
     "@angular/material": "18.0.1",
     "@angular/material-luxon-adapter": "18.0.1",
@@ -30,6 +31,7 @@
     "@ngneat/transloco": "6.0.4",
     "apexcharts": "3.49.1",
     "crypto-js": "4.2.0",
+    "firebase": "^11.0.2",
     "highlight.js": "11.9.0",
     "lodash-es": "4.17.21",
     "luxon": "3.4.4",
