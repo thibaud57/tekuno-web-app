@@ -7,10 +7,14 @@ on:
   push:
     branches:
       - master
+
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
+
     steps:
+      - uses: actions/checkout@v4
+
       - name: Create environment files
         run: |
           mkdir -p src/environments
@@ -19,11 +23,14 @@ jobs:
             firebaseConfig: '"$(echo '${{ secrets.FIREBASE_CONFIG }}' | jq -c .)"'
           }' > src/environments/environment.ts
 
-      - uses: actions/checkout@v4
+      - name: Afficher le contenu de environment.ts
+        run: |
+          cat src/environments/environment.ts
+
       - run: npm ci && npm run build
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
-          firebaseServiceAccount: ${{ secrets.FIREBASE_SECRET_ACCOUNT }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_TEKUNO_WEB_APP }}
           channelId: live
           projectId: tekuno-web-app
