@@ -27,6 +27,13 @@ jobs:
       - name: Install Dependencies and Build
         run: npm ci && npm run build
 
+      - name: Verify build output
+        run: |
+          ls -la dist
+          ls -la dist/tekuno-web-app/browser
+          echo "Checking for index.html..."
+          test -f dist/tekuno-web-app/browser/index.html
+
       - name: Run Tests
         run: npm run test -- --watch=false --browsers=ChromeHeadless
 
