@@ -20,7 +20,7 @@ import { AuthService } from 'app/core/auth/auth.service'
 import { finalize } from 'rxjs'
 
 @Component({
-    selector: 'auth-reset-password',
+    selector: 'app-auth-reset-password',
     templateUrl: './reset-password.component.html',
     encapsulation: ViewEncapsulation.None,
     animations: fuseAnimations,

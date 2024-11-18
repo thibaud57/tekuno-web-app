@@ -19,7 +19,7 @@ import { AuthService } from 'app/core/auth/auth.service'
 import { UserService } from 'app/core/user/user.service'
 
 @Component({
-    selector: 'auth-unlock-session',
+    selector: 'app-auth-unlock-session',
     templateUrl: './unlock-session.component.html',
     encapsulation: ViewEncapsulation.None,
     animations: fuseAnimations,

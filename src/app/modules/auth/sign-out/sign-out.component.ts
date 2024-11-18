@@ -5,7 +5,7 @@ import { AuthService } from 'app/core/auth/auth.service'
 import { Subject, finalize, takeUntil, takeWhile, tap, timer } from 'rxjs'
 
 @Component({
-    selector: 'auth-sign-out',
+    selector: 'app-auth-sign-out',
     templateUrl: './sign-out.component.html',
     encapsulation: ViewEncapsulation.None,
     standalone: true,

@@ -1,5 +1,7 @@
 {
-    "welcome-back": "Bienvenue",
-    "Project": "Projet",
-    "Analytics": "Analytique"
+    "vitrine": {
+        "home": {
+            "se-connecter": "Se connecter"
+        }
+    }
 }

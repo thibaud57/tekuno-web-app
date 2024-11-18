@@ -2,17 +2,21 @@ import { Component, ViewEncapsulation } from '@angular/core'
 import { MatButtonModule } from '@angular/material/button'
 import { MatIconModule } from '@angular/material/icon'
 import { RouterLink } from '@angular/router'
+import { TranslocoModule, TranslocoPipe } from '@ngneat/transloco'
 
 @Component({
-    selector: 'landing-home',
+    selector: 'app-home',
     templateUrl: './home.component.html',
     encapsulation: ViewEncapsulation.None,
     standalone: true,
-    imports: [MatButtonModule, RouterLink, MatIconModule],
+    imports: [
+        MatButtonModule,
+        RouterLink,
+        MatIconModule,
+        TranslocoPipe,
+        TranslocoModule,
+    ],
 })
-export class LandingHomeComponent {
-    /**
-     * Constructor
-     */
-    constructor() {}
+export class HomeComponent {
+    readonly TRANSLATION_PREFIX = 'vitrine.home.'
 }

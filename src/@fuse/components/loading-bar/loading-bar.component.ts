@@ -1,6 +1,7 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion'
-
 import {
+    AfterViewInit,
+    ChangeDetectorRef,
     Component,
     inject,
     Input,
@@ -23,8 +24,11 @@ import { Subject, takeUntil } from 'rxjs'
     standalone: true,
     imports: [MatProgressBarModule],
 })
-export class FuseLoadingBarComponent implements OnChanges, OnInit, OnDestroy {
+export class FuseLoadingBarComponent
+    implements OnChanges, OnInit, AfterViewInit, OnDestroy
+{
     private _fuseLoadingService = inject(FuseLoadingService)
+    private _changeDetectorRef = inject(ChangeDetectorRef)
 
     @Input() autoMode: boolean = true
     mode: 'determinate' | 'indeterminate'
@@ -60,26 +64,29 @@ export class FuseLoadingBarComponent implements OnChanges, OnInit, OnDestroy {
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe(value => {
                 this.mode = value
+                this._changeDetectorRef.markForCheck()
             })
 
         this._fuseLoadingService.progress$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe(value => {
                 this.progress = value
+                this._changeDetectorRef.markForCheck()
             })
 
         this._fuseLoadingService.show$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe(value => {
                 this.show = value
+                this._changeDetectorRef.markForCheck()
             })
     }
 
-    /**
-     * On destroy
-     */
+    ngAfterViewInit(): void {
+        this._changeDetectorRef.detectChanges()
+    }
+
     ngOnDestroy(): void {
-        // Unsubscribe from all subscriptions
         this._unsubscribeAll.next(null)
         this._unsubscribeAll.complete()
     }

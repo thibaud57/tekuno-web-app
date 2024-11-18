@@ -18,7 +18,7 @@ import { AuthService } from 'app/core/auth/auth.service'
 import { finalize } from 'rxjs'
 
 @Component({
-    selector: 'auth-forgot-password',
+    selector: 'app-auth-forgot-password',
     templateUrl: './forgot-password.component.html',
     encapsulation: ViewEncapsulation.None,
     animations: fuseAnimations,
