@@ -1,5 +1,7 @@
 {
-    "welcome-back": "Welcome back",
-    "Project": "Project",
-    "Analytics": "Analytics"
+    "vitrine": {
+        "home": {
+            "se-connecter": "Sign in"
+        }
+    }
 }
