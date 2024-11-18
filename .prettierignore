@@ -29,10 +29,3 @@ coverage
 # Temporary files
 *.tmp
 *.temp
-
-# Ignore all files in the root directory except for specific ones
-/*
-!.prettierrc
-!.prettierignore
-!package.json
-!tsconfig.json 
