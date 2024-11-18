@@ -6,16 +6,11 @@ import { ShortcutsService } from 'app/layout/common/shortcuts/shortcuts.service'
 import { forkJoin } from 'rxjs'
 
 export const initialDataResolver = () => {
-    const messagesService = inject(MessagesService)
-    const navigationService = inject(NavigationService)
-    const notificationsService = inject(NotificationsService)
-    const shortcutsService = inject(ShortcutsService)
+  const messagesService = inject(MessagesService)
+  const navigationService = inject(NavigationService)
+  const notificationsService = inject(NotificationsService)
+  const shortcutsService = inject(ShortcutsService)
 
-    // Fork join multiple API endpoint calls to wait all of them to finish
-    return forkJoin([
-        navigationService.get(),
-        messagesService.getAll(),
-        notificationsService.getAll(),
-        shortcutsService.getAll(),
-    ])
+  // Fork join multiple API endpoint calls to wait all of them to finish
+  return forkJoin([navigationService.get(), messagesService.getAll(), notificationsService.getAll(), shortcutsService.getAll()])
 }

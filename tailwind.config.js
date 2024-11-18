@@ -1,9 +1,9 @@
-const path = require('path')
-const colors = require('tailwindcss/colors')
-const defaultTheme = require('tailwindcss/defaultTheme')
+const path = require('path');
+const colors = require('tailwindcss/colors');
+const defaultTheme = require('tailwindcss/defaultTheme');
 const generatePalette = require(
     path.resolve(__dirname, 'src/@fuse/tailwind/utils/generate-palette')
-)
+);
 
 /**
  * Custom palettes
@@ -13,7 +13,7 @@ const generatePalette = require(
  */
 const customPalettes = {
     brand: generatePalette('#2196F3'),
-}
+};
 
 /**
  * Themes
@@ -60,7 +60,7 @@ const themes = {
     amber: {
         primary: colors.amber,
     },
-}
+};
 
 /**
  * Tailwind configuration
@@ -296,6 +296,6 @@ const config = {
         // Other third party and/or custom plugins
         require('@tailwindcss/typography')({ modifiers: ['sm', 'lg'] }),
     ],
-}
+};
 
-module.exports = config
+module.exports = config;
