@@ -18,9 +18,11 @@ export const appRoutes: Route[] = [
     // Vitrine routes
     {
         path: '',
+        canActivate: [NoAuthGuard],
+        canActivateChild: [NoAuthGuard],
         component: LayoutComponent,
-        data: {
-            layout: 'empty',
+        resolve: {
+            initialData: initialDataResolver,
         },
         children: [
             {

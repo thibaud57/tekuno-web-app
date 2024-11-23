@@ -1,39 +1,41 @@
 /* eslint-disable */
 import { FuseNavigationItem } from '@fuse/components/navigation'
+import { NavigationType } from 'app/core/navigation/enums/typeNavigation.enum'
 
-export const defaultNavigation: FuseNavigationItem[] = [
+// Navigation verticale (admin uniquement, avec icônes)
+export const verticalNavigation: FuseNavigationItem[] = [
     {
-        id: 'example',
-        title: 'Example',
+        id: 'dashboard',
+        title: 'Dashboard',
         type: 'basic',
         icon: 'heroicons_outline:chart-pie',
-        link: '/example',
+        link: '/admin',
+        meta: NavigationType.ADMIN,
     },
-]
-export const compactNavigation: FuseNavigationItem[] = [
     {
-        id: 'example',
-        title: 'Example',
+        id: 'users',
+        title: 'Utilisateurs',
         type: 'basic',
-        icon: 'heroicons_outline:chart-pie',
-        link: '/example',
+        icon: 'heroicons_outline:users',
+        link: '/admin/users',
+        meta: NavigationType.ADMIN,
     },
 ]
-export const futuristicNavigation: FuseNavigationItem[] = [
-    {
-        id: 'example',
-        title: 'Example',
-        type: 'basic',
-        icon: 'heroicons_outline:chart-pie',
-        link: '/example',
-    },
-]
+
+// Navigation horizontale pour tous les utilisateurs (sans icônes)
 export const horizontalNavigation: FuseNavigationItem[] = [
     {
-        id: 'example',
-        title: 'Example',
+        id: 'home',
+        title: 'Accueil',
         type: 'basic',
-        icon: 'heroicons_outline:chart-pie',
-        link: '/example',
+        link: '/',
+        meta: NavigationType.VITRINE,
+    },
+    {
+        id: 'dashboard',
+        title: 'Dashboard',
+        type: 'basic',
+        link: '/admin',
+        meta: NavigationType.ADMIN,
     },
 ]
