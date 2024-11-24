@@ -1,4 +1,3 @@
-import { NgClass } from '@angular/common'
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core'
 import { MatButtonModule } from '@angular/material/button'
 import { MatIconModule } from '@angular/material/icon'
@@ -12,44 +11,38 @@ import {
     Theme,
     Themes,
 } from '@fuse/services/config'
+import { TranslocoPipe } from '@ngneat/transloco'
+import { TypeLayout } from 'app/layout/layouts/enums/type-layout.enum'
+import { TypeScheme } from 'app/layout/layouts/enums/type-scheme.enum'
 
 import { Subject, takeUntil } from 'rxjs'
 
 @Component({
-    selector: 'settings',
+    selector: 'app-settings',
     templateUrl: './settings.component.html',
-    styles: [
-        `
-            settings {
-                position: static;
-                display: block;
-                flex: none;
-                width: auto;
-            }
-
-            @media (screen and min-width: 1280px) {
-                empty-layout + settings .settings-cog {
-                    right: 0 !important;
-                }
-            }
-        `,
-    ],
+    styleUrls: ['./settings.component.scss'],
     encapsulation: ViewEncapsulation.None,
     standalone: true,
     imports: [
         MatIconModule,
         FuseDrawerComponent,
         MatButtonModule,
-        NgClass,
         MatTooltipModule,
+        TranslocoPipe,
     ],
 })
 export class SettingsComponent implements OnInit, OnDestroy {
+    readonly TRANSLATION_PREFIX = 'layout.common.settings.'
+
     config: FuseConfig
-    layout: string
-    scheme: 'dark' | 'light'
+    layout: TypeLayout
+    scheme: TypeScheme
     theme: string
     themes: Themes
+
+    protected TypeLayout = TypeLayout
+    protected TypeScheme = TypeScheme
+
     private _unsubscribeAll: Subject<any> = new Subject<any>()
 
     /**
@@ -95,7 +88,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
      *
      * @param layout
      */
-    setLayout(layout: string): void {
+    setLayout(layout: TypeLayout): void {
         // Clear the 'layout' query param to allow layout changes
         this._router
             .navigate([], {

@@ -1,7 +1,29 @@
 {
-    "vitrine": {
-        "home": {
-            "se-connecter": "Se connecter"
+    "layout": {
+        "common": {
+            "settings": {
+                "parametres": "Paramètres",
+                "theme": "Thème",
+                "auto": "Auto",
+                "dark": "Sombre",
+                "light": "Clair",
+                "layout": "Disposition",
+                "classic": "Classique",
+                "compact": "Compact",
+                "modern": "Moderne"
+            }
+        },
+        "layouts": {
+            "footer": {
+                "marque": "Tekuno"
+            }
+        }
+    },
+    "module": {
+        "vitrine": {
+            "home": {
+                "se-connecter": "Se connecter"
+            }
         }
     }
 }

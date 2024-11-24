@@ -1,39 +1,38 @@
 /* eslint-disable */
 import { FuseNavigationItem } from '@fuse/components/navigation'
 
-export const defaultNavigation: FuseNavigationItem[] = [
+// Todo TEK-23: title indiquer la key qui sera utilisé dans le fichier de traduction
+// Compléter le fichier de traduction
+export const adminNavigation: FuseNavigationItem[] = [
     {
-        id: 'example',
-        title: 'Example',
+        id: 'dashboard',
+        title: 'Dashboard',
         type: 'basic',
         icon: 'heroicons_outline:chart-pie',
-        link: '/example',
+        link: '/',
+    },
+    {
+        id: 'users',
+        title: 'Utilisateurs',
+        type: 'basic',
+        icon: 'heroicons_outline:users',
+        link: '/',
     },
 ]
-export const compactNavigation: FuseNavigationItem[] = [
+
+export const vitrineNavigation: FuseNavigationItem[] = [
     {
-        id: 'example',
-        title: 'Example',
+        id: 'home',
+        title: 'Accueil',
         type: 'basic',
-        icon: 'heroicons_outline:chart-pie',
-        link: '/example',
+        icon: 'heroicons_outline:home',
+        link: '/',
     },
-]
-export const futuristicNavigation: FuseNavigationItem[] = [
     {
-        id: 'example',
-        title: 'Example',
+        id: 'page',
+        title: 'Page',
         type: 'basic',
-        icon: 'heroicons_outline:chart-pie',
-        link: '/example',
-    },
-]
-export const horizontalNavigation: FuseNavigationItem[] = [
-    {
-        id: 'example',
-        title: 'Example',
-        type: 'basic',
-        icon: 'heroicons_outline:chart-pie',
-        link: '/example',
+        icon: 'heroicons_outline:document-text',
+        link: '/',
     },
 ]
