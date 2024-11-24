@@ -56,6 +56,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
     isAuthenticated$: Observable<boolean>
     currentNavigation$: Observable<FuseNavigationItem[]>
+    isScreenSmall$: Observable<boolean>
 
     protected TypeLayout = TypeLayout
 
@@ -76,6 +77,10 @@ export class LayoutComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.isAuthenticated$ = this._authService.check()
         this.currentNavigation$ = this.getCurrentNavigation()
+
+        this.isScreenSmall$ = this._fuseMediaWatcherService.onMediaChange$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .pipe(map(({ matchingAliases }) => !matchingAliases.includes('md')))
 
         // Set the theme and scheme based on the configuration
         combineLatest([
@@ -215,7 +220,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
         // Remove class names for all schemes
         this._document.body.classList.remove(TypeScheme.LIGHT, TypeScheme.DARK)
 
-        // Add class name for the currently selected scheme
+        // Add class name for the currentlfy selected scheme
         this._document.body.classList.add(this.scheme)
     }
 

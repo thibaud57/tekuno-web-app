@@ -1,18 +1,28 @@
-@if ({ currentNavigation: currentNavigation$ | async, isAuthenticated: isAuthenticated$ | async }; as obs) {
+@if ({ currentNavigation: currentNavigation$ | async, isAuthenticated: isAuthenticated$ | async, isScreenSmall: isScreenSmall$ | async }; as obs) {
     @switch (layout) {
         @case (TypeLayout.EMPTY) {
             <app-empty-layout></app-empty-layout>
         }
         @case (TypeLayout.MODERN) {
-            <app-modern-layout [currentNavigation]="obs.currentNavigation" [isAuthenticated]="obs.isAuthenticated"></app-modern-layout>
+            <app-modern-layout
+                [currentNavigation]="obs.currentNavigation"
+                [isAuthenticated]="obs.isAuthenticated"
+                [isScreenSmall]="obs.isScreenSmall"></app-modern-layout>
         }
         @case (TypeLayout.CLASSIC) {
-            <app-classic-layout [currentNavigation]="obs.currentNavigation" [isAuthenticated]="obs.isAuthenticated"></app-classic-layout>
+            <app-classic-layout
+                [currentNavigation]="obs.currentNavigation"
+                [isAuthenticated]="obs.isAuthenticated"
+                [isScreenSmall]="obs.isScreenSmall"></app-classic-layout>
         }
         @case (TypeLayout.COMPACT) {
-            <app-compact-layout [currentNavigation]="obs.currentNavigation" [isAuthenticated]="obs.isAuthenticated"></app-compact-layout>
+            <app-compact-layout
+                [currentNavigation]="obs.currentNavigation"
+                [isAuthenticated]="obs.isAuthenticated"
+                [isScreenSmall]="obs.isScreenSmall"></app-compact-layout>
         }
     }
+    @if (obs.isAuthenticated) {
+        <app-settings></app-settings>
+    }
 }
-
-<app-settings></app-settings>

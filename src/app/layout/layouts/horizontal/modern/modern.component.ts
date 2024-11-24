@@ -1,10 +1,4 @@
-import {
-    Component,
-    Input,
-    OnDestroy,
-    OnInit,
-    ViewEncapsulation,
-} from '@angular/core'
+import { Component, Input, ViewEncapsulation } from '@angular/core'
 import { MatButtonModule } from '@angular/material/button'
 import { MatIconModule } from '@angular/material/icon'
 import { RouterOutlet } from '@angular/router'
@@ -14,8 +8,6 @@ import {
     FuseNavigationService,
     FuseVerticalNavigationComponent,
 } from '@fuse/components/navigation'
-import { FuseMediaWatcherService } from '@fuse/services/media-watcher'
-import { Subject, takeUntil } from 'rxjs'
 import { FooterComponent } from '../../footer/footer.component'
 import { HeaderComponent } from '../../header/header.component'
 
@@ -34,34 +26,12 @@ import { HeaderComponent } from '../../header/header.component'
         FooterComponent,
     ],
 })
-export class ModernLayoutComponent implements OnInit, OnDestroy {
+export class ModernLayoutComponent {
     @Input() isAuthenticated: boolean
     @Input() currentNavigation: FuseNavigationItem[]
+    @Input() isScreenSmall: boolean
 
-    isScreenSmall: boolean
-
-    private _unsubscribeAll: Subject<any> = new Subject<any>()
-
-    constructor(
-        private _fuseMediaWatcherService: FuseMediaWatcherService,
-        private _fuseNavigationService: FuseNavigationService
-    ) {}
-
-    ngOnInit(): void {
-        // Subscribe to media changes
-        this._fuseMediaWatcherService.onMediaChange$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe(({ matchingAliases }) => {
-                // Check if the screen is small
-                this.isScreenSmall = !matchingAliases.includes('md')
-            })
-    }
-
-    ngOnDestroy(): void {
-        // Unsubscribe from all subscriptions
-        this._unsubscribeAll.next(null)
-        this._unsubscribeAll.complete()
-    }
+    constructor(private _fuseNavigationService: FuseNavigationService) {}
 
     toggleNavigation(name: string): void {
         // Get the navigation
