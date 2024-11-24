@@ -1,34 +1,18 @@
-<!-- ----------------------------------------------------------------------------------------------------- -->
-<!-- Empty layout -->
-<!-- ----------------------------------------------------------------------------------------------------- -->
-@if (layout === 'empty') {
-    <empty-layout></empty-layout>
+@if ({ currentNavigation: currentNavigation$ | async, isAuthenticated: isAuthenticated$ | async }; as obs) {
+    @switch (layout) {
+        @case (TypeLayout.EMPTY) {
+            <app-empty-layout></app-empty-layout>
+        }
+        @case (TypeLayout.MODERN) {
+            <app-modern-layout [currentNavigation]="obs.currentNavigation" [isAuthenticated]="obs.isAuthenticated"></app-modern-layout>
+        }
+        @case (TypeLayout.CLASSIC) {
+            <app-classic-layout [currentNavigation]="obs.currentNavigation" [isAuthenticated]="obs.isAuthenticated"></app-classic-layout>
+        }
+        @case (TypeLayout.COMPACT) {
+            <app-compact-layout [currentNavigation]="obs.currentNavigation" [isAuthenticated]="obs.isAuthenticated"></app-compact-layout>
+        }
+    }
 }
 
-<!-- ----------------------------------------------------------------------------------------------------- -->
-<!-- Layouts with horizontal navigation -->
-<!-- ----------------------------------------------------------------------------------------------------- -->
-
-<!-- Modern -->
-@if (layout === 'modern') {
-    <modern-layout></modern-layout>
-}
-
-<!-- ----------------------------------------------------------------------------------------------------- -->
-<!-- Layouts with vertical navigation -->
-<!-- ----------------------------------------------------------------------------------------------------- -->
-
-<!-- Classic -->
-@if (layout === 'classic') {
-    <classic-layout></classic-layout>
-}
-
-<!-- Compact -->
-@if (layout === 'compact') {
-    <compact-layout></compact-layout>
-}
-
-<!-- ----------------------------------------------------------------------------------------------------- -->
-<!-- Settings drawer - Remove this to remove the drawer and its button -->
-<!-- ----------------------------------------------------------------------------------------------------- -->
-<settings></settings>
+<app-settings></app-settings>

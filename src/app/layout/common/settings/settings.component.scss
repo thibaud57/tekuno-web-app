@@ -1,0 +1,12 @@
+app-settings {
+    position: static;
+    display: block;
+    flex: none;
+    width: auto;
+}
+
+@media screen and (min-width: 1280px) {
+    empty-layout + app-settings .settings-cog {
+        right: 0 !important;
+    }
+}

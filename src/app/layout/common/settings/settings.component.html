@@ -1,7 +1,5 @@
 <div
     class="settings-cog fixed right-0 z-90 flex h-10 w-10 cursor-pointer items-center justify-center rounded-l-lg bg-red-600 bg-opacity-90 shadow-lg print:hidden"
-    [class.lg:right-0]="config.layout === 'centered' || config.layout === 'material'"
-    [class.lg:right-16]="config.layout !== 'centered' && config.layout !== 'material'"
     style="top: 275px"
     (click)="settingsDrawer.toggle()">
     <mat-icon class="animate-spin-slow text-white icon-size-5" [svgIcon]="'heroicons_solid:cog-8-tooth'"></mat-icon>
@@ -11,7 +9,7 @@
     <div class="bg-card flex w-full flex-col overflow-auto">
         <div class="flex h-20 min-h-20 flex-row items-center bg-primary px-6 text-white">
             <mat-icon class="text-current icon-size-7" [svgIcon]="'heroicons_solid:cog-8-tooth'"></mat-icon>
-            <div class="ml-3 text-2xl font-semibold tracking-tight">Settings</div>
+            <div class="ml-3 text-2xl font-semibold tracking-tight">{{ TRANSLATION_PREFIX + 'parametres' | transloco }}</div>
             <button class="ml-auto" mat-icon-button (click)="settingsDrawer.close()">
                 <mat-icon class="text-current" [svgIcon]="'heroicons_outline:x-mark'"></mat-icon>
             </button>
@@ -19,49 +17,55 @@
 
         <div class="flex flex-col p-6">
             <!-- Scheme -->
-            <div class="text-secondary text-md font-semibold">SCHEME</div>
+            <div class="text-secondary text-md font-semibold">{{ TRANSLATION_PREFIX + 'theme' | transloco }}</div>
             <div class="mt-6 grid grid-cols-3 justify-items-start gap-3">
                 <!-- Auto -->
                 <div
                     class="bg-hover flex cursor-pointer items-center rounded-full py-3 pl-5 pr-6 ring-inset ring-primary"
-                    [class.ring-2]="config.scheme === 'auto'"
+                    [class.ring-2]="config.scheme === TypeScheme.AUTO"
                     matTooltip="Automatically sets the scheme based on user's operating system's color scheme preference using 'prefer-color-scheme' media query."
-                    (click)="setScheme('auto')">
+                    (click)="setScheme(TypeScheme.AUTO)">
                     <div class="flex items-center overflow-hidden rounded-full">
                         <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:bolt'"></mat-icon>
                     </div>
-                    <div class="ml-2 flex items-center font-medium leading-5" [class.text-secondary]="config.scheme !== 'auto'">Auto</div>
+                    <div class="ml-2 flex items-center font-medium leading-5" [class.text-secondary]="config.scheme !== TypeScheme.AUTO">
+                        {{ TRANSLATION_PREFIX + 'auto' | transloco }}
+                    </div>
                 </div>
                 <!-- Dark -->
                 <div
                     class="bg-hover flex cursor-pointer items-center rounded-full py-3 pl-5 pr-6 ring-inset ring-primary"
-                    [class.ring-2]="config.scheme === 'dark'"
-                    (click)="setScheme('dark')">
+                    [class.ring-2]="config.scheme === TypeScheme.DARK"
+                    (click)="setScheme(TypeScheme.DARK)">
                     <div class="flex items-center overflow-hidden rounded-full">
                         <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:moon'"></mat-icon>
                     </div>
-                    <div class="ml-2 flex items-center font-medium leading-5" [class.text-secondary]="config.scheme !== 'dark'">Dark</div>
+                    <div class="ml-2 flex items-center font-medium leading-5" [class.text-secondary]="config.scheme !== TypeScheme.DARK">
+                        {{ TRANSLATION_PREFIX + 'dark' | transloco }}
+                    </div>
                 </div>
                 <!-- Light -->
                 <div
                     class="bg-hover flex cursor-pointer items-center rounded-full py-3 pl-5 pr-6 ring-inset ring-primary"
-                    [class.ring-2]="config.scheme === 'light'"
-                    (click)="setScheme('light')">
+                    [class.ring-2]="config.scheme === TypeScheme.LIGHT"
+                    (click)="setScheme(TypeScheme.LIGHT)">
                     <div class="flex items-center overflow-hidden rounded-full">
                         <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:sun'"></mat-icon>
                     </div>
-                    <div class="ml-2 flex items-center font-medium leading-5" [class.text-secondary]="config.scheme !== 'light'">Light</div>
+                    <div class="ml-2 flex items-center font-medium leading-5" [class.text-secondary]="config.scheme !== TypeScheme.LIGHT">
+                        {{ TRANSLATION_PREFIX + 'light' | transloco }}
+                    </div>
                 </div>
             </div>
 
             <hr class="my-8" />
 
             <!-- Layout -->
-            <div class="text-secondary text-md font-semibold">LAYOUT</div>
+            <div class="text-secondary text-md font-semibold">{{ TRANSLATION_PREFIX + 'layout' | transloco }}</div>
             <div class="mt-6 grid grid-cols-3 gap-3">
                 <!-- Classic -->
-                <div class="flex cursor-pointer flex-col" (click)="setLayout('classic')">
-                    <div class="flex h-20 overflow-hidden rounded-md border-2 hover:opacity-80" [class.border-primary]="config.layout === 'classic'">
+                <div class="flex cursor-pointer flex-col" (click)="setLayout(TypeLayout.CLASSIC)">
+                    <div class="flex h-20 overflow-hidden rounded-md border-2 hover:opacity-80" [class.border-primary]="config.layout === TypeLayout.CLASSIC">
                         <div class="w-8 bg-gray-100 dark:bg-gray-800">
                             <div class="mx-1.5 mt-3 space-y-1">
                                 <div class="h-1 rounded-sm bg-gray-300 dark:bg-gray-700"></div>
@@ -82,12 +86,14 @@
                             <div class="flex flex-auto border-t bg-gray-50 dark:bg-gray-900"></div>
                         </div>
                     </div>
-                    <div class="text-secondary mt-2 text-center text-md font-medium" [class.text-primary]="config.layout === 'classic'">Classic</div>
+                    <div class="text-secondary mt-2 text-center text-md font-medium" [class.text-primary]="config.layout === TypeLayout.CLASSIC">
+                        {{ TRANSLATION_PREFIX + 'classic' | transloco }}
+                    </div>
                 </div>
 
                 <!-- Compact -->
-                <div class="flex cursor-pointer flex-col" (click)="setLayout('compact')">
-                    <div class="flex h-20 overflow-hidden rounded-md border-2 hover:opacity-80" [class.border-primary]="config.layout === 'compact'">
+                <div class="flex cursor-pointer flex-col" (click)="setLayout(TypeLayout.COMPACT)">
+                    <div class="flex h-20 overflow-hidden rounded-md border-2 hover:opacity-80" [class.border-primary]="config.layout === TypeLayout.COMPACT">
                         <div class="w-5 bg-gray-100 dark:bg-gray-800">
                             <div class="mx-auto mt-2 h-3 w-3 rounded-sm bg-gray-300 dark:bg-gray-700"></div>
                             <div class="mt-2 flex w-full flex-col items-center space-y-1">
@@ -107,12 +113,16 @@
                             <div class="flex flex-auto border-t bg-gray-50 dark:bg-gray-900"></div>
                         </div>
                     </div>
-                    <div class="text-secondary mt-2 text-center text-md font-medium" [class.text-primary]="config.layout === 'compact'">Compact</div>
+                    <div class="text-secondary mt-2 text-center text-md font-medium" [class.text-primary]="config.layout === TypeLayout.COMPACT">
+                        {{ TRANSLATION_PREFIX + 'compact' | transloco }}
+                    </div>
                 </div>
 
                 <!-- Modern -->
-                <div class="flex cursor-pointer flex-col" (click)="setLayout('modern')">
-                    <div class="flex h-20 flex-col overflow-hidden rounded-md border-2 hover:opacity-80" [class.border-primary]="config.layout === 'modern'">
+                <div class="flex cursor-pointer flex-col" (click)="setLayout(TypeLayout.MODERN)">
+                    <div
+                        class="flex h-20 flex-col overflow-hidden rounded-md border-2 hover:opacity-80"
+                        [class.border-primary]="config.layout === TypeLayout.MODERN">
                         <div class="flex h-4 items-center border-b bg-gray-100 px-2 dark:bg-gray-800">
                             <div class="h-2 w-2 rounded-full bg-gray-300 dark:bg-gray-700"></div>
                             <div class="ml-2 flex h-3 items-center space-x-1">
@@ -129,7 +139,9 @@
                             <div class="flex flex-auto bg-gray-50 dark:bg-gray-900"></div>
                         </div>
                     </div>
-                    <div class="text-secondary mt-2 text-center text-md font-medium" [class.text-primary]="config.layout === 'modern'">Modern</div>
+                    <div class="text-secondary mt-2 text-center text-md font-medium" [class.text-primary]="config.layout === TypeLayout.MODERN">
+                        {{ TRANSLATION_PREFIX + 'modern' | transloco }}
+                    </div>
                 </div>
             </div>
         </div>

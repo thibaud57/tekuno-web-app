@@ -3,6 +3,7 @@ import { initialDataResolver } from 'app/app.resolvers'
 import { AuthGuard } from 'app/core/auth/guards/auth.guard'
 import { NoAuthGuard } from 'app/core/auth/guards/noAuth.guard'
 import { LayoutComponent } from 'app/layout/layout.component'
+import { TypeLayout } from './layout/layouts/enums/type-layout.enum'
 
 // @formatter:off
 /* eslint-disable max-len */
@@ -42,7 +43,7 @@ export const appRoutes: Route[] = [
         canActivateChild: [NoAuthGuard],
         component: LayoutComponent,
         data: {
-            layout: 'empty',
+            layout: TypeLayout.EMPTY,
         },
         loadChildren: () =>
             import('app/modules/auth/auth.routes').then(m => m.noAuthRoutes),
@@ -55,7 +56,7 @@ export const appRoutes: Route[] = [
         canActivateChild: [AuthGuard],
         component: LayoutComponent,
         data: {
-            layout: 'empty',
+            layout: TypeLayout.EMPTY,
         },
         loadChildren: () =>
             import('app/modules/auth/auth.routes').then(m => m.authRoutes),

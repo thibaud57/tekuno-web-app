@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core'
 import { FuseMockApiService } from '@fuse/lib/mock-api'
 import {
-    horizontalNavigation,
-    verticalNavigation,
+    adminNavigation,
+    vitrineNavigation,
 } from 'app/mock-api/common/navigation/data'
 import { cloneDeep } from 'lodash-es'
 
@@ -16,9 +16,8 @@ export class NavigationMockApi {
         this._fuseMockApiService.onGet('api/common/navigation').reply(() => [
             200,
             {
-                compact: cloneDeep(verticalNavigation),
-                vertical: cloneDeep(verticalNavigation),
-                horizontal: cloneDeep(horizontalNavigation),
+                admin: cloneDeep(adminNavigation),
+                vitrine: cloneDeep(vitrineNavigation),
             },
         ])
     }

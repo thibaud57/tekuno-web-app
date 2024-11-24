@@ -23,6 +23,8 @@ import { mockApiServices } from 'app/mock-api'
 import { firstValueFrom } from 'rxjs'
 import { environment } from '../environments/environment'
 import { TranslocoHttpLoader } from './core/transloco/transloco.http-loader'
+import { TypeLayout } from './layout/layouts/enums/type-layout.enum'
+import { TypeScheme } from './layout/layouts/enums/type-scheme.enum'
 
 export const appConfig: ApplicationConfig = {
     providers: [
@@ -103,8 +105,8 @@ export const appConfig: ApplicationConfig = {
                 services: mockApiServices,
             },
             fuse: {
-                layout: 'modern',
-                scheme: 'light',
+                layout: TypeLayout.MODERN,
+                scheme: TypeScheme.LIGHT,
                 screens: {
                     sm: '600px',
                     md: '960px',

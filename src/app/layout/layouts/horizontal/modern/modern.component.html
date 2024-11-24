@@ -1,28 +1,26 @@
 <!-- Loading bar -->
 <fuse-loading-bar></fuse-loading-bar>
 
-<!-- Navigation -->
-@if (isScreenSmall) {
-    <fuse-vertical-navigation
-        class="dark bg-gray-900 print:hidden"
-        [mode]="'over'"
-        [name]="'mainNavigation'"
-        [navigation]="navigation.default"
-        [opened]="false">
-        <!-- Navigation header hook -->
-        <ng-container fuseVerticalNavigationContentHeader>
-            <!-- Logo -->
-            <div class="flex h-20 items-center px-8 pt-6">
-                <img class="w-24" src="images/logo/logo-text-on-dark.svg" alt="Logo image" />
-            </div>
-        </ng-container>
-    </fuse-vertical-navigation>
-}
+<!-- Sidebar (small screen) -->
+<fuse-vertical-navigation
+    class="dark bg-gray-900 print:hidden"
+    [mode]="'over'"
+    [name]="'mainNavigation'"
+    [navigation]="currentNavigation"
+    [opened]="isScreenSmall">
+    <!-- Navigation header hook -->
+    <ng-container fuseVerticalNavigationContentHeader>
+        <!-- Logo -->
+        <div class="flex h-20 items-center px-8 pt-6">
+            <img class="w-24" src="images/logo/Logo_Tekuno_Noir.png" alt="Logo image" />
+        </div>
+    </ng-container>
+</fuse-vertical-navigation>
 
 <!-- Wrapper -->
 <div class="flex w-full min-w-0 flex-auto flex-col">
     <!-- Header -->
-    <app-header [isScreenSmall]="isScreenSmall" [navigation]="navigation"></app-header>
+    <app-header [isScreenSmall]="isScreenSmall" [currentNavigation]="currentNavigation" [withSideBar]="false" [isAuthenticated]="isAuthenticated"></app-header>
 
     <!-- Content -->
     <div class="flex w-full flex-auto flex-col">
@@ -34,7 +32,5 @@
     </div>
 
     <!-- Footer -->
-    <div class="bg-card relative z-49 flex h-14 w-full flex-0 items-center border-t px-4 dark:bg-transparent sm:h-20 md:px-6 print:hidden">
-        <span class="text-secondary font-medium">Fuse &copy; {{ currentYear }}</span>
-    </div>
+    <app-footer></app-footer>
 </div>

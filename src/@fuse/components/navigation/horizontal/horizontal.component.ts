@@ -68,8 +68,6 @@ export class FuseHorizontalNavigationComponent
      * On init
      */
     ngOnInit(): void {
-        console.log('ppppppppppp')
-
         // Make sure the name input is not an empty string
         if (this.name === '') {
             this.name = this._fuseUtilsService.randomId()
@@ -77,9 +75,6 @@ export class FuseHorizontalNavigationComponent
 
         // Register the navigation component
         this._fuseNavigationService.registerComponent(this.name, this)
-
-        console.log(this.name)
-        console.log(this.navigation)
     }
 
     /**

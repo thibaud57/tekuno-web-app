@@ -7,7 +7,7 @@
     [appearance]="'compact'"
     [mode]="isScreenSmall ? 'over' : 'side'"
     [name]="'mainNavigation'"
-    [navigation]="navigation.compact"
+    [navigation]="currentNavigation"
     [opened]="!isScreenSmall">
     <!-- Navigation header hook -->
     <ng-container fuseVerticalNavigationContentHeader>
@@ -21,7 +21,7 @@
 <!-- Wrapper -->
 <div class="flex w-full min-w-0 flex-auto flex-col">
     <!-- Header -->
-    <app-header [isScreenSmall]="isScreenSmall" [navigation]="navigation"></app-header>
+    <app-header [isScreenSmall]="isScreenSmall" [currentNavigation]="currentNavigation" [isAuthenticated]="isAuthenticated"></app-header>
 
     <!-- Content -->
     <div class="flex flex-auto flex-col">
@@ -33,7 +33,5 @@
     </div>
 
     <!-- Footer -->
-    <div class="bg-card relative z-49 flex h-14 w-full flex-0 items-center justify-start border-t px-4 dark:bg-transparent md:px-6 print:hidden">
-        <span class="text-secondary font-medium">Fuse &copy; {{ currentYear }}</span>
-    </div>
+    <app-footer></app-footer>
 </div>
