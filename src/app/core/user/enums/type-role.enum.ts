@@ -1,0 +1,9 @@
+export enum TypeRole {
+    ADMIN = 'ADMIN',
+    MEMBER = 'MEMBER',
+    DJ = 'DJ',
+    COMMUNICATION = 'COMMUNICATION',
+    ACCOUNTANT = 'ACCOUNTANT',
+    SECRETARY = 'SECRETARY',
+    TESTER = 'TESTER',
+}
