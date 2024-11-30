@@ -16,6 +16,7 @@ import { RouterLink } from '@angular/router'
 import { fuseAnimations } from '@fuse/animations'
 import { FuseAlertComponent, FuseAlertType } from '@fuse/components/alert'
 import { FuseValidators } from '@fuse/validators'
+import { TranslocoPipe } from '@ngneat/transloco'
 import { AuthService } from 'app/core/auth/auth.service'
 import { finalize } from 'rxjs'
 
@@ -35,35 +36,27 @@ import { finalize } from 'rxjs'
         MatIconModule,
         MatProgressSpinnerModule,
         RouterLink,
+        TranslocoPipe,
     ],
 })
 export class AuthResetPasswordComponent implements OnInit {
     @ViewChild('resetPasswordNgForm') resetPasswordNgForm: NgForm
+
+    readonly TRANSLATION_PREFIX = 'modules.auth.reset-password.'
 
     alert: { type: FuseAlertType; message: string } = {
         type: 'success',
         message: '',
     }
     resetPasswordForm: UntypedFormGroup
-    showAlert: boolean = false
+    showAlert = false
 
-    /**
-     * Constructor
-     */
     constructor(
         private _authService: AuthService,
         private _formBuilder: UntypedFormBuilder
     ) {}
 
-    // -----------------------------------------------------------------------------------------------------
-    // @ Lifecycle hooks
-    // -----------------------------------------------------------------------------------------------------
-
-    /**
-     * On init
-     */
     ngOnInit(): void {
-        // Create the form
         this.resetPasswordForm = this._formBuilder.group(
             {
                 password: ['', Validators.required],
@@ -78,55 +71,37 @@ export class AuthResetPasswordComponent implements OnInit {
         )
     }
 
-    // -----------------------------------------------------------------------------------------------------
-    // @ Public methods
-    // -----------------------------------------------------------------------------------------------------
-
-    /**
-     * Reset password
-     */
     resetPassword(): void {
-        // Return if the form is invalid
         if (this.resetPasswordForm.invalid) {
             return
         }
-
-        // Disable the form
         this.resetPasswordForm.disable()
-
-        // Hide the alert
         this.showAlert = false
 
-        // Send the request to the server
+        // todo gerer la trad
+
         this._authService
             .resetPassword(this.resetPasswordForm.get('password').value)
             .pipe(
                 finalize(() => {
-                    // Re-enable the form
                     this.resetPasswordForm.enable()
-
-                    // Reset the form
                     this.resetPasswordNgForm.resetForm()
-
-                    // Show the alert
                     this.showAlert = true
                 })
             )
-            .subscribe(
-                response => {
-                    // Set the alert
+            .subscribe({
+                next: () => {
                     this.alert = {
                         type: 'success',
-                        message: 'Your password has been reset.',
+                        message: 'Votre mot de passe a été réinitialisé.',
                     }
                 },
-                response => {
-                    // Set the alert
+                error: () => {
                     this.alert = {
                         type: 'error',
-                        message: 'Something went wrong, please try again.',
+                        message: 'Une erreur est survenue, veuillez réessayer.',
                     }
-                }
-            )
+                },
+            })
     }
 }
