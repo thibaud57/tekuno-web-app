@@ -26,9 +26,6 @@ import { TranslocoHttpLoader } from './core/transloco/transloco.http-loader'
 import { TypeLayout } from './layout/layouts/enums/type-layout.enum'
 import { TypeScheme } from './layout/layouts/enums/type-scheme.enum'
 
-export const firebaseConfig = environment.firebaseConfig
-export const apiBaseUrl = environment.apiBaseUrl
-
 export const appConfig: ApplicationConfig = {
     providers: [
         provideAnimations(),
@@ -93,7 +90,7 @@ export const appConfig: ApplicationConfig = {
         },
 
         // Firebase Configuration
-        provideFirebaseApp(() => initializeApp(firebaseConfig)),
+        provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
         provideFirebaseAuth(() => getAuth()),
         provideFirestore(() => getFirestore()),
         provideFunctions(() => getFunctions()),
