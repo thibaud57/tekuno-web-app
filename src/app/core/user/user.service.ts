@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http'
 import { Injectable, inject } from '@angular/core'
+import { apiBaseUrl } from 'app/app.config'
 import { User } from 'app/core/user/user.types'
-import { environment } from 'environments/environment.development'
 import { Observable, ReplaySubject, map, tap } from 'rxjs'
 import { TypeRole } from './enums/type-role.enum'
 
@@ -10,7 +10,7 @@ export class UserService {
     private _httpClient = inject(HttpClient)
     private _user: ReplaySubject<User> = new ReplaySubject<User>(1)
     private roles: TypeRole[] = []
-    private apiUrl = environment.apiBaseUrl + '/users'
+    private apiUrl = apiBaseUrl + '/users'
 
     set user(value: User) {
         this._user.next(value)
