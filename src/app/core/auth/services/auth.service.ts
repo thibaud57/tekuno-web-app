@@ -1,23 +1,17 @@
 import { inject, Injectable, Signal, signal } from '@angular/core'
-import {
-    Auth,
-    confirmPasswordReset,
-    sendPasswordResetEmail,
-    signInWithCustomToken,
-    signInWithEmailAndPassword,
-    UserCredential,
-} from '@angular/fire/auth'
+import { UserCredential } from '@angular/fire/auth'
 import { AuthUtils } from 'app/core/auth/auth.utils'
 import { UserService } from 'app/core/user/services/user.service'
 import { from, Observable, of, throwError } from 'rxjs'
 import { AuthCredential } from '../models/auth-credential'
+import { FirebaseAuthWrapper } from './firebase-auth.wrapper.service'
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
     private authenticated = signal(false)
 
     private userService = inject(UserService)
-    private firebaseAuth = inject(Auth)
+    private firebaseAuthWrapper = inject(FirebaseAuthWrapper)
 
     set accessToken(token: string) {
         localStorage.setItem('accessToken', token)
@@ -32,9 +26,10 @@ export class AuthService {
     }
 
     forgotPassword(email: string): Observable<void> {
-        this.firebaseAuth.useDeviceLanguage()
+        this.firebaseAuthWrapper.useDeviceLanguage()
 
-        const promise = sendPasswordResetEmail(this.firebaseAuth, email)
+        const promise = this.firebaseAuthWrapper
+            .sendPasswordResetEmail(email)
             .then(() => void 0)
             .catch(error => {
                 console.error(error)
@@ -45,13 +40,10 @@ export class AuthService {
     }
 
     resetPassword(oobCode: string, newPassword: string): Observable<void> {
-        this.firebaseAuth.useDeviceLanguage()
+        this.firebaseAuthWrapper.useDeviceLanguage()
 
-        const promise = confirmPasswordReset(
-            this.firebaseAuth,
-            oobCode,
-            newPassword
-        )
+        const promise = this.firebaseAuthWrapper
+            .confirmPasswordReset(oobCode, newPassword)
             .then(() => void 0)
             .catch(error => {
                 console.error(error)
@@ -66,11 +58,8 @@ export class AuthService {
             return throwError(() => new Error('User is already logged in.'))
         }
 
-        const promise = signInWithEmailAndPassword(
-            this.firebaseAuth,
-            credentials.email,
-            credentials.password
-        )
+        const promise = this.firebaseAuthWrapper
+            .signInWithEmailAndPassword(credentials.email, credentials.password)
             .then((userCredential: UserCredential) => {
                 userCredential.user
                     .getIdToken()
@@ -96,10 +85,8 @@ export class AuthService {
             return of(false)
         }
 
-        const promise = signInWithCustomToken(
-            this.firebaseAuth,
-            this.accessToken
-        )
+        const promise = this.firebaseAuthWrapper
+            .signInWithCustomToken(this.accessToken)
             .then((userCredential: UserCredential) => {
                 userCredential.user
                     .getIdToken()
