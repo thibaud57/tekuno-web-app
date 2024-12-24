@@ -19,11 +19,62 @@
             }
         }
     },
-    "module": {
+    "modules": {
+        "auth": {
+            "sign-in": {
+                "connexion": "Connexion",
+                "email": "Email",
+                "email-required": "L'email est requis",
+                "email-invalid": "Veuillez entrer une adresse email valide",
+                "mot-de-passe": "Mot de passe",
+                "mot-de-passe-required": "Le mot de passe est requis",
+                "mot-de-passe-oublie": "Mot de passe oublié",
+                "se-connecter": "Se connecter",
+                "bienvenue": "Bienvenue sur l'espace administrateur",
+                "premiere-connexion": "Lors de votre première connexion, veuillez cliquer sur \"Mot de passe oublié\" pour définir votre mot de passe.",
+                "email-mot-de-passe-invalide": "Email ou mot de passe invalide"
+            },
+            "sign-out": {
+                "deconnexion": "Vous avez été déconnecté !",
+                "redirection-dans": "Redirection dans...",
+                "redirection-terminee": "Vous êtes maintenant redirigé !",
+                "aller-a": "Aller à",
+                "se-connecter": "Se connecter"
+            },
+            "reset-password": {
+                "reinitialiser": "Réinitialiser le mot de passe",
+                "creer": "Créer un nouveau mot de passe",
+                "retourner-a": "Retourner à",
+                "mot-de-passe": "Mot de passe",
+                "mot-de-passe-required": "Le mot de passe est requis",
+                "mot-de-passe-strength": "Le mot de passe doit contenir au moins une majuscule et un chiffre",
+                "confirmation": "Confirmation",
+                "confirmation-required": "La confirmation est requise",
+                "confirmation-must-match": "Les mots de passe doivent correspondre",
+                "bienvenue": "Bienvenue sur l'espace administrateur",
+                "se-connecter": "Se connecter",
+                "mot-de-passe-reinitialise": "Votre mot de passe a été réinitalisé"
+            },
+            "forgot-password": {
+                "mot-de-passe-oublie": "Mot de passe oublié",
+                "remplir-le-formulaire": "Remplir le formulaire pour réinitialiser votre mot de passe",
+                "envoyer-le-lien": "Envoyer le lien",
+                "retourner-a": "Retourner à",
+                "se-connecter": "Se connecter",
+                "email": "Email",
+                "email-required": "L'email est requis",
+                "email-invalid": "Veuillez entrer une adresse email valide",
+                "bienvenue": "Bienvenue sur l'espace administrateur",
+                "demande-envoyee": "Une demande de réinitialisation a été envoyée, veuillez vérifier vos emails"
+            }
+        },
         "vitrine": {
             "home": {
                 "se-connecter": "Se connecter"
             }
         }
+    },
+    "common": {
+        "erreur-api": "Une erreur est survenue, veuillez réessayer"
     }
 }

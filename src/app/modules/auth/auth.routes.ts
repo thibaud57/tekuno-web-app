@@ -5,17 +5,13 @@ import { AuthForgotPasswordComponent } from './forgot-password/forgot-password.c
 import { AuthResetPasswordComponent } from './reset-password/reset-password.component'
 import { AuthSignInComponent } from './sign-in/sign-in.component'
 import { AuthSignOutComponent } from './sign-out/sign-out.component'
-import { AuthUnlockSessionComponent } from './unlock-session/unlock-session.component'
 
 export const authRoutes: Routes = [
     {
         path: '',
         canActivate: [AuthGuard],
         canActivateChild: [AuthGuard],
-        children: [
-            { path: 'sign-out', component: AuthSignOutComponent },
-            { path: 'unlock-session', component: AuthUnlockSessionComponent },
-        ],
+        children: [{ path: 'sign-out', component: AuthSignOutComponent }],
     },
 ]
 

@@ -1,10 +1,16 @@
-import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core'
 import {
+    Component,
+    OnInit,
+    ViewChild,
+    ViewEncapsulation,
+    inject,
+} from '@angular/core'
+import {
+    FormBuilder,
+    FormGroup,
     FormsModule,
     NgForm,
     ReactiveFormsModule,
-    UntypedFormBuilder,
-    UntypedFormGroup,
     Validators,
 } from '@angular/forms'
 import { MatButtonModule } from '@angular/material/button'
@@ -14,7 +20,9 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
 import { RouterLink } from '@angular/router'
 import { fuseAnimations } from '@fuse/animations'
 import { FuseAlertComponent, FuseAlertType } from '@fuse/components/alert'
-import { AuthService } from 'app/core/auth/auth.service'
+import { TranslocoPipe } from '@ngneat/transloco'
+import { AuthService } from 'app/core/auth/services/auth.service'
+import { TranslationService } from 'app/core/services/translation.service'
 import { finalize } from 'rxjs'
 
 @Component({
@@ -32,91 +40,66 @@ import { finalize } from 'rxjs'
         MatButtonModule,
         MatProgressSpinnerModule,
         RouterLink,
+        TranslocoPipe,
     ],
 })
 export class AuthForgotPasswordComponent implements OnInit {
     @ViewChild('forgotPasswordNgForm') forgotPasswordNgForm: NgForm
 
+    readonly TRANSLATION_PREFIX = 'modules.auth.forgot-password.'
+
     alert: { type: FuseAlertType; message: string } = {
         type: 'success',
         message: '',
     }
-    forgotPasswordForm: UntypedFormGroup
-    showAlert: boolean = false
+    showAlert = false
+    form: FormGroup
 
-    /**
-     * Constructor
-     */
-    constructor(
-        private _authService: AuthService,
-        private _formBuilder: UntypedFormBuilder
-    ) {}
+    private readonly authService = inject(AuthService)
+    private readonly formBuilder = inject(FormBuilder)
+    private readonly translationService = inject(TranslationService)
 
-    // -----------------------------------------------------------------------------------------------------
-    // @ Lifecycle hooks
-    // -----------------------------------------------------------------------------------------------------
-
-    /**
-     * On init
-     */
     ngOnInit(): void {
-        // Create the form
-        this.forgotPasswordForm = this._formBuilder.group({
+        this.form = this.formBuilder.group({
             email: ['', [Validators.required, Validators.email]],
         })
     }
 
-    // -----------------------------------------------------------------------------------------------------
-    // @ Public methods
-    // -----------------------------------------------------------------------------------------------------
-
-    /**
-     * Send the reset link
-     */
     sendResetLink(): void {
-        // Return if the form is invalid
-        if (this.forgotPasswordForm.invalid) {
+        if (this.form.invalid) {
             return
         }
 
-        // Disable the form
-        this.forgotPasswordForm.disable()
-
-        // Hide the alert
+        this.form.disable()
         this.showAlert = false
 
-        // Forgot password
-        this._authService
-            .forgotPassword(this.forgotPasswordForm.get('email').value)
+        this.authService
+            .forgotPassword(this.form.controls.email.value)
             .pipe(
                 finalize(() => {
-                    // Re-enable the form
-                    this.forgotPasswordForm.enable()
-
-                    // Reset the form
+                    this.form.enable()
                     this.forgotPasswordNgForm.resetForm()
-
-                    // Show the alert
                     this.showAlert = true
                 })
             )
-            .subscribe(
-                response => {
-                    // Set the alert
+            .subscribe({
+                next: () => {
                     this.alert = {
                         type: 'success',
-                        message:
-                            "Password reset sent! You'll receive an email if you are registered on our system.",
+                        message: this.translationService.getTranslation(
+                            this.TRANSLATION_PREFIX + 'demande-envoyee'
+                        ),
                     }
                 },
-                response => {
-                    // Set the alert
+                error: () => {
                     this.alert = {
                         type: 'error',
                         message:
-                            'Email does not found! Are you sure you are already a member?',
+                            this.translationService.getTranslation(
+                                'common.erreur-api'
+                            ),
                     }
-                }
-            )
+                },
+            })
     }
 }

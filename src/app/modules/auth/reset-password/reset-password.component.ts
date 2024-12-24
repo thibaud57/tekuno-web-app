@@ -1,10 +1,18 @@
-import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core'
 import {
+    Component,
+    DestroyRef,
+    OnInit,
+    ViewChild,
+    ViewEncapsulation,
+    inject,
+} from '@angular/core'
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
+import {
+    FormBuilder,
+    FormGroup,
     FormsModule,
     NgForm,
     ReactiveFormsModule,
-    UntypedFormBuilder,
-    UntypedFormGroup,
     Validators,
 } from '@angular/forms'
 import { MatButtonModule } from '@angular/material/button'
@@ -12,12 +20,15 @@ import { MatFormFieldModule } from '@angular/material/form-field'
 import { MatIconModule } from '@angular/material/icon'
 import { MatInputModule } from '@angular/material/input'
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
-import { RouterLink } from '@angular/router'
+import { ActivatedRoute, Router, RouterLink } from '@angular/router'
 import { fuseAnimations } from '@fuse/animations'
 import { FuseAlertComponent, FuseAlertType } from '@fuse/components/alert'
 import { FuseValidators } from '@fuse/validators'
-import { AuthService } from 'app/core/auth/auth.service'
-import { finalize } from 'rxjs'
+import { TranslocoPipe } from '@ngneat/transloco'
+import { AuthService } from 'app/core/auth/services/auth.service'
+import { TranslationService } from 'app/core/services/translation.service'
+import { finalize, timer } from 'rxjs'
+import { passwordValidator } from '../validators/password-validator.directive'
 
 @Component({
     selector: 'app-auth-reset-password',
@@ -35,39 +46,42 @@ import { finalize } from 'rxjs'
         MatIconModule,
         MatProgressSpinnerModule,
         RouterLink,
+        TranslocoPipe,
     ],
 })
 export class AuthResetPasswordComponent implements OnInit {
     @ViewChild('resetPasswordNgForm') resetPasswordNgForm: NgForm
 
+    readonly TRANSLATION_PREFIX = 'modules.auth.reset-password.'
+
     alert: { type: FuseAlertType; message: string } = {
         type: 'success',
         message: '',
     }
-    resetPasswordForm: UntypedFormGroup
-    showAlert: boolean = false
+    showAlert = false
+    form: FormGroup
+    oobCode?: string
 
-    /**
-     * Constructor
-     */
-    constructor(
-        private _authService: AuthService,
-        private _formBuilder: UntypedFormBuilder
-    ) {}
+    private readonly authService = inject(AuthService)
+    private readonly formBuilder = inject(FormBuilder)
+    private readonly router = inject(Router)
+    private readonly route = inject(ActivatedRoute)
+    private readonly translationService = inject(TranslationService)
+    private readonly destroyRef = inject(DestroyRef)
 
-    // -----------------------------------------------------------------------------------------------------
-    // @ Lifecycle hooks
-    // -----------------------------------------------------------------------------------------------------
+    constructor() {
+        this.route.queryParamMap
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe(params => {
+                this.oobCode = params.get('oobCode')
+            })
+    }
 
-    /**
-     * On init
-     */
     ngOnInit(): void {
-        // Create the form
-        this.resetPasswordForm = this._formBuilder.group(
+        this.form = this.formBuilder.group(
             {
-                password: ['', Validators.required],
-                passwordConfirm: ['', Validators.required],
+                password: ['', [Validators.required, passwordValidator]],
+                passwordConfirm: ['', [Validators.required]],
             },
             {
                 validators: FuseValidators.mustMatch(
@@ -78,55 +92,46 @@ export class AuthResetPasswordComponent implements OnInit {
         )
     }
 
-    // -----------------------------------------------------------------------------------------------------
-    // @ Public methods
-    // -----------------------------------------------------------------------------------------------------
-
-    /**
-     * Reset password
-     */
     resetPassword(): void {
-        // Return if the form is invalid
-        if (this.resetPasswordForm.invalid) {
+        if (this.form.invalid || !this.oobCode) {
             return
         }
-
-        // Disable the form
-        this.resetPasswordForm.disable()
-
-        // Hide the alert
+        this.form.disable()
         this.showAlert = false
 
-        // Send the request to the server
-        this._authService
-            .resetPassword(this.resetPasswordForm.get('password').value)
+        this.authService
+            .resetPassword(this.oobCode, this.form.controls.password.value)
             .pipe(
                 finalize(() => {
-                    // Re-enable the form
-                    this.resetPasswordForm.enable()
-
-                    // Reset the form
+                    this.form.enable()
                     this.resetPasswordNgForm.resetForm()
-
-                    // Show the alert
                     this.showAlert = true
+                    if (this.alert.type === 'success') {
+                        timer(1000).subscribe(() => {
+                            this.router.navigate(['/sign-in'])
+                        })
+                    }
                 })
             )
-            .subscribe(
-                response => {
-                    // Set the alert
+            .subscribe({
+                next: () => {
                     this.alert = {
                         type: 'success',
-                        message: 'Your password has been reset.',
+                        message: this.translationService.getTranslation(
+                            this.TRANSLATION_PREFIX +
+                                'mot-de-passe-reinitialise'
+                        ),
                     }
                 },
-                response => {
-                    // Set the alert
+                error: () => {
                     this.alert = {
                         type: 'error',
-                        message: 'Something went wrong, please try again.',
+                        message:
+                            this.translationService.getTranslation(
+                                'common.erreur-api'
+                            ),
                     }
-                }
-            )
+                },
+            })
     }
 }

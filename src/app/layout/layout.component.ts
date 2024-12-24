@@ -13,7 +13,7 @@ import { FuseConfig, FuseConfigService } from '@fuse/services/config'
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher'
 import { FusePlatformService } from '@fuse/services/platform'
 import { FUSE_VERSION } from '@fuse/version'
-import { AuthService } from 'app/core/auth/auth.service'
+import { AuthService } from 'app/core/auth/services/auth.service'
 import { NavigationService } from 'app/core/navigation/navigation.service'
 import { Navigation } from 'app/core/navigation/navigation.types'
 import {

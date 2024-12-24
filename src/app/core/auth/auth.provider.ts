@@ -6,9 +6,9 @@ import {
     inject,
 } from '@angular/core'
 import { authInterceptor } from 'app/core/auth/auth.interceptor'
-import { AuthService } from 'app/core/auth/auth.service'
+import { AuthService } from 'app/core/auth/services/auth.service'
 
-export const provideAuth = (): Array<Provider | EnvironmentProviders> => {
+export const provideAuth = (): (Provider | EnvironmentProviders)[] => {
     return [
         provideHttpClient(withInterceptors([authInterceptor])),
         {
