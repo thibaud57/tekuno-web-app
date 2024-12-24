@@ -1,10 +1,16 @@
-import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core'
 import {
+    Component,
+    OnInit,
+    ViewChild,
+    ViewEncapsulation,
+    inject,
+} from '@angular/core'
+import {
+    FormBuilder,
+    FormGroup,
     FormsModule,
     NgForm,
     ReactiveFormsModule,
-    UntypedFormBuilder,
-    UntypedFormGroup,
     Validators,
 } from '@angular/forms'
 import { MatButtonModule } from '@angular/material/button'
@@ -17,7 +23,8 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router'
 import { fuseAnimations } from '@fuse/animations'
 import { FuseAlertComponent, FuseAlertType } from '@fuse/components/alert'
 import { TranslocoPipe } from '@ngneat/transloco'
-import { AuthService } from 'app/core/auth/auth.service'
+import { AuthService } from 'app/core/auth/services/auth.service'
+import { TranslationService } from 'app/core/services/translation.service'
 
 @Component({
     selector: 'app-auth-sign-in',
@@ -48,46 +55,44 @@ export class AuthSignInComponent implements OnInit {
         type: 'success',
         message: '',
     }
-    signInForm: UntypedFormGroup
     showAlert = false
+    form: FormGroup
 
-    constructor(
-        private _activatedRoute: ActivatedRoute,
-        private _authService: AuthService,
-        private _formBuilder: UntypedFormBuilder,
-        private _router: Router
-    ) {}
+    private readonly route = inject(ActivatedRoute)
+    private readonly authService = inject(AuthService)
+    private readonly formBuilder = inject(FormBuilder)
+    private readonly router = inject(Router)
+    private readonly translationService = inject(TranslationService)
 
     ngOnInit(): void {
-        this.signInForm = this._formBuilder.group({
+        this.form = this.formBuilder.group({
             email: ['email@tekuno.fr', [Validators.required, Validators.email]],
             password: ['password', Validators.required],
         })
     }
 
     signIn(): void {
-        if (this.signInForm.invalid) {
+        if (this.form.invalid) {
             return
         }
-        this.signInForm.disable()
+        this.form.disable()
         this.showAlert = false
 
-        // todo trad du message erreur
-
-        this._authService.signIn(this.signInForm.value).subscribe({
+        this.authService.signIn(this.form.value).subscribe({
             next: () => {
                 const redirectURL =
-                    this._activatedRoute.snapshot.queryParamMap.get(
-                        'redirectURL'
-                    ) || '/signed-in-redirect'
-                this._router.navigateByUrl(redirectURL)
+                    this.route.snapshot.queryParamMap.get('redirectURL') ||
+                    '/signed-in-redirect'
+                this.router.navigateByUrl(redirectURL)
             },
             error: () => {
-                this.signInForm.enable()
+                this.form.enable()
                 this.signInNgForm.resetForm()
                 this.alert = {
                     type: 'error',
-                    message: 'Wrong email or password',
+                    message: this.translationService.getTranslation(
+                        this.TRANSLATION_PREFIX + 'email-mot-de-passe-invalide'
+                    ),
                 }
                 this.showAlert = true
             },

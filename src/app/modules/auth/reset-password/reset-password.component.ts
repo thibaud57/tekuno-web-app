@@ -1,10 +1,18 @@
-import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core'
 import {
+    Component,
+    DestroyRef,
+    OnInit,
+    ViewChild,
+    ViewEncapsulation,
+    inject,
+} from '@angular/core'
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
+import {
+    FormBuilder,
+    FormGroup,
     FormsModule,
     NgForm,
     ReactiveFormsModule,
-    UntypedFormBuilder,
-    UntypedFormGroup,
     Validators,
 } from '@angular/forms'
 import { MatButtonModule } from '@angular/material/button'
@@ -12,13 +20,15 @@ import { MatFormFieldModule } from '@angular/material/form-field'
 import { MatIconModule } from '@angular/material/icon'
 import { MatInputModule } from '@angular/material/input'
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
-import { RouterLink } from '@angular/router'
+import { ActivatedRoute, Router, RouterLink } from '@angular/router'
 import { fuseAnimations } from '@fuse/animations'
 import { FuseAlertComponent, FuseAlertType } from '@fuse/components/alert'
 import { FuseValidators } from '@fuse/validators'
 import { TranslocoPipe } from '@ngneat/transloco'
-import { AuthService } from 'app/core/auth/auth.service'
-import { finalize } from 'rxjs'
+import { AuthService } from 'app/core/auth/services/auth.service'
+import { TranslationService } from 'app/core/services/translation.service'
+import { finalize, timer } from 'rxjs'
+import { passwordValidator } from '../validators/password-validator.directive'
 
 @Component({
     selector: 'app-auth-reset-password',
@@ -48,19 +58,30 @@ export class AuthResetPasswordComponent implements OnInit {
         type: 'success',
         message: '',
     }
-    resetPasswordForm: UntypedFormGroup
     showAlert = false
+    form: FormGroup
+    oobCode?: string
 
-    constructor(
-        private _authService: AuthService,
-        private _formBuilder: UntypedFormBuilder
-    ) {}
+    private readonly authService = inject(AuthService)
+    private readonly formBuilder = inject(FormBuilder)
+    private readonly router = inject(Router)
+    private readonly route = inject(ActivatedRoute)
+    private readonly translationService = inject(TranslationService)
+    private readonly destroyRef = inject(DestroyRef)
+
+    constructor() {
+        this.route.queryParamMap
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe(params => {
+                this.oobCode = params.get('oobCode')
+            })
+    }
 
     ngOnInit(): void {
-        this.resetPasswordForm = this._formBuilder.group(
+        this.form = this.formBuilder.group(
             {
-                password: ['', Validators.required],
-                passwordConfirm: ['', Validators.required],
+                password: ['', [Validators.required, passwordValidator]],
+                passwordConfirm: ['', [Validators.required]],
             },
             {
                 validators: FuseValidators.mustMatch(
@@ -72,34 +93,43 @@ export class AuthResetPasswordComponent implements OnInit {
     }
 
     resetPassword(): void {
-        if (this.resetPasswordForm.invalid) {
+        if (this.form.invalid || !this.oobCode) {
             return
         }
-        this.resetPasswordForm.disable()
+        this.form.disable()
         this.showAlert = false
 
-        // todo gerer la trad
-
-        this._authService
-            .resetPassword(this.resetPasswordForm.get('password').value)
+        this.authService
+            .resetPassword(this.oobCode, this.form.controls.password.value)
             .pipe(
                 finalize(() => {
-                    this.resetPasswordForm.enable()
+                    this.form.enable()
                     this.resetPasswordNgForm.resetForm()
                     this.showAlert = true
+                    if (this.alert.type === 'success') {
+                        timer(1000).subscribe(() => {
+                            this.router.navigate(['/sign-in'])
+                        })
+                    }
                 })
             )
             .subscribe({
                 next: () => {
                     this.alert = {
                         type: 'success',
-                        message: 'Votre mot de passe a été réinitialisé.',
+                        message: this.translationService.getTranslation(
+                            this.TRANSLATION_PREFIX +
+                                'mot-de-passe-reinitialise'
+                        ),
                     }
                 },
                 error: () => {
                     this.alert = {
                         type: 'error',
-                        message: 'Une erreur est survenue, veuillez réessayer.',
+                        message:
+                            this.translationService.getTranslation(
+                                'common.erreur-api'
+                            ),
                     }
                 },
             })

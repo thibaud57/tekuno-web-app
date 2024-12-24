@@ -1,10 +1,16 @@
-import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core'
 import {
+    Component,
+    OnInit,
+    ViewChild,
+    ViewEncapsulation,
+    inject,
+} from '@angular/core'
+import {
+    FormBuilder,
+    FormGroup,
     FormsModule,
     NgForm,
     ReactiveFormsModule,
-    UntypedFormBuilder,
-    UntypedFormGroup,
     Validators,
 } from '@angular/forms'
 import { MatButtonModule } from '@angular/material/button'
@@ -15,7 +21,8 @@ import { RouterLink } from '@angular/router'
 import { fuseAnimations } from '@fuse/animations'
 import { FuseAlertComponent, FuseAlertType } from '@fuse/components/alert'
 import { TranslocoPipe } from '@ngneat/transloco'
-import { AuthService } from 'app/core/auth/auth.service'
+import { AuthService } from 'app/core/auth/services/auth.service'
+import { TranslationService } from 'app/core/services/translation.service'
 import { finalize } from 'rxjs'
 
 @Component({
@@ -45,35 +52,32 @@ export class AuthForgotPasswordComponent implements OnInit {
         type: 'success',
         message: '',
     }
-    forgotPasswordForm: UntypedFormGroup
     showAlert = false
+    form: FormGroup
 
-    constructor(
-        private _authService: AuthService,
-        private _formBuilder: UntypedFormBuilder
-    ) {}
+    private readonly authService = inject(AuthService)
+    private readonly formBuilder = inject(FormBuilder)
+    private readonly translationService = inject(TranslationService)
 
     ngOnInit(): void {
-        this.forgotPasswordForm = this._formBuilder.group({
+        this.form = this.formBuilder.group({
             email: ['', [Validators.required, Validators.email]],
         })
     }
 
     sendResetLink(): void {
-        if (this.forgotPasswordForm.invalid) {
+        if (this.form.invalid) {
             return
         }
 
-        this.forgotPasswordForm.disable()
+        this.form.disable()
         this.showAlert = false
 
-        // todo gerer la trad
-
-        this._authService
-            .forgotPassword(this.forgotPasswordForm.get('email').value)
+        this.authService
+            .forgotPassword(this.form.controls.email.value)
             .pipe(
                 finalize(() => {
-                    this.forgotPasswordForm.enable()
+                    this.form.enable()
                     this.forgotPasswordNgForm.resetForm()
                     this.showAlert = true
                 })
@@ -82,15 +86,18 @@ export class AuthForgotPasswordComponent implements OnInit {
                 next: () => {
                     this.alert = {
                         type: 'success',
-                        message:
-                            "Password reset sent! You'll receive an email if you are registered on our system.",
+                        message: this.translationService.getTranslation(
+                            this.TRANSLATION_PREFIX + 'demande-envoyee'
+                        ),
                     }
                 },
                 error: () => {
                     this.alert = {
                         type: 'error',
                         message:
-                            'Email does not found! Are you sure you are already a member?',
+                            this.translationService.getTranslation(
+                                'common.erreur-api'
+                            ),
                     }
                 },
             })

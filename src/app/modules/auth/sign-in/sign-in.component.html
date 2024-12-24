@@ -14,14 +14,14 @@
                 </fuse-alert>
             }
 
-            <form class="mt-8" [formGroup]="signInForm" #signInNgForm="ngForm">
+            <form class="mt-8" [formGroup]="form" #signInNgForm="ngForm">
                 <mat-form-field class="w-full">
                     <mat-label>{{ TRANSLATION_PREFIX + 'email' | transloco }}</mat-label>
                     <input id="email" matInput [formControlName]="'email'" />
-                    @if (signInForm.get('email').hasError('required')) {
+                    @if (form.controls.email.hasError('required')) {
                         <mat-error>{{ TRANSLATION_PREFIX + 'email-required' | transloco }}</mat-error>
                     }
-                    @if (signInForm.get('email').hasError('email')) {
+                    @if (form.controls.email.hasError('email')) {
                         <mat-error>{{ TRANSLATION_PREFIX + 'email-invalid' | transloco }}</mat-error>
                     }
                 </mat-form-field>
@@ -50,11 +50,11 @@
                     </a>
                 </div>
 
-                <button class="fuse-mat-button-large mt-6 w-full" mat-flat-button [color]="'primary'" [disabled]="signInForm.disabled" (click)="signIn()">
-                    @if (!signInForm.disabled) {
+                <button class="fuse-mat-button-large mt-6 w-full" mat-flat-button [color]="'primary'" [disabled]="form.disabled" (click)="signIn()">
+                    @if (!form.disabled) {
                         <span>{{ TRANSLATION_PREFIX + 'se-connecter' | transloco }}</span>
                     }
-                    @if (signInForm.disabled) {
+                    @if (form.disabled) {
                         <mat-progress-spinner [diameter]="24" [mode]="'indeterminate'"></mat-progress-spinner>
                     }
                 </button>
