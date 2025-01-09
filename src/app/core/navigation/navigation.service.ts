@@ -1,34 +1,18 @@
-import { Injectable } from '@angular/core'
+import { Injectable, computed, signal } from '@angular/core'
 import {
-    adminNavigation,
     Navigation,
+    adminNavigation,
     vitrineNavigation,
 } from 'app/core/navigation/navigation'
-import { Observable, ReplaySubject } from 'rxjs'
 
 @Injectable({ providedIn: 'root' })
 export class NavigationService {
-    private _navigation: ReplaySubject<Navigation> =
-        new ReplaySubject<Navigation>(1)
+    private readonly _navigation = signal<Navigation>({
+        admin: adminNavigation,
+        vitrine: vitrineNavigation,
+    })
 
-    constructor() {
-        // Initialize navigation immediately
-        this.get().subscribe()
-    }
-
-    get navigation$(): Observable<Navigation> {
-        return this._navigation.asObservable()
-    }
-
-    get(): Observable<Navigation> {
-        const navigation: Navigation = {
-            admin: adminNavigation,
-            vitrine: vitrineNavigation,
-        }
-        return new Observable<Navigation>(observer => {
-            this._navigation.next(navigation)
-            observer.next(navigation)
-            observer.complete()
-        })
-    }
+    readonly admin = computed(() => this._navigation().admin)
+    readonly vitrine = computed(() => this._navigation().vitrine)
+    readonly navigation = this._navigation.asReadonly()
 }

@@ -1,28 +1,26 @@
-@if ({ currentNavigation: currentNavigation$ | async, isAuthenticated: isAuthenticated$ | async, isScreenSmall: isScreenSmall$ | async }; as obs) {
-    @switch (layout) {
-        @case (TypeLayout.EMPTY) {
-            <app-empty-layout></app-empty-layout>
-        }
-        @case (TypeLayout.MODERN) {
-            <app-modern-layout
-                [currentNavigation]="obs.currentNavigation"
-                [isAuthenticated]="obs.isAuthenticated"
-                [isScreenSmall]="obs.isScreenSmall"></app-modern-layout>
-        }
-        @case (TypeLayout.CLASSIC) {
-            <app-classic-layout
-                [currentNavigation]="obs.currentNavigation"
-                [isAuthenticated]="obs.isAuthenticated"
-                [isScreenSmall]="obs.isScreenSmall"></app-classic-layout>
-        }
-        @case (TypeLayout.COMPACT) {
-            <app-compact-layout
-                [currentNavigation]="obs.currentNavigation"
-                [isAuthenticated]="obs.isAuthenticated"
-                [isScreenSmall]="obs.isScreenSmall"></app-compact-layout>
-        }
+@switch (layout) {
+    @case (TypeLayout.EMPTY) {
+        <app-empty-layout></app-empty-layout>
     }
-    @if (obs.isAuthenticated) {
-        <app-settings></app-settings>
+    @case (TypeLayout.MODERN) {
+        <app-modern-layout
+            [currentNavigation]="currentNavigation()"
+            [isAuthenticated]="isAuthenticated()"
+            [isScreenSmall]="isScreenSmall()"></app-modern-layout>
     }
+    @case (TypeLayout.CLASSIC) {
+        <app-classic-layout
+            [currentNavigation]="currentNavigation()"
+            [isAuthenticated]="isAuthenticated()"
+            [isScreenSmall]="isScreenSmall()"></app-classic-layout>
+    }
+    @case (TypeLayout.COMPACT) {
+        <app-compact-layout
+            [currentNavigation]="currentNavigation()"
+            [isAuthenticated]="isAuthenticated()"
+            [isScreenSmall]="isScreenSmall()"></app-compact-layout>
+    }
+}
+@if (isAuthenticated()) {
+    <app-settings></app-settings>
 }

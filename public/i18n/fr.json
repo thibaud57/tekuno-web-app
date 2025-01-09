@@ -15,6 +15,7 @@
             "user": {
                 "connecte": "Connecté en tant que",
                 "profil": "Profil",
+                "espace-admin": "Espace administrateur",
                 "parametres": "Paramètres",
                 "deconnexion": "Déconnexion"
             }
@@ -96,8 +97,11 @@
             "invoices": {
                 "factures": "Factures"
             },
-            "vault": {
-                "coffre-fort": "Coffre-fort"
+            "files": {
+                "fichiers": "Fichiers"
+            },
+            "user-profile": {
+                "profil": "Profil"
             }
         }
     },

@@ -24,7 +24,7 @@ import { fuseAnimations } from '@fuse/animations'
 import { FuseAlertComponent, FuseAlertType } from '@fuse/components/alert'
 import { TranslocoPipe } from '@ngneat/transloco'
 import { AuthService } from 'app/core/auth/services/auth.service'
-import { TranslationService } from 'app/core/services/translation.service'
+import { TranslationService } from 'app/core/translation/translation.service'
 
 @Component({
     selector: 'app-auth-sign-in',

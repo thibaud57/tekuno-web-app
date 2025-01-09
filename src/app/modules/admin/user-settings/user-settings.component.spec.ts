@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { VaultComponent } from './vault.component';
+import { UserSettingsComponent } from './user-settings.component';
 
-describe('VaultComponent', () => {
-  let component: VaultComponent;
-  let fixture: ComponentFixture<VaultComponent>;
+describe('UserSettingsComponent', () => {
+  let component: UserSettingsComponent;
+  let fixture: ComponentFixture<UserSettingsComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [VaultComponent]
+      imports: [UserSettingsComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(VaultComponent);
+    fixture = TestBed.createComponent(UserSettingsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -26,7 +26,7 @@ import { FuseAlertComponent, FuseAlertType } from '@fuse/components/alert'
 import { FuseValidators } from '@fuse/validators'
 import { TranslocoPipe } from '@ngneat/transloco'
 import { AuthService } from 'app/core/auth/services/auth.service'
-import { TranslationService } from 'app/core/services/translation.service'
+import { TranslationService } from 'app/core/translation/translation.service'
 import { finalize, timer } from 'rxjs'
 import { passwordValidator } from '../validators/password-validator.directive'
 

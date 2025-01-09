@@ -24,7 +24,7 @@ export const adminNavigation: FuseNavigationItem[] = [
         id: 'mailbox',
         title: 'modules.admin.mailbox.boite-mail',
         type: 'basic',
-        icon: 'heroicons_outline:mail',
+        icon: 'heroicons_outline:envelope',
         link: '/mailbox',
     },
     {
@@ -42,11 +42,11 @@ export const adminNavigation: FuseNavigationItem[] = [
         link: '/invoices',
     },
     {
-        id: 'vault',
-        title: 'modules.admin.vault.coffre-fort',
+        id: 'files',
+        title: 'modules.admin.files.fichiers',
         type: 'basic',
-        icon: 'heroicons_outline:lock-closed',
-        link: '/vault',
+        icon: 'heroicons_outline:folder',
+        link: '/files',
     },
 ]
 

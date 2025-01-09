@@ -5,19 +5,19 @@ import {
     OnInit,
     Renderer2,
     ViewEncapsulation,
+    computed,
     inject,
+    signal,
 } from '@angular/core'
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router'
-import { FuseNavigationItem } from '@fuse/components/navigation'
 import { FuseConfig, FuseConfigService } from '@fuse/services/config'
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher'
 import { FusePlatformService } from '@fuse/services/platform'
 import { FUSE_VERSION } from '@fuse/version'
 import { AuthService } from 'app/core/auth/services/auth.service'
-import { Navigation } from 'app/core/navigation/navigation'
 import { NavigationService } from 'app/core/navigation/navigation.service'
-import { Observable, combineLatest, filter, map } from 'rxjs'
+import { combineLatest, filter, map } from 'rxjs'
 import { SettingsComponent } from './common/settings/settings.component'
 import { EmptyLayoutComponent } from './layouts/empty/empty.component'
 import { TypeLayout } from './layouts/enums/type-layout.enum'
@@ -46,11 +46,14 @@ export class LayoutComponent implements OnInit {
     layout: TypeLayout = TypeLayout.MODERN
     scheme: TypeScheme
     theme: string
-    navigation: Navigation
 
-    isAuthenticated$: Observable<boolean>
-    currentNavigation$: Observable<FuseNavigationItem[]>
-    isScreenSmall$: Observable<boolean>
+    isAuthenticated = signal<boolean>(false)
+    isScreenSmall = signal<boolean>(false)
+    currentNavigation = computed(() =>
+        this.isAuthenticated()
+            ? this._navigationService.admin()
+            : this._navigationService.vitrine()
+    )
 
     protected TypeLayout = TypeLayout
 
@@ -66,11 +69,19 @@ export class LayoutComponent implements OnInit {
     private _destroyRef = inject(DestroyRef)
 
     ngOnInit(): void {
-        this.isAuthenticated$ = this._authService.check()
-        this.currentNavigation$ = this.getCurrentNavigation()
-        this.isScreenSmall$ = this._fuseMediaWatcherService.onMediaChange$.pipe(
-            map(({ matchingAliases }) => !matchingAliases.includes('md'))
-        )
+        this._authService
+            .check()
+            .pipe(takeUntilDestroyed(this._destroyRef))
+            .subscribe(isAuthenticated =>
+                this.isAuthenticated.set(isAuthenticated)
+            )
+
+        this._fuseMediaWatcherService.onMediaChange$
+            .pipe(
+                map(({ matchingAliases }) => !matchingAliases.includes('md')),
+                takeUntilDestroyed(this._destroyRef)
+            )
+            .subscribe(isScreenSmall => this.isScreenSmall.set(isScreenSmall))
 
         combineLatest([
             this._fuseConfigService.config$,
@@ -180,14 +191,5 @@ export class LayoutComponent implements OnInit {
         })
 
         this._document.body.classList.add(this.theme)
-    }
-
-    private getCurrentNavigation(): Observable<FuseNavigationItem[]> {
-        const navigation$ = this._navigationService.navigation$
-        return combineLatest([navigation$, this.isAuthenticated$]).pipe(
-            map(([navigation, isAuthenticated]) =>
-                isAuthenticated ? navigation.admin : navigation.vitrine
-            )
-        )
     }
 }
