@@ -1,4 +1,3 @@
-<!-- Button -->
 <button mat-icon-button [matMenuTriggerFor]="userActions">
     <span class="relative">
         @if (showAvatar && user.avatar) {
@@ -7,37 +6,28 @@
         @if (!showAvatar || !user.avatar) {
             <mat-icon [svgIcon]="'heroicons_outline:user-circle'"></mat-icon>
         }
-        <span
-            class="absolute bottom-0 right-0 h-2 w-2 rounded-full"
-            [ngClass]="{
-                'mb-px mr-px': !showAvatar || !user.avatar,
-                'bg-green-500': user.status === 'online',
-                'bg-amber-500': user.status === 'away',
-                'bg-red-500': user.status === 'busy',
-                'bg-gray-400': user.status === 'not-visible',
-            }"></span>
     </span>
 </button>
 
 <mat-menu [xPosition]="'before'" #userActions="matMenu">
     <button mat-menu-item>
         <span class="flex flex-col leading-none">
-            <span>Signed in as</span>
+            <span>{{ TRANSLATION_PREFIX + 'connecte' | transloco }}</span>
             <span class="mt-1.5 text-md font-medium">{{ user.email }}</span>
         </span>
     </button>
     <mat-divider class="my-2"></mat-divider>
     <button mat-menu-item>
         <mat-icon [svgIcon]="'heroicons_outline:user-circle'"></mat-icon>
-        <span>Profile</span>
+        <span>{{ TRANSLATION_PREFIX + 'profil' | transloco }}</span>
     </button>
     <button mat-menu-item>
         <mat-icon [svgIcon]="'heroicons_outline:cog-8-tooth'"></mat-icon>
-        <span>Settings</span>
+        <span>{{ TRANSLATION_PREFIX + 'parametres' | transloco }}</span>
     </button>
     <mat-divider class="my-2"></mat-divider>
     <button mat-menu-item (click)="signOut()">
         <mat-icon [svgIcon]="'heroicons_outline:arrow-right-on-rectangle'"></mat-icon>
-        <span>Sign out</span>
+        <span>{{ TRANSLATION_PREFIX + 'deconnexion' | transloco }}</span>
     </button>
 </mat-menu>

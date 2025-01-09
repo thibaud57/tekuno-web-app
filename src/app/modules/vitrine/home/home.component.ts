@@ -1,9 +1,9 @@
-import { Component, ViewEncapsulation } from '@angular/core'
+import { Component, inject, ViewEncapsulation } from '@angular/core'
 import { MatButtonModule } from '@angular/material/button'
 import { MatIconModule } from '@angular/material/icon'
 import { RouterLink } from '@angular/router'
 import { TranslocoPipe } from '@ngneat/transloco'
-import { UserService } from 'app/core/user/user.service'
+import { UserService } from 'app/core/user/services/user.service'
 
 @Component({
     selector: 'app-home',
@@ -15,10 +15,10 @@ import { UserService } from 'app/core/user/user.service'
 export class HomeComponent {
     readonly TRANSLATION_PREFIX = 'modules.vitrine.home.'
 
-    constructor(private userService: UserService) {}
+    private _userService = inject(UserService)
 
     test() {
-        this.userService.getAllUsers().subscribe(users => {
+        this._userService.getAllUsers().subscribe(users => {
             console.log(users)
         })
     }
