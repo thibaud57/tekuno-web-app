@@ -20,7 +20,8 @@ jobs:
                   mkdir -p src/environments
                   echo 'export const environment = {
                     production: true,
-                    firebaseConfig: '"$(echo '${{ secrets.FIREBASE_CONFIG }}' | jq -c .)"'
+                    firebaseConfig: '"$(echo '${{ secrets.FIREBASE_CONFIG }}' | jq -c .)"',
+                    apiBaseUrl: "${{ secrets.API_BASE_URL }}"
                   }' > src/environments/environment.ts
 
             - name: Install Dependencies and Build
