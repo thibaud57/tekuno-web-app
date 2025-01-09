@@ -11,6 +11,13 @@
                 "classic": "Classique",
                 "compact": "Compact",
                 "modern": "Moderne"
+            },
+            "user": {
+                "connecte": "Connecté en tant que",
+                "profil": "Profil",
+                "espace-admin": "Espace administrateur",
+                "parametres": "Paramètres",
+                "deconnexion": "Déconnexion"
             }
         },
         "layouts": {
@@ -70,7 +77,31 @@
         },
         "vitrine": {
             "home": {
+                "accueil": "Accueil",
                 "se-connecter": "Se connecter"
+            }
+        },
+        "admin": {
+            "dashboard": {
+                "tableau-de-bord": "Tableau de bord"
+            },
+            "address-book": {
+                "carnet-adresses": "Carnet d'adresses"
+            },
+            "mailbox": {
+                "boite-mail": "Boîte mail"
+            },
+            "events": {
+                "evenements": "Événements"
+            },
+            "invoices": {
+                "factures": "Factures"
+            },
+            "files": {
+                "fichiers": "Fichiers"
+            },
+            "user-profile": {
+                "profil": "Profil"
             }
         }
     },

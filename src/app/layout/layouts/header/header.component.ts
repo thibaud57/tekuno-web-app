@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common'
-import { Component, Input } from '@angular/core'
+import { Component, inject, Input } from '@angular/core'
 import {
     FuseHorizontalNavigationComponent,
     FuseNavigationItem,
@@ -28,17 +28,15 @@ export class HeaderComponent {
     @Input() currentNavigation: FuseNavigationItem[]
     @Input() withSideBar = true
 
-    constructor(private _fuseNavigationService: FuseNavigationService) {}
+    private _fuseNavigationService = inject(FuseNavigationService)
 
     toggleNavigation(name: string): void {
-        // Get the navigation
         const navigation =
             this._fuseNavigationService.getComponent<FuseVerticalNavigationComponent>(
                 name
             )
 
         if (navigation) {
-            // Toggle the opened status
             navigation.toggle()
         }
     }

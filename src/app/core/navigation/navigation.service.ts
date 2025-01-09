@@ -1,37 +1,18 @@
-import { HttpClient } from '@angular/common/http'
-import { inject, Injectable } from '@angular/core'
-import { Navigation } from 'app/core/navigation/navigation.types'
-import { Observable, ReplaySubject, tap } from 'rxjs'
+import { Injectable, computed, signal } from '@angular/core'
+import {
+    Navigation,
+    adminNavigation,
+    vitrineNavigation,
+} from 'app/core/navigation/navigation'
 
 @Injectable({ providedIn: 'root' })
 export class NavigationService {
-    private _httpClient = inject(HttpClient)
-    private _navigation: ReplaySubject<Navigation> =
-        new ReplaySubject<Navigation>(1)
+    private readonly _navigation = signal<Navigation>({
+        admin: adminNavigation,
+        vitrine: vitrineNavigation,
+    })
 
-    // -----------------------------------------------------------------------------------------------------
-    // @ Accessors
-    // -----------------------------------------------------------------------------------------------------
-
-    /**
-     * Getter for navigation
-     */
-    get navigation$(): Observable<Navigation> {
-        return this._navigation.asObservable()
-    }
-
-    // -----------------------------------------------------------------------------------------------------
-    // @ Public methods
-    // -----------------------------------------------------------------------------------------------------
-
-    /**
-     * Get all navigation data
-     */
-    get(): Observable<Navigation> {
-        return this._httpClient.get<Navigation>('api/common/navigation').pipe(
-            tap(navigation => {
-                this._navigation.next(navigation)
-            })
-        )
-    }
+    readonly admin = computed(() => this._navigation().admin)
+    readonly vitrine = computed(() => this._navigation().vitrine)
+    readonly navigation = this._navigation.asReadonly()
 }

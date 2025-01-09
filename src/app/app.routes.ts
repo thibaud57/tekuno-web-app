@@ -73,7 +73,7 @@ export const appRoutes: Route[] = [
         },
         children: [
             {
-                path: 'dashboard',
+                path: '',
                 loadChildren: () =>
                     import('app/modules/admin/admin.routes').then(
                         m => m.default
