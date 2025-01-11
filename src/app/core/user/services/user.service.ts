@@ -1,25 +1,21 @@
 import { HttpClient } from '@angular/common/http'
-import { Injectable, inject } from '@angular/core'
+import { Injectable, Signal, inject, signal } from '@angular/core'
 import { User } from 'app/core/user/user.types'
 import { environment } from 'environments/environment'
-import { Observable, ReplaySubject, map, tap } from 'rxjs'
+import { Observable, map, tap } from 'rxjs'
 import { TypeRole } from '../enums/type-role.enum'
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
-    private apiUrl = environment.apiBaseUrl + '/users'
+    readonly user = signal<User | null>(null)
 
-    private _user: ReplaySubject<User> = new ReplaySubject<User>(1)
+    private apiUrl = environment.apiBaseUrl + '/users'
     private roles: TypeRole[] = []
 
     private httpClient = inject(HttpClient)
 
-    set user(value: User) {
-        this._user.next(value)
-    }
-
-    get user$(): Observable<User> {
-        return this._user.asObservable()
+    getUser(): Signal<User | null> {
+        return this.user.asReadonly()
     }
 
     hasRole(role: TypeRole): boolean {
@@ -33,7 +29,7 @@ export class UserService {
     getOneUser(id: string): Observable<User> {
         return this.httpClient.get<User>(`${this.apiUrl}/${id}`).pipe(
             tap(user => {
-                this._user.next(user)
+                this.user.set(user)
             })
         )
     }
@@ -47,7 +43,7 @@ export class UserService {
             .patch<User>(`${this.apiUrl}/update/${user.id}`, user)
             .pipe(
                 map(response => {
-                    this._user.next(response)
+                    this.user.set(response)
                 })
             )
     }

@@ -23,7 +23,7 @@ export async function isAuthenticated(
         const decodedToken: admin.auth.DecodedIdToken = await admin
             .auth()
             .verifyIdToken(token)
-        console.log('decodedToken', JSON.stringify(decodedToken))
+            
         res.locals = {
             ...res.locals,
             uid: decodedToken.uid,

@@ -1,9 +1,11 @@
+import { signal } from '@angular/core'
 import { Observable, of } from 'rxjs'
 import { TypeRole } from '../enums/type-role.enum'
 import { userMock, usersMock } from '../user.mock'
 import { User } from '../user.types'
 
 export class UserServiceMock {
+    readonly user = signal<User | null>(null)
     private roles: TypeRole[] = []
 
     hasRole(role: TypeRole): boolean {

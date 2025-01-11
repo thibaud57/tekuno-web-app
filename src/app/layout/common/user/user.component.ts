@@ -4,13 +4,10 @@ import {
     ChangeDetectionStrategy,
     Component,
     computed,
-    DestroyRef,
     inject,
     Input,
-    signal,
     ViewEncapsulation,
 } from '@angular/core'
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
 import { MatButtonModule } from '@angular/material/button'
 import { MatDividerModule } from '@angular/material/divider'
 import { MatIconModule } from '@angular/material/icon'
@@ -19,7 +16,6 @@ import { Router, RouterModule } from '@angular/router'
 import { FuseUtilsService } from '@fuse/services/utils/utils.service'
 import { TranslocoPipe } from '@ngneat/transloco'
 import { UserService } from 'app/core/user/services/user.service'
-import { User } from 'app/core/user/user.types'
 
 @Component({
     selector: 'app-user',
@@ -42,24 +38,15 @@ export class UserComponent {
     static ngAcceptInputType_showAvatar: BooleanInput
 
     @Input() showAvatar = true
+
     readonly TRANSLATION_PREFIX = 'layout.common.user.'
+
+    readonly userEmail = computed(() => this._userService.user()?.email ?? '')
+    readonly userAvatar = computed(() => this._userService.user()?.avatar ?? '')
 
     private readonly _router = inject(Router)
     private readonly _userService = inject(UserService)
-    private readonly _destroyRef = inject(DestroyRef)
     private readonly _fuseUtilsService = inject(FuseUtilsService)
-
-    readonly user = signal<User | null>(null)
-    readonly userEmail = computed(() => this.user()?.email ?? '')
-    readonly hasAvatar = computed(() => !!this.user()?.avatar)
-
-    constructor() {
-        this._userService.user$
-            .pipe(takeUntilDestroyed(this._destroyRef))
-            .subscribe(user => {
-                this.user.set(user)
-            })
-    }
 
     isRouteActive(route: string): boolean {
         return this._router.isActive(

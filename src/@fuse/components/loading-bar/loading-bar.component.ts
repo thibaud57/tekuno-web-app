@@ -5,6 +5,7 @@ import {
     Component,
     inject,
     Input,
+    NgZone,
     OnChanges,
     OnDestroy,
     OnInit,
@@ -29,11 +30,12 @@ export class FuseLoadingBarComponent
 {
     private _fuseLoadingService = inject(FuseLoadingService)
     private _changeDetectorRef = inject(ChangeDetectorRef)
+    private _ngZone = inject(NgZone)
 
-    @Input() autoMode: boolean = true
+    @Input() autoMode = true
     mode: 'determinate' | 'indeterminate'
-    progress: number = 0
-    show: boolean = false
+    progress = 0
+    show = false
     private _unsubscribeAll: Subject<any> = new Subject<any>()
 
     // -----------------------------------------------------------------------------------------------------
@@ -59,27 +61,34 @@ export class FuseLoadingBarComponent
      * On init
      */
     ngOnInit(): void {
-        // Subscribe to the service
-        this._fuseLoadingService.mode$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe(value => {
-                this.mode = value
-                this._changeDetectorRef.markForCheck()
-            })
+        this._ngZone.runOutsideAngular(() => {
+            this._fuseLoadingService.mode$
+                .pipe(takeUntil(this._unsubscribeAll))
+                .subscribe(value => {
+                    this._ngZone.run(() => {
+                        this.mode = value
+                        this._changeDetectorRef.detectChanges()
+                    })
+                })
 
-        this._fuseLoadingService.progress$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe(value => {
-                this.progress = value
-                this._changeDetectorRef.markForCheck()
-            })
+            this._fuseLoadingService.progress$
+                .pipe(takeUntil(this._unsubscribeAll))
+                .subscribe(value => {
+                    this._ngZone.run(() => {
+                        this.progress = value
+                        this._changeDetectorRef.detectChanges()
+                    })
+                })
 
-        this._fuseLoadingService.show$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe(value => {
-                this.show = value
-                this._changeDetectorRef.markForCheck()
-            })
+            this._fuseLoadingService.show$
+                .pipe(takeUntil(this._unsubscribeAll))
+                .subscribe(value => {
+                    this._ngZone.run(() => {
+                        this.show = value
+                        this._changeDetectorRef.detectChanges()
+                    })
+                })
+        })
     }
 
     ngAfterViewInit(): void {

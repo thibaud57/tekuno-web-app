@@ -47,7 +47,7 @@ export class LayoutComponent implements OnInit {
     scheme: TypeScheme
     theme: string
 
-    isAuthenticated = signal<boolean>(false)
+    isAuthenticated = computed(() => this._authService.isAuthenticated()())
     isScreenSmall = signal<boolean>(false)
     currentNavigation = computed(() =>
         this.isAuthenticated()
@@ -69,13 +69,6 @@ export class LayoutComponent implements OnInit {
     private _destroyRef = inject(DestroyRef)
 
     ngOnInit(): void {
-        this._authService
-            .check()
-            .pipe(takeUntilDestroyed(this._destroyRef))
-            .subscribe(isAuthenticated =>
-                this.isAuthenticated.set(isAuthenticated)
-            )
-
         this._fuseMediaWatcherService.onMediaChange$
             .pipe(
                 map(({ matchingAliases }) => !matchingAliases.includes('md')),
