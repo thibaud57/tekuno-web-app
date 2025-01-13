@@ -16,6 +16,7 @@ import { Router, RouterModule } from '@angular/router'
 import { FuseUtilsService } from '@fuse/services/utils/utils.service'
 import { TranslocoPipe } from '@ngneat/transloco'
 import { UserService } from 'app/core/user/services/user.service'
+import { AvatarComponent } from 'app/shared/components/avatar/avatar.component'
 
 @Component({
     selector: 'app-user',
@@ -32,6 +33,7 @@ import { UserService } from 'app/core/user/services/user.service'
         TranslocoPipe,
         RouterModule,
         NgClass,
+        AvatarComponent,
     ],
 })
 export class UserComponent {
@@ -41,8 +43,7 @@ export class UserComponent {
 
     readonly TRANSLATION_PREFIX = 'layout.common.user.'
 
-    readonly userEmail = computed(() => this._userService.user()?.email ?? '')
-    readonly userAvatar = computed(() => this._userService.user()?.avatar ?? '')
+    readonly user = computed(() => this._userService.user())
 
     private readonly _router = inject(Router)
     private readonly _userService = inject(UserService)

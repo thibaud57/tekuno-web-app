@@ -2,3 +2,11 @@
 /*  @ Import/write your custom styles here.
 /*  @ Styles from this file will override 'vendors.scss' and Fuse's base styles.
 /* ----------------------------------------------------------------------------------------------------- */
+
+.success-snackbar {
+    --mdc-snackbar-container-color: theme('colors.green.800');
+}
+
+.error-snackbar {
+    --mdc-snackbar-container-color: var(--fuse-warn);
+}

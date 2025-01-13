@@ -24,11 +24,23 @@ jobs:
                     apiBaseUrl: "${{ secrets.API_BASE_URL }}"
                   }' > src/environments/environment.ts
 
-            - name: Install Dependencies and Build
+            - name: Install Frontend Dependencies and Build
               run: npm ci && npm run build
 
-            - name: Run Tests
+            - name: Run Frontend Tests
               run: npm run test -- --watch=false --browsers=ChromeHeadless
+
+            - name: Install Backend Dependencies
+              working-directory: functions
+              run: npm ci
+
+            - name: Run Backend Tests
+              working-directory: functions
+              run: npm test
+
+            - name: Build Backend
+              working-directory: functions
+              run: npm run build
 
             - uses: FirebaseExtended/action-hosting-deploy@v0
               with:

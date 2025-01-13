@@ -1,38 +1,35 @@
-import { Request, Response } from 'express'
+import { NextFunction, Request, Response } from 'express'
 import * as admin from 'firebase-admin'
+import { handleAuthError } from '../shared/utils/error.utils'
 
 export async function isAuthenticated(
     req: Request,
     res: Response,
-    next: (err?: any) => void
+    next: NextFunction
 ) {
     const { authorization } = req.headers
 
-    if (!authorization) return res.status(401).send({ message: 'Unauthorized' })
+    if (!authorization) {
+        return handleAuthError(res, new Error('No authorization header'))
+    }
 
-    if (!authorization.startsWith('Bearer'))
-        return res.status(401).send({ message: 'Unauthorized' })
-
-    const split = authorization.split('Bearer ')
-    if (split.length !== 2)
-        return res.status(401).send({ message: 'Unauthorized' })
-
-    const token = split[1]
+    if (!authorization.startsWith('Bearer')) {
+        return handleAuthError(res, new Error('Invalid authorization format'))
+    }
 
     try {
-        const decodedToken: admin.auth.DecodedIdToken = await admin
-            .auth()
-            .verifyIdToken(token)
-            
+        const token = authorization.split('Bearer ')[1]
+        const decodedToken = await admin.auth().verifyIdToken(token)
+
         res.locals = {
             ...res.locals,
             uid: decodedToken.uid,
-            role: decodedToken.role,
+            roles: decodedToken.roles || [],
             email: decodedToken.email,
         }
+
         return next()
-    } catch (err: any) {
-        console.error(`${err.code} -  ${err.message}`)
-        return res.status(401).send({ message: 'Unauthorized' })
+    } catch (err) {
+        return handleAuthError(res, err as Error)
     }
 }

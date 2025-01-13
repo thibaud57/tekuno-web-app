@@ -1,15 +1,15 @@
+import { provideHttpClient } from '@angular/common/http'
 import { fakeAsync, TestBed, tick } from '@angular/core/testing'
 import { ReactiveFormsModule } from '@angular/forms'
-import { MatFormFieldModule } from '@angular/material/form-field'
-import { MatInputModule } from '@angular/material/input'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { provideRouter, Router } from '@angular/router'
 import { RouterTestingHarness } from '@angular/router/testing'
 import { AuthService } from 'app/core/auth/services/auth.service'
 import { AuthServiceMock } from 'app/core/auth/services/auth.service.mock'
+import { provideIcons } from 'app/core/icons/icons.provider'
 import { TranslationService } from 'app/core/translation/translation.service'
 import { TranslationServiceMock } from 'app/core/translation/translation.service.mock'
-import { getTranslocoModule } from 'app/core/transloco/transloco-testing.module'
+import { getTranslocoModule } from 'app/core/translation/transloco/transloco-testing.module'
 import { of, throwError } from 'rxjs'
 import { AuthResetPasswordComponent } from './reset-password.component'
 
@@ -26,8 +26,6 @@ describe('AuthResetPasswordComponent', () => {
                 AuthResetPasswordComponent,
                 ReactiveFormsModule,
                 BrowserAnimationsModule,
-                MatFormFieldModule,
-                MatInputModule,
                 getTranslocoModule(),
             ],
             providers: [
@@ -42,6 +40,8 @@ describe('AuthResetPasswordComponent', () => {
                         component: AuthResetPasswordComponent,
                     },
                 ]),
+                provideHttpClient(),
+                provideIcons(),
             ],
         }).compileComponents()
 

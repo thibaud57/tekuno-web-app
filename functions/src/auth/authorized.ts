@@ -1,28 +1,32 @@
-import { Request, Response } from 'express'
-import { TypeRole } from './type-role.enum'
+import { NextFunction, Request, Response } from 'express'
+import { handleAuthorizationError } from '../shared/utils/error.utils'
+import { TypeRole } from './enums/type-role.enum'
 
 export function isAuthorized(opts: {
-    hasRole: (
-        | TypeRole.ADMIN
-        | TypeRole.MEMBER
-        | TypeRole.DJ
-        | TypeRole.COMMUNICATION
-        | TypeRole.ACCOUNTANT
-        | TypeRole.SECRETARY
-        | TypeRole.TESTER
-    )[]
+    hasRole: TypeRole[]
     allowSameUser?: boolean
 }) {
-    return (req: Request, res: Response, next: () => void) => {
-        const { role, uid } = res.locals
+    return (req: Request, res: Response, next: NextFunction) => {
+        const { roles, uid } = res.locals
         const { id } = req.params
 
-        if (opts.allowSameUser && id && uid === id) return next()
+        if (opts.allowSameUser && id && uid === id) {
+            return next()
+        }
 
-        if (!role) return res.status(403).send()
+        if (!roles || !Array.isArray(roles)) {
+            return handleAuthorizationError(res, new Error('Invalid roles'))
+        }
 
-        if (opts.hasRole.includes(role)) return next()
+        const hasRequiredRole = roles.some(role => opts.hasRole.includes(role))
 
-        return res.status(403).send()
+        if (hasRequiredRole) {
+            return next()
+        }
+
+        return handleAuthorizationError(
+            res,
+            new Error('Insufficient permissions')
+        )
     }
 }

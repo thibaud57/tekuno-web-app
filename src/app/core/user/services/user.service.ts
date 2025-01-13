@@ -1,54 +1,39 @@
 import { HttpClient } from '@angular/common/http'
-import { Injectable, Signal, inject, signal } from '@angular/core'
-import { User } from 'app/core/user/user.types'
+import { Injectable, inject, signal } from '@angular/core'
 import { environment } from 'environments/environment'
-import { Observable, map, tap } from 'rxjs'
+import { Observable } from 'rxjs'
 import { TypeRole } from '../enums/type-role.enum'
+import { CreateUser, User } from '../models/user.model'
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
     readonly user = signal<User | null>(null)
 
-    private apiUrl = environment.apiBaseUrl + '/users'
-    private roles: TypeRole[] = []
+    private readonly apiUrl = environment.apiBaseUrl + '/users'
 
-    private httpClient = inject(HttpClient)
+    private readonly http = inject(HttpClient)
 
-    getUser(): Signal<User | null> {
-        return this.user.asReadonly()
+    getUsers(): Observable<User[]> {
+        return this.http.get<User[]>(this.apiUrl)
+    }
+
+    getUser(id: string): Observable<User> {
+        return this.http.get<User>(`${this.apiUrl}/${id}`)
     }
 
     hasRole(role: TypeRole): boolean {
-        return this.roles.includes(role)
+        return this.user()?.roles.includes(role) ?? false
     }
 
-    getAllUsers(): Observable<User[]> {
-        return this.httpClient.get<User[]>(this.apiUrl)
-    }
-
-    getOneUser(id: string): Observable<User> {
-        return this.httpClient.get<User>(`${this.apiUrl}/${id}`).pipe(
-            tap(user => {
-                this.user.set(user)
-            })
-        )
-    }
-
-    createUser(user: User): Observable<void> {
-        return this.httpClient.post<void>(this.apiUrl, user)
+    createUser(user: CreateUser): Observable<void> {
+        return this.http.post<void>(this.apiUrl, user)
     }
 
     updateUser(user: User): Observable<void> {
-        return this.httpClient
-            .patch<User>(`${this.apiUrl}/update/${user.id}`, user)
-            .pipe(
-                map(response => {
-                    this.user.set(response)
-                })
-            )
+        return this.http.patch<void>(`${this.apiUrl}/${user.id}`, user)
     }
 
-    deleteUser(user: User): Observable<void> {
-        return this.httpClient.delete<void>(`${this.apiUrl}/delete/${user.id}`)
+    deleteUser(id: string): Observable<void> {
+        return this.http.delete<void>(`${this.apiUrl}/${id}`)
     }
 }

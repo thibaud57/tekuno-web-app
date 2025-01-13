@@ -19,10 +19,9 @@ import { TranslocoService, provideTransloco } from '@ngneat/transloco'
 import { appRoutes } from 'app/app.routes'
 import { provideAuth } from 'app/core/auth/auth.provider'
 import { provideIcons } from 'app/core/icons/icons.provider'
-import { mockApiServices } from 'app/mock-api'
 import { firstValueFrom } from 'rxjs'
 import { environment } from '../environments/environment'
-import { TranslocoHttpLoader } from './core/transloco/transloco.http-loader'
+import { TranslocoHttpLoader } from './core/translation/transloco/transloco.http-loader'
 import { TypeLayout } from './layout/layouts/enums/type-layout.enum'
 import { TypeScheme } from './layout/layouts/enums/type-scheme.enum'
 
@@ -100,10 +99,6 @@ export const appConfig: ApplicationConfig = {
         provideAuth(),
         provideIcons(),
         provideFuse({
-            mockApi: {
-                delay: 0,
-                services: mockApiServices,
-            },
             fuse: {
                 layout: TypeLayout.MODERN,
                 scheme: TypeScheme.LIGHT,

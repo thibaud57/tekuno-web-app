@@ -1,92 +1,117 @@
 import { Request, Response } from 'express'
 import * as admin from 'firebase-admin'
+import { UpdateRequest, UserRecord } from 'firebase-admin/auth'
+import { TypeRole } from '../auth/enums/type-role.enum'
+import { ApiError } from '../shared/models/api-error.model'
+import { handleError } from '../shared/utils/error.utils'
+import { CreateUserDto, UserEntity } from './models/user.model'
 
-export async function create(req: Request, res: Response) {
+export async function findAllUser(req: Request, res: Response) {
     try {
-        const { displayName, password, email, roles } = req.body
+        const users = await admin.auth().listUsers()
+        const mappedUsers = users.users.map(mapUser)
 
-        if (!displayName || !password || !email || roles.length === 0) {
-            return res.status(400).send({ message: 'Missing fields' })
+        return res.status(200).send(mappedUsers)
+    } catch (err) {
+        return handleError(res, err as Error)
+    }
+}
+
+export async function findOneUser(req: Request, res: Response) {
+    try {
+        const { id } = req.params
+        const user = await admin.auth().getUser(id)
+        const mappedUser = mapUser(user)
+
+        return res.status(200).send(mappedUser)
+    } catch (err) {
+        return handleError(res, err as Error)
+    }
+}
+
+export async function createUser(req: Request, res: Response) {
+    try {
+        const createUserDto: CreateUserDto = req.body
+
+        if (
+            !createUserDto.email ||
+            !createUserDto.password ||
+            createUserDto.roles.length === 0
+        ) {
+            const error: ApiError = new Error('Missing required fields')
+            error.status = 400
+            return handleError(res, error)
         }
 
         const { uid } = await admin.auth().createUser({
-            displayName,
-            password,
-            email,
+            email: createUserDto.email,
+            password: createUserDto.password,
         })
 
-        await admin.auth().setCustomUserClaims(uid, { roles })
+        await admin
+            .auth()
+            .setCustomUserClaims(uid, { roles: createUserDto.roles })
 
-        return res.status(201).send({ uid })
+        return res.status(204).send()
     } catch (err) {
-        return handleError(res, err)
+        return handleError(res, err as Error)
     }
 }
 
-export async function all(req: Request, res: Response) {
-    try {
-        const listUsers = await admin.auth().listUsers()
-        const users = listUsers.users.map(mapUser)
-        return res.status(200).send({ users })
-    } catch (err) {
-        return handleError(res, err)
-    }
-}
-
-function mapUser(user: admin.auth.UserRecord) {
-    const customClaims = (user.customClaims || { roles: [] }) as {
-        roles?: string[]
-    }
-    const roles = customClaims.roles || []
-    return {
-        uid: user.uid,
-        email: user.email || '',
-        displayName: user.displayName || '',
-        roles,
-        lastSignInTime: user.metadata.lastSignInTime,
-        creationTime: user.metadata.creationTime,
-    }
-}
-
-export async function get(req: Request, res: Response) {
+export async function updateUser(req: Request, res: Response) {
     try {
         const { id } = req.params
-        const user = await admin.auth().getUser(id)
-        return res.status(200).send({ user: mapUser(user) })
-    } catch (err) {
-        return handleError(res, err)
-    }
-}
+        const userEntity: UserEntity = req.body
 
-export async function patch(req: Request, res: Response) {
-    try {
-        const { id } = req.params
-        const { displayName, password, email, roles } = req.body
-
-        if (!id || !displayName || !password || !email || roles.length === 0) {
-            return res.status(400).send({ message: 'Missing fields' })
+        const authUpdate: Partial<UpdateRequest> = {
+            displayName: userEntity.displayName,
+            email: userEntity.email,
+            photoURL: userEntity.avatar,
         }
 
-        await admin.auth().updateUser(id, { displayName, password, email })
-        await admin.auth().setCustomUserClaims(id, { roles })
-        const user = await admin.auth().getUser(id)
+        await admin.auth().updateUser(id, authUpdate)
 
-        return res.status(204).send({ user: mapUser(user) })
+        if (userEntity.roles) {
+            await admin
+                .auth()
+                .setCustomUserClaims(id, { roles: userEntity.roles })
+        }
+
+        return res.status(204).send()
     } catch (err) {
-        return handleError(res, err)
+        return handleError(res, err as Error)
     }
 }
 
-export async function remove(req: Request, res: Response) {
+export async function removeUser(req: Request, res: Response) {
     try {
         const { id } = req.params
+
+        const userToDelete = await admin.auth().getUser(id)
+        const roles = userToDelete.customClaims?.roles || []
+
+        if (roles.includes(TypeRole.ADMIN)) {
+            const error: ApiError = new Error('Cannot delete admin account')
+            error.status = 403
+            return handleError(res, error)
+        }
+
         await admin.auth().deleteUser(id)
-        return res.status(204).send({})
+
+        return res.status(204).send()
     } catch (err) {
-        return handleError(res, err)
+        return handleError(res, err as Error)
     }
 }
 
-function handleError(res: Response, err: any) {
-    return res.status(500).send({ message: `${err.code} - ${err.message}` })
+function mapUser(user: UserRecord): UserEntity {
+    const roles = user.customClaims?.roles || ([] as TypeRole[])
+
+    return {
+        id: user.uid,
+        email: user.email || '',
+        displayName: user.displayName,
+        avatar: user.photoURL,
+        roles,
+    }
 }

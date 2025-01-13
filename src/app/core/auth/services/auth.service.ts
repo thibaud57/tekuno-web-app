@@ -1,6 +1,7 @@
 import { inject, Injectable, Signal, signal } from '@angular/core'
 import { User, UserCredential } from '@angular/fire/auth'
 import { AuthUtils } from 'app/core/auth/auth.utils'
+import { TypeRole } from 'app/core/user/enums/type-role.enum'
 import { UserService } from 'app/core/user/services/user.service'
 import {
     catchError,
@@ -11,7 +12,7 @@ import {
     switchMap,
     throwError,
 } from 'rxjs'
-import { AuthCredential } from '../models/auth-credential'
+import { AuthCredential } from '../models/auth-credential.model'
 import { FirebaseAuthWrapper } from './firebase-auth.wrapper.service'
 
 @Injectable({ providedIn: 'root' })
@@ -68,16 +69,16 @@ export class AuthService {
 
         const promise = this.firebaseAuthWrapper
             .signInWithEmailAndPassword(credentials.email, credentials.password)
-            .then((userCredential: UserCredential) => {
-                userCredential.user
-                    .getIdToken()
-                    .then(accessToken => (this.accessToken = accessToken))
+            .then(async (userCredential: UserCredential) => {
+                const tokenResult = await userCredential.user.getIdTokenResult()
+                this.accessToken = tokenResult.token
                 this.authenticated.set(true)
                 this.userService.user.set({
                     id: userCredential.user.uid,
-                    name: userCredential.user.displayName,
+                    displayName: userCredential.user.displayName,
                     email: userCredential.user.email,
                     avatar: userCredential.user.photoURL,
+                    roles: (tokenResult.claims.roles || []) as TypeRole[],
                 })
             })
             .catch(error => {
@@ -99,15 +100,17 @@ export class AuthService {
                     return of(false)
                 }
 
-                return from(user.getIdToken()).pipe(
-                    map(token => {
-                        this.accessToken = token
+                return from(user.getIdTokenResult()).pipe(
+                    map(tokenResult => {
+                        this.accessToken = tokenResult.token
                         this.authenticated.set(true)
                         this.userService.user.set({
                             id: user.uid,
-                            name: user.displayName,
+                            displayName: user.displayName,
                             email: user.email,
                             avatar: user.photoURL,
+                            roles: (tokenResult.claims.roles ||
+                                []) as TypeRole[],
                         })
                         return true
                     }),
@@ -145,17 +148,13 @@ export class AuthService {
     }
 
     check(): Observable<boolean> {
-        console.log('check', this.authenticated())
         if (this.authenticated()) {
             return of(true)
         }
-        console.log('aaa', this.accessToken)
-        console.log('aaa', AuthUtils.isTokenExpired(this.accessToken))
 
         if (!this.accessToken || AuthUtils.isTokenExpired(this.accessToken)) {
             return of(false)
         }
-        console.log('bbb', this.accessToken)
 
         return this.signInUsingToken()
     }
