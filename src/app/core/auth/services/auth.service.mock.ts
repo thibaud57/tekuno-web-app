@@ -1,6 +1,6 @@
 import { Signal, signal } from '@angular/core'
 import { Observable, of } from 'rxjs'
-import { AuthCredential } from '../models/auth-credential'
+import { AuthCredential } from '../models/auth-credential.model'
 
 export class AuthServiceMock {
     private authenticated = signal(false)

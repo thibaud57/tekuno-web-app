@@ -102,10 +102,38 @@
             },
             "user-profile": {
                 "profil": "Profil"
+            },
+            "user-settings": {
+                "mon-equipe": "Mon équipe",
+                "email": "Email",
+                "mot-de-passe": "Mot de passe",
+                "roles": "Rôles",
+                "alertes": {
+                    "membre-ajoute": "Le membre a été ajouté avec succès",
+                    "utilisateur-supprime": "L'utilisateur a été supprimé avec succès",
+                    "role-modifie": "Les rôles ont été modifiés avec succès",
+                    "erreur-ajout-membre": "Erreur lors de l'ajout du membre : {erreur}",
+                    "erreur-suppression-utilisateur": "Erreur lors de la suppression de l'utilisateur : {erreur}",
+                    "erreur-chargement-utilisateurs": "Erreur lors du chargement des utilisateurs : {erreur}",
+                    "erreur-modification-role": "Erreur lors de la modification des rôles : {erreur}",
+                    "erreur-suppression-admin": "Impossible de supprimer un compte administrateur"
+                }
             }
         }
     },
     "common": {
-        "erreur-api": "Une erreur est survenue, veuillez réessayer"
+        "erreur-api": "Une erreur est survenue : {erreur}",
+        "ok": "OK"
+    },
+    "enums": {
+        "type-role": {
+            "ADMIN": "Admin",
+            "MEMBER": "Membre",
+            "DJ": "DJ",
+            "COMMUNICATION": "Communication",
+            "ACCOUNTANT": "Comptable",
+            "SECRETARY": "Secrétaire",
+            "TESTER": "Testeur"
+        }
     }
 }

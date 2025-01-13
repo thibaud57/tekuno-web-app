@@ -3,14 +3,10 @@
 
 name: Deploy to Firebase Hosting on PR
 on: pull_request
-permissions:
-    checks: write
-    contents: read
-    pull-requests: write
 
 jobs:
     build_and_preview:
-        if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+        if: '${{ github.event.pull_request.head.repo.full_name == github.repository }}'
         runs-on: ubuntu-latest
 
         steps:
@@ -25,14 +21,26 @@ jobs:
                     apiBaseUrl: "${{ secrets.API_BASE_URL }}"
                   }' > src/environments/environment.ts
 
-            - name: Install Dependencies and Build
+            - name: Install Frontend Dependencies and Build
               run: npm ci && npm run build
 
-            - name: Run Tests
+            - name: Run Frontend Tests
               run: npm run test -- --watch=false --browsers=ChromeHeadless
+
+            - name: Install Backend Dependencies
+              working-directory: functions
+              run: npm ci
+
+            - name: Run Backend Tests
+              working-directory: functions
+              run: npm test
+
+            - name: Build Backend
+              working-directory: functions
+              run: npm run build
 
             - uses: FirebaseExtended/action-hosting-deploy@v0
               with:
-                  repoToken: ${{ secrets.GITHUB_TOKEN }}
-                  firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_TEKUNO_WEB_APP }}
+                  repoToken: '${{ secrets.GITHUB_TOKEN }}'
+                  firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_TEKUNO_WEB_APP }}'
                   projectId: tekuno-web-app

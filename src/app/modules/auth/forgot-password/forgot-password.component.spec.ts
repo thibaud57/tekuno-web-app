@@ -1,14 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing'
 import { ReactiveFormsModule } from '@angular/forms'
-import { MatFormFieldModule } from '@angular/material/form-field'
-import { MatInputModule } from '@angular/material/input'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { provideRouter } from '@angular/router'
 import { AuthService } from 'app/core/auth/services/auth.service'
 import { AuthServiceMock } from 'app/core/auth/services/auth.service.mock'
 import { TranslationService } from 'app/core/translation/translation.service'
 import { TranslationServiceMock } from 'app/core/translation/translation.service.mock'
-import { getTranslocoModule } from 'app/core/transloco/transloco-testing.module'
+import { getTranslocoModule } from 'app/core/translation/transloco/transloco-testing.module'
 import { of, throwError } from 'rxjs'
 import { AuthForgotPasswordComponent } from './forgot-password.component'
 
@@ -24,8 +22,6 @@ describe('AuthForgotPasswordComponent', () => {
                 AuthForgotPasswordComponent,
                 ReactiveFormsModule,
                 BrowserAnimationsModule,
-                MatFormFieldModule,
-                MatInputModule,
                 getTranslocoModule(),
             ],
             providers: [

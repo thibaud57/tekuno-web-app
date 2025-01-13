@@ -8,7 +8,7 @@ import { provideRouter, Router } from '@angular/router'
 import { AuthService } from 'app/core/auth/services/auth.service'
 import { AuthServiceMock } from 'app/core/auth/services/auth.service.mock'
 import { of } from 'rxjs'
-import { getTranslocoModule } from '../../../core/transloco/transloco-testing.module'
+import { getTranslocoModule } from '../../../core/translation/transloco/transloco-testing.module'
 import { AuthSignOutComponent } from './sign-out.component'
 
 describe('AuthSignOutComponent', () => {

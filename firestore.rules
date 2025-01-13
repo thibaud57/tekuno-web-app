@@ -15,5 +15,3 @@ service cloud.firestore {
     }
   }
 }
-
-// Utiliser firebase deploy --only firestore:rules pour déployer les règles

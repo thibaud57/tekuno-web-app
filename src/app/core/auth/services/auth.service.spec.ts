@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing'
-import { User } from '@angular/fire/auth'
 import { UserServiceMock } from 'app/core/user/services/user.service.mock'
-import { of } from 'rxjs'
+import { Spy } from 'jasmine-core'
+import { of, throwError } from 'rxjs'
 import { UserService } from '../../user/services/user.service'
 import { AuthService } from './auth.service'
 import { FirebaseAuthWrapper } from './firebase-auth.wrapper.service'
@@ -31,7 +31,6 @@ describe('AuthService', () => {
         userService = TestBed.inject(UserService)
         firebaseAuthWrapper = TestBed.inject(FirebaseAuthWrapper)
 
-        // reset localStorage before each test
         localStorage.clear()
     })
 
@@ -113,7 +112,7 @@ describe('AuthService', () => {
     })
 
     describe('signInUsingToken', () => {
-        let getFirebaseUserSpy: jasmine.Spy
+        let getFirebaseUserSpy: Spy
 
         beforeEach(() => {
             getFirebaseUserSpy = spyOn(firebaseAuthWrapper, 'getFirebaseUser$')
@@ -142,11 +141,9 @@ describe('AuthService', () => {
         })
 
         it('should return false when token retrieval fails', done => {
-            const userWithFailingToken: User = {
-                ...firebaseUserMock,
-                getIdToken: () => Promise.reject('Token error'),
-            }
-            getFirebaseUserSpy.and.returnValue(of(userWithFailingToken))
+            getFirebaseUserSpy.and.returnValue(
+                throwError(() => new Error('Token error'))
+            )
 
             service.signInUsingToken().subscribe(result => {
                 expect(result).toBeFalsy()

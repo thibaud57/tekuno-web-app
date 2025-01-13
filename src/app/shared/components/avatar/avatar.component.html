@@ -1,0 +1,5 @@
+@if (avatar()) {
+    <img [src]="avatar()" alt="Avatar" class="h-full w-full rounded-full object-cover" />
+} @else {
+    <mat-icon [svgIcon]="'heroicons_outline:user-circle'" class="h-full w-full"></mat-icon>
+}
