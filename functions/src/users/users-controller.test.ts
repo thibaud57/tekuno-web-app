@@ -1,14 +1,14 @@
 import { Request, Response } from 'express'
 import { UserRecord } from 'firebase-admin/auth'
-import { TypeRole } from '../auth/enums/type-role.enum'
-import { CreateUserDto, UserEntity } from './models/user.model'
+import { RoleType } from '../auth/enums/role-type.enum'
+import { CreateUserDto, UserEntity } from './models/user-entity.model'
 import {
     createUser,
     findAllUser,
     findOneUser,
     removeUser,
     updateUser,
-} from './user-controller'
+} from './users-controller'
 
 const mockListUsers = jest.fn()
 const mockGetUser = jest.fn()
@@ -28,7 +28,7 @@ jest.mock('firebase-admin', () => ({
     })),
 }))
 
-describe('UserController', () => {
+describe('UsersController', () => {
     let mockRequest: Partial<Request>
     let mockResponse: Partial<Response>
     const mockSend = jest.fn()
@@ -51,13 +51,13 @@ describe('UserController', () => {
                     uid: '1',
                     email: 'test1@test.com',
                     displayName: 'Test 1',
-                    customClaims: { roles: [TypeRole.MEMBER] },
+                    customClaims: { roles: [RoleType.MEMBER] },
                 },
                 {
                     uid: '2',
                     email: 'test2@test.com',
                     displayName: 'Test 2',
-                    customClaims: { roles: [TypeRole.ADMIN] },
+                    customClaims: { roles: [RoleType.ADMIN] },
                 },
             ]
 
@@ -102,7 +102,7 @@ describe('UserController', () => {
                 uid: '1',
                 email: 'test@test.com',
                 displayName: 'Test User',
-                customClaims: { roles: [TypeRole.MEMBER] },
+                customClaims: { roles: [RoleType.MEMBER] },
             }
 
             mockRequest.params = { id: '1' }
@@ -136,7 +136,7 @@ describe('UserController', () => {
             const createUserDto: CreateUserDto = {
                 email: 'new@test.com',
                 password: 'password123',
-                roles: [TypeRole.MEMBER],
+                roles: [RoleType.MEMBER],
             }
 
             mockRequest.body = createUserDto
@@ -157,7 +157,7 @@ describe('UserController', () => {
         it('should return 400 when email is missing', async () => {
             mockRequest.body = {
                 password: 'password123',
-                roles: [TypeRole.MEMBER],
+                roles: [RoleType.MEMBER],
             }
 
             await createUser(mockRequest as Request, mockResponse as Response)
@@ -171,7 +171,7 @@ describe('UserController', () => {
         it('should return 400 when password is missing', async () => {
             mockRequest.body = {
                 email: 'test@test.com',
-                roles: [TypeRole.MEMBER],
+                roles: [RoleType.MEMBER],
             }
 
             await createUser(mockRequest as Request, mockResponse as Response)
@@ -201,7 +201,7 @@ describe('UserController', () => {
             const createUserDto: CreateUserDto = {
                 email: 'new@test.com',
                 password: 'password123',
-                roles: [TypeRole.MEMBER],
+                roles: [RoleType.MEMBER],
             }
 
             mockRequest.body = createUserDto
@@ -221,7 +221,7 @@ describe('UserController', () => {
                 id: '1',
                 email: 'updated@test.com',
                 displayName: 'Updated User',
-                roles: [TypeRole.MEMBER],
+                roles: [RoleType.MEMBER],
                 avatar: 'avatar.jpg',
             }
 
@@ -242,7 +242,7 @@ describe('UserController', () => {
             const updateUserDto: UserEntity = {
                 id: '1',
                 email: 'updated@test.com',
-                roles: [TypeRole.MEMBER, TypeRole.DJ],
+                roles: [RoleType.MEMBER, RoleType.DJ],
             }
 
             mockRequest.params = { id: '1' }
@@ -273,7 +273,7 @@ describe('UserController', () => {
         it('should delete user successfully', async () => {
             mockRequest.params = { id: '1' }
             mockGetUser.mockResolvedValue({
-                customClaims: { roles: [TypeRole.MEMBER] },
+                customClaims: { roles: [RoleType.MEMBER] },
             })
 
             await removeUser(mockRequest as Request, mockResponse as Response)
@@ -285,7 +285,7 @@ describe('UserController', () => {
         it('should not delete admin user', async () => {
             mockRequest.params = { id: '1' }
             mockGetUser.mockResolvedValue({
-                customClaims: { roles: [TypeRole.ADMIN] },
+                customClaims: { roles: [RoleType.ADMIN] },
             })
 
             await removeUser(mockRequest as Request, mockResponse as Response)
@@ -311,7 +311,7 @@ describe('UserController', () => {
         it('should handle deletion error', async () => {
             mockRequest.params = { id: '1' }
             mockGetUser.mockResolvedValue({
-                customClaims: { roles: [TypeRole.MEMBER] },
+                customClaims: { roles: [RoleType.MEMBER] },
             })
             const error = new Error('Deletion failed')
             mockDeleteUser.mockRejectedValue(error)

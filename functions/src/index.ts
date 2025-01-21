@@ -3,8 +3,8 @@ import * as cors from 'cors'
 import * as express from 'express'
 import * as admin from 'firebase-admin'
 import * as functions from 'firebase-functions'
-import { setGlobalOptions } from 'firebase-functions'
-import { usersRoute } from './users/user-routes'
+import { personsRoute } from './persons/persons-routes'
+import { usersRoute } from './users/users-routes'
 
 admin.initializeApp()
 
@@ -13,7 +13,8 @@ app.use(bodyParser.json())
 app.use(cors({ origin: true }))
 
 usersRoute(app)
+personsRoute(app)
 
-setGlobalOptions({ region: 'europe-west1' })
+functions.setGlobalOptions({ region: 'europe-west1' })
 
 export const api = functions.https.onRequest(app)

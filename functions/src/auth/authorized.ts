@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from 'express'
 import { handleAuthorizationError } from '../shared/utils/error.utils'
-import { TypeRole } from './enums/type-role.enum'
+import { RoleType } from './enums/role-type.enum'
 
 export function isAuthorized(opts: {
-    hasRole: TypeRole[]
+    hasRole: RoleType[]
     allowSameUser?: boolean
 }) {
     return (req: Request, res: Response, next: NextFunction) => {

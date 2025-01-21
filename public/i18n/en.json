@@ -11,6 +11,13 @@
                 "classic": "Classic",
                 "compact": "Compact",
                 "modern": "Modern"
+            },
+            "user": {
+                "connecte": "Connected as",
+                "profil": "Profile",
+                "espace-admin": "Admin Area",
+                "parametres": "Settings",
+                "deconnexion": "Sign out"
             }
         },
         "layouts": {
@@ -19,11 +26,114 @@
             }
         }
     },
-    "module": {
+    "modules": {
+        "auth": {
+            "sign-in": {
+                "connexion": "Sign in",
+                "email": "Email",
+                "email-required": "Email is required",
+                "email-invalid": "Please enter a valid email address",
+                "mot-de-passe": "Password",
+                "mot-de-passe-required": "Password is required",
+                "mot-de-passe-oublie": "Forgot password",
+                "se-connecter": "Sign in",
+                "bienvenue": "Welcome to the admin area",
+                "premiere-connexion": "For your first connection, please click on \"Forgot password\" to set your password.",
+                "email-mot-de-passe-invalide": "Invalid email or password"
+            },
+            "sign-out": {
+                "deconnexion": "You have been signed out!",
+                "redirection-dans": "Redirecting in...",
+                "redirection-terminee": "You are now being redirected!",
+                "aller-a": "Go to",
+                "se-connecter": "Sign in"
+            },
+            "reset-password": {
+                "reinitialiser": "Reset password",
+                "creer": "Create a new password",
+                "retourner-a": "Return to",
+                "mot-de-passe": "Password",
+                "mot-de-passe-required": "Password is required",
+                "mot-de-passe-strength": "Password must contain at least one uppercase letter and one number",
+                "confirmation": "Confirmation",
+                "confirmation-required": "Confirmation is required",
+                "confirmation-must-match": "Passwords must match",
+                "bienvenue": "Welcome to the admin area",
+                "se-connecter": "Sign in",
+                "mot-de-passe-reinitialise": "Your password has been reset"
+            },
+            "forgot-password": {
+                "mot-de-passe-oublie": "Forgot password",
+                "remplir-le-formulaire": "Fill in the form to reset your password",
+                "envoyer-le-lien": "Send link",
+                "retourner-a": "Return to",
+                "se-connecter": "Sign in",
+                "email": "Email",
+                "email-required": "Email is required",
+                "email-invalid": "Please enter a valid email address",
+                "bienvenue": "Welcome to the admin area",
+                "demande-envoyee": "A reset request has been sent, please check your emails"
+            }
+        },
         "vitrine": {
             "home": {
-                "se-connecter": "Se connecter"
+                "accueil": "Home",
+                "se-connecter": "Sign in"
             }
+        },
+        "admin": {
+            "dashboard": {
+                "tableau-de-bord": "Dashboard"
+            },
+            "address-book": {
+                "carnet-adresses": "Address Book"
+            },
+            "mailbox": {
+                "boite-mail": "Mailbox"
+            },
+            "events": {
+                "evenements": "Events"
+            },
+            "invoices": {
+                "factures": "Invoices"
+            },
+            "files": {
+                "fichiers": "Files"
+            },
+            "user-profile": {
+                "profil": "Profile"
+            },
+            "user-settings": {
+                "mon-equipe": "My Team",
+                "email": "Email",
+                "mot-de-passe": "Password",
+                "roles": "Roles",
+                "alertes": {
+                    "membre-ajoute": "Member has been successfully added",
+                    "utilisateur-supprime": "User has been successfully deleted",
+                    "role-modifie": "Roles have been successfully modified",
+                    "erreur-ajout-membre": "Error adding member: {erreur}",
+                    "erreur-suppression-utilisateur": "Error deleting user: {erreur}",
+                    "erreur-chargement-utilisateurs": "Error loading users: {erreur}",
+                    "erreur-modification-role": "Error modifying roles: {erreur}",
+                    "erreur-suppression-admin": "Cannot delete an admin account"
+                }
+            }
+        }
+    },
+    "common": {
+        "erreur-api": "An error occurred: {erreur}",
+        "ok": "OK"
+    },
+    "enums": {
+        "type-role": {
+            "ADMIN": "Admin",
+            "MEMBER": "Member",
+            "DJ": "DJ",
+            "COMMUNICATION": "Communication",
+            "ACCOUNTANT": "Accountant",
+            "SECRETARY": "Secretary",
+            "TESTER": "Tester"
         }
     }
 }

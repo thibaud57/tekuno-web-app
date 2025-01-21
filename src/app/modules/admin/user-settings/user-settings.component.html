@@ -1,42 +1,40 @@
-<div class="flex min-w-0 flex-auto flex-col">
-    <div class="flex-auto p-6 sm:p-10">
-        <div class="h-400 max-h-400 min-h-400 rounded-2xl border-2 border-dashed border-gray-300">
+<div class="h-full w-full">
+    <div class="h-full p-6 sm:p-10">
+        <div class="h-full w-full rounded-2xl border-2 border-dashed border-gray-300 p-6">
             @if (hasRole(TypeRole.ADMIN)) {
-                <div class="mon-equipe flex items-center p-6">
-                    <div class="ml-2 text-3xl font-bold leading-none tracking-tight lg:ml-0">{{ TRANSLATION_PREFIX + 'mon-equipe' | transloco }}</div>
-                </div>
+                <div class="flex flex-col">
+                    <div class="title text-3xl font-bold leading-none tracking-tight lg:ml-0">{{ TRANSLATION_PREFIX + 'mon-equipe' | transloco }}</div>
 
-                <form class="flex flex-row gap-4 px-6" [formGroup]="form">
-                    <mat-form-field class="flex-1" hideRequiredMarker>
-                        <mat-label>{{ TRANSLATION_PREFIX + 'email' | transloco }}</mat-label>
-                        <input matInput formControlName="email" type="email" />
-                    </mat-form-field>
-
-                    <mat-form-field class="flex-1" hideRequiredMarker>
-                        <mat-label>{{ TRANSLATION_PREFIX + 'mot-de-passe' | transloco }}</mat-label>
-                        <input matInput formControlName="password" type="text" />
-                    </mat-form-field>
-
-                    <div class="flex flex-1 items-center gap-4">
+                    <form class="my-6 flex flex-row gap-4" [formGroup]="form">
                         <mat-form-field class="flex-1" hideRequiredMarker>
-                            <mat-label>{{ TRANSLATION_PREFIX + 'roles' | transloco }}</mat-label>
-                            <mat-select formControlName="roles" multiple>
-                                @for (role of roles; track role) {
-                                    <mat-option [value]="role" [disabled]="role === TypeRole.ADMIN">
-                                        {{ 'enums.type-role.' + role | transloco }}
-                                    </mat-option>
-                                }
-                            </mat-select>
+                            <mat-label>{{ TRANSLATION_PREFIX + 'email' | transloco }}</mat-label>
+                            <input matInput formControlName="email" type="email" />
                         </mat-form-field>
 
-                        <button mat-icon-button type="button" class="bg-primary hover:bg-primary-700" (click)="addTeamMember()">
-                            <mat-icon svgIcon="heroicons_outline:plus" class="text-white"></mat-icon>
-                        </button>
-                    </div>
-                </form>
+                        <mat-form-field class="flex-1" hideRequiredMarker>
+                            <mat-label>{{ TRANSLATION_PREFIX + 'mot-de-passe' | transloco }}</mat-label>
+                            <input matInput formControlName="password" type="text" />
+                        </mat-form-field>
 
-                <div class="mt-4 px-6">
-                    <div class="flex flex-col border-b">
+                        <div class="flex flex-1 items-center gap-4">
+                            <mat-form-field class="flex-1" hideRequiredMarker>
+                                <mat-label>{{ TRANSLATION_PREFIX + 'roles' | transloco }}</mat-label>
+                                <mat-select formControlName="roles" multiple>
+                                    @for (role of roles; track role) {
+                                        <mat-option [value]="role" [disabled]="role === TypeRole.ADMIN">
+                                            {{ 'enums.type-role.' + role | transloco }}
+                                        </mat-option>
+                                    }
+                                </mat-select>
+                            </mat-form-field>
+
+                            <button mat-icon-button type="button" class="bg-primary hover:bg-primary-700" (click)="addTeamMember()">
+                                <mat-icon svgIcon="heroicons_outline:plus" class="text-white"></mat-icon>
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="user-list flex flex-col border-b">
                         @for (user of users() | sortByRole: TypeRole.ADMIN; track user.id) {
                             <app-user-card
                                 [user]="user"

@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express'
 import { isAuthenticated } from './authenticated'
 import { isAuthorized } from './authorized'
-import { TypeRole } from './enums/type-role.enum'
+import { RoleType } from './enums/role-type.enum'
 
 const mockVerifyIdToken = jest.fn()
 jest.mock('firebase-admin', () => ({
@@ -36,7 +36,7 @@ describe('Auth Middlewares', () => {
             const mockDecodedToken = {
                 uid: 'test-uid',
                 email: 'test@test.com',
-                roles: [TypeRole.MEMBER],
+                roles: [RoleType.MEMBER],
             }
 
             mockRequest.headers = {
@@ -113,10 +113,10 @@ describe('Auth Middlewares', () => {
     describe('isAuthorized', () => {
         it('should pass with required role', () => {
             mockResponse.locals = {
-                roles: [TypeRole.ADMIN],
+                roles: [RoleType.ADMIN],
             }
 
-            const middleware = isAuthorized({ hasRole: [TypeRole.ADMIN] })
+            const middleware = isAuthorized({ hasRole: [RoleType.ADMIN] })
             middleware(
                 mockRequest as Request,
                 mockResponse as Response,
@@ -129,14 +129,14 @@ describe('Auth Middlewares', () => {
         it('should pass with allowSameUser and matching id', () => {
             mockResponse.locals = {
                 uid: 'user-123',
-                roles: [TypeRole.MEMBER],
+                roles: [RoleType.MEMBER],
             }
             mockRequest.params = {
                 id: 'user-123',
             }
 
             const middleware = isAuthorized({
-                hasRole: [TypeRole.ADMIN],
+                hasRole: [RoleType.ADMIN],
                 allowSameUser: true,
             })
             middleware(
@@ -150,10 +150,10 @@ describe('Auth Middlewares', () => {
 
         it('should fail without required role', () => {
             mockResponse.locals = {
-                roles: [TypeRole.MEMBER],
+                roles: [RoleType.MEMBER],
             }
 
-            const middleware = isAuthorized({ hasRole: [TypeRole.ADMIN] })
+            const middleware = isAuthorized({ hasRole: [RoleType.ADMIN] })
             middleware(
                 mockRequest as Request,
                 mockResponse as Response,
@@ -172,7 +172,7 @@ describe('Auth Middlewares', () => {
                 roles: 'INVALID_FORMAT',
             }
 
-            const middleware = isAuthorized({ hasRole: [TypeRole.ADMIN] })
+            const middleware = isAuthorized({ hasRole: [RoleType.ADMIN] })
             middleware(
                 mockRequest as Request,
                 mockResponse as Response,
@@ -187,7 +187,7 @@ describe('Auth Middlewares', () => {
         it('should fail with missing roles', () => {
             mockResponse.locals = {}
 
-            const middleware = isAuthorized({ hasRole: [TypeRole.ADMIN] })
+            const middleware = isAuthorized({ hasRole: [RoleType.ADMIN] })
             middleware(
                 mockRequest as Request,
                 mockResponse as Response,
