@@ -10,8 +10,8 @@ export function mapUser(
         id: user.uid,
         email: user.email ?? '',
         displayName: member
-            ? `${member.firstName} ${member.name.toUpperCase()}`
-            : user.displayName,
+            ? `${member.firstName ?? ''} ${member.name?.toUpperCase() ?? ''}`
+            : user.displayName ?? '',
         avatar: user.photoURL ?? '',
         roles: user.customClaims?.roles ?? [],
     }
