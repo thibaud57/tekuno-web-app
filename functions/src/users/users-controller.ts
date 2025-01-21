@@ -18,9 +18,14 @@ import { mapUser } from './utils/users.utils'
 export async function findAllUser(req: Request, res: Response) {
     try {
         const users = await admin.auth().listUsers()
-        const mappedUsers = users.users.map(mapUser)
+        const usersWithMemberData = await Promise.all(
+            users.users.map(async user => {
+                const member = await findMemberByUserId(user.uid)
+                return mapUser(user, member)
+            })
+        )
 
-        return res.status(200).send(mappedUsers)
+        return res.status(200).send(usersWithMemberData)
     } catch (err) {
         return handleError(res, err as Error)
     }
@@ -30,7 +35,8 @@ export async function findOneUser(req: Request, res: Response) {
     try {
         const { id } = req.params
         const user = await admin.auth().getUser(id)
-        const mappedUser = mapUser(user)
+        const member = await findMemberByUserId(id)
+        const mappedUser = mapUser(user, member)
 
         return res.status(200).send(mappedUser)
     } catch (err) {
