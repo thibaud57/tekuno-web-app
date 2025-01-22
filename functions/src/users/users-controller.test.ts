@@ -1,7 +1,32 @@
+import {
+    mockAuth,
+    mockFirebaseAdmin,
+    resetFirebaseMocks,
+} from '../shared/mocks/firebase.mock'
+
+jest.mock('firebase-admin', () => mockFirebaseAdmin)
+jest.mock('../persons/persons-controller')
+
 import { Request, Response } from 'express'
-import { UserRecord } from 'firebase-admin/auth'
-import { RoleType } from '../auth/enums/role-type.enum'
-import { CreateUserDto, UserEntity } from './models/user-entity.model'
+import { PersonType } from '../persons/enums/person-type.enum'
+import {
+    memberEntity2RolesMock,
+    memberEntityAdminMock,
+} from '../persons/models/person-entity.mock'
+import {
+    createPerson,
+    findMemberByUserId,
+    removePerson,
+    updatePerson,
+} from '../persons/persons-controller'
+import { ApiError } from '../shared/models/api-error.model'
+import {
+    USER_ENTITY_ADMIN_UID,
+    createFirebaseUserMock,
+    createUserDtoMock,
+    userEntity2RolesMock,
+    userEntityAdminMock,
+} from './models/user-entity.mock'
 import {
     createUser,
     findAllUser,
@@ -10,316 +35,364 @@ import {
     updateUser,
 } from './users-controller'
 
-const mockListUsers = jest.fn()
-const mockGetUser = jest.fn()
-const mockCreateUser = jest.fn()
-const mockUpdateUser = jest.fn()
-const mockDeleteUser = jest.fn()
-const mockSetCustomUserClaims = jest.fn()
-
-jest.mock('firebase-admin', () => ({
-    auth: jest.fn(() => ({
-        listUsers: mockListUsers,
-        getUser: mockGetUser,
-        createUser: mockCreateUser,
-        updateUser: mockUpdateUser,
-        deleteUser: mockDeleteUser,
-        setCustomUserClaims: mockSetCustomUserClaims,
-    })),
-}))
-
 describe('UsersController', () => {
-    let mockRequest: Partial<Request>
-    let mockResponse: Partial<Response>
-    const mockSend = jest.fn()
-    const mockStatus = jest.fn()
+    let req: Partial<Request>
+    let res: Partial<Response>
+    let mockSend: jest.Mock
+    let mockStatus: jest.Mock
+    let mockJson: jest.Mock
 
     beforeEach(() => {
-        jest.clearAllMocks()
-        mockRequest = {}
-        mockResponse = {
-            status: mockStatus.mockReturnThis(),
+        mockSend = jest.fn()
+        mockStatus = jest.fn().mockReturnThis()
+        mockJson = jest.fn()
+
+        res = {
             send: mockSend,
+            status: mockStatus,
+            json: mockJson,
+            locals: { uid: USER_ENTITY_ADMIN_UID },
         }
-        mockStatus.mockReturnThis()
+
+        // Reset all mocks
+        jest.clearAllMocks()
+        resetFirebaseMocks()
     })
 
     describe('findAllUser', () => {
-        it('should return all users successfully', async () => {
-            const mockUsers: Partial<UserRecord>[] = [
-                {
-                    uid: '1',
-                    email: 'test1@test.com',
-                    displayName: 'Test 1',
-                    customClaims: { roles: [RoleType.MEMBER] },
-                },
-                {
-                    uid: '2',
-                    email: 'test2@test.com',
-                    displayName: 'Test 2',
-                    customClaims: { roles: [RoleType.ADMIN] },
-                },
-            ]
+        it('should return all users with member data', async () => {
+            mockAuth.listUsers.mockResolvedValue({
+                users: [
+                    createFirebaseUserMock(userEntityAdminMock),
+                    createFirebaseUserMock(userEntity2RolesMock),
+                ],
+            })
 
-            mockListUsers.mockResolvedValue({ users: mockUsers })
+            const findMemberByUserIdMock = findMemberByUserId as jest.Mock
+            findMemberByUserIdMock
+                .mockResolvedValueOnce(memberEntityAdminMock)
+                .mockResolvedValueOnce(memberEntity2RolesMock)
 
-            await findAllUser(mockRequest as Request, mockResponse as Response)
+            await findAllUser(req as Request, res as Response)
 
+            expect(mockSend).toHaveBeenCalledWith([
+                userEntityAdminMock,
+                userEntity2RolesMock,
+            ])
             expect(mockStatus).toHaveBeenCalledWith(200)
-            expect(mockSend).toHaveBeenCalledWith(
-                expect.arrayContaining([
-                    expect.objectContaining({
-                        id: '1',
-                        email: 'test1@test.com',
-                    }),
-                ])
-            )
-        })
-
-        it('should handle empty users list', async () => {
-            mockListUsers.mockResolvedValue({ users: [] })
-
-            await findAllUser(mockRequest as Request, mockResponse as Response)
-
-            expect(mockStatus).toHaveBeenCalledWith(200)
-            expect(mockSend).toHaveBeenCalledWith([])
-        })
-
-        it('should handle Firebase error', async () => {
-            const error = new Error('Firebase error')
-            mockListUsers.mockRejectedValue(error)
-
-            await findAllUser(mockRequest as Request, mockResponse as Response)
-
-            expect(mockStatus).toHaveBeenCalledWith(500)
-            expect(mockSend).toHaveBeenCalledWith({ message: error.message })
         })
     })
 
     describe('findOneUser', () => {
-        it('should return one user successfully', async () => {
-            const mockUser: Partial<UserRecord> = {
-                uid: '1',
-                email: 'test@test.com',
-                displayName: 'Test User',
-                customClaims: { roles: [RoleType.MEMBER] },
-            }
-
-            mockRequest.params = { id: '1' }
-            mockGetUser.mockResolvedValue(mockUser)
-
-            await findOneUser(mockRequest as Request, mockResponse as Response)
-
-            expect(mockStatus).toHaveBeenCalledWith(200)
-            expect(mockSend).toHaveBeenCalledWith(
-                expect.objectContaining({
-                    id: '1',
-                    email: 'test@test.com',
-                })
+        it('should return one user with member data', async () => {
+            req = { params: { id: userEntityAdminMock.id } }
+            mockAuth.getUser.mockResolvedValue(
+                createFirebaseUserMock(userEntityAdminMock)
             )
-        })
 
-        it('should handle user not found', async () => {
-            mockRequest.params = { id: 'invalid-id' }
-            const error = new Error('User not found')
-            mockGetUser.mockRejectedValue(error)
+            const findMemberByUserIdMock = findMemberByUserId as jest.Mock
+            findMemberByUserIdMock.mockResolvedValue(memberEntityAdminMock)
 
-            await findOneUser(mockRequest as Request, mockResponse as Response)
+            await findOneUser(req as Request, res as Response)
 
-            expect(mockStatus).toHaveBeenCalledWith(500)
-            expect(mockSend).toHaveBeenCalledWith({ message: error.message })
+            expect(mockSend).toHaveBeenCalledWith(userEntityAdminMock)
+            expect(mockStatus).toHaveBeenCalledWith(200)
         })
     })
 
     describe('createUser', () => {
-        it('should create user successfully', async () => {
-            const createUserDto: CreateUserDto = {
-                email: 'new@test.com',
-                password: 'password123',
-                roles: [RoleType.MEMBER],
-            }
+        it('should create a user with associated member successfully', async () => {
+            req = { body: createUserDtoMock }
+            const createdFirebaseUser =
+                createFirebaseUserMock(userEntity2RolesMock)
+            mockAuth.createUser.mockResolvedValue(createdFirebaseUser)
 
-            mockRequest.body = createUserDto
-            mockCreateUser.mockResolvedValue({ uid: 'new-uid' })
+            const findMemberByUserIdMock = findMemberByUserId as jest.Mock
+            findMemberByUserIdMock.mockResolvedValue(memberEntity2RolesMock)
 
-            await createUser(mockRequest as Request, mockResponse as Response)
+            await createUser(req as Request, res as Response)
 
-            expect(mockCreateUser).toHaveBeenCalledWith({
-                email: createUserDto.email,
-                password: createUserDto.password,
+            expect(mockAuth.createUser).toHaveBeenCalledWith({
+                email: createUserDtoMock.email,
+                password: createUserDtoMock.password,
             })
-            expect(mockSetCustomUserClaims).toHaveBeenCalledWith('new-uid', {
-                roles: createUserDto.roles,
+            expect(mockAuth.setCustomUserClaims).toHaveBeenCalledWith(
+                createdFirebaseUser.uid,
+                { roles: createUserDtoMock.roles }
+            )
+            expect(req.body).toEqual({
+                personType: PersonType.MEMBER,
+                name: 'User',
+                email: createUserDtoMock.email,
+                roles: createUserDtoMock.roles,
+                userId: createdFirebaseUser.uid,
             })
-            expect(mockStatus).toHaveBeenCalledWith(204)
+            expect(mockSend).toHaveBeenCalled()
+            expect(mockStatus).toHaveBeenCalledWith(201)
         })
 
-        it('should return 400 when email is missing', async () => {
-            mockRequest.body = {
-                password: 'password123',
-                roles: [RoleType.MEMBER],
-            }
-
-            await createUser(mockRequest as Request, mockResponse as Response)
-
-            expect(mockStatus).toHaveBeenCalledWith(400)
-            expect(mockSend).toHaveBeenCalledWith({
-                message: 'Missing required fields',
-            })
-        })
-
-        it('should return 400 when password is missing', async () => {
-            mockRequest.body = {
-                email: 'test@test.com',
-                roles: [RoleType.MEMBER],
-            }
-
-            await createUser(mockRequest as Request, mockResponse as Response)
-
-            expect(mockStatus).toHaveBeenCalledWith(400)
-            expect(mockSend).toHaveBeenCalledWith({
-                message: 'Missing required fields',
-            })
-        })
-
-        it('should return 400 when roles array is empty', async () => {
-            mockRequest.body = {
-                email: 'test@test.com',
+        it('should return 400 when missing required fields', async () => {
+            const invalidUserData = {
+                email: '',
                 password: 'password123',
                 roles: [],
             }
+            req = { body: invalidUserData }
 
-            await createUser(mockRequest as Request, mockResponse as Response)
+            await createUser(req as Request, res as Response)
 
+            expect(mockAuth.createUser).not.toHaveBeenCalled()
             expect(mockStatus).toHaveBeenCalledWith(400)
             expect(mockSend).toHaveBeenCalledWith({
                 message: 'Missing required fields',
             })
         })
 
-        it('should handle Firebase creation error', async () => {
-            const createUserDto: CreateUserDto = {
-                email: 'new@test.com',
-                password: 'password123',
-                roles: [RoleType.MEMBER],
-            }
+        it('should handle member creation failure and cleanup Firebase user', async () => {
+            req = { body: createUserDtoMock }
+            const createdFirebaseUser =
+                createFirebaseUserMock(userEntity2RolesMock)
+            mockAuth.createUser.mockResolvedValue(createdFirebaseUser)
 
-            mockRequest.body = createUserDto
-            const error = new Error('Creation failed')
-            mockCreateUser.mockRejectedValue(error)
+            const error = new Error('Member creation failed')
+            const createPersonMock = createPerson as jest.Mock
+            createPersonMock.mockRejectedValue(error)
 
-            await createUser(mockRequest as Request, mockResponse as Response)
+            await createUser(req as Request, res as Response)
 
+            expect(mockAuth.deleteUser).toHaveBeenCalledWith(
+                createdFirebaseUser.uid
+            )
             expect(mockStatus).toHaveBeenCalledWith(500)
-            expect(mockSend).toHaveBeenCalledWith({ message: error.message })
+            expect(mockSend).toHaveBeenCalledWith({
+                message: 'MEMBER_CREATION_FAILED - Member creation failed',
+            })
+        })
+
+        it('should handle Firebase user creation failure', async () => {
+            req = { body: createUserDtoMock }
+            const firebaseError = new Error('Firebase creation failed')
+            mockAuth.createUser.mockRejectedValue(firebaseError)
+
+            await createUser(req as Request, res as Response)
+
+            expect(mockAuth.setCustomUserClaims).not.toHaveBeenCalled()
+            expect(mockStatus).toHaveBeenCalledWith(500)
+            expect(mockSend).toHaveBeenCalledWith({
+                message: 'Firebase creation failed',
+            })
         })
     })
 
     describe('updateUser', () => {
-        it('should update user successfully', async () => {
-            const updateUserDto: UserEntity = {
-                id: '1',
-                email: 'updated@test.com',
-                displayName: 'Updated User',
-                roles: [RoleType.MEMBER],
-                avatar: 'avatar.jpg',
+        it('should update user and member data successfully', async () => {
+            const updateData = {
+                ...userEntity2RolesMock,
+                email: 'newemail@mail.fr',
+            }
+            req = {
+                params: { id: userEntity2RolesMock.id },
+                body: updateData,
             }
 
-            mockRequest.params = { id: '1' }
-            mockRequest.body = updateUserDto
+            const findMemberByUserIdMock = findMemberByUserId as jest.Mock
+            findMemberByUserIdMock.mockResolvedValue(memberEntity2RolesMock)
 
-            await updateUser(mockRequest as Request, mockResponse as Response)
+            await updateUser(req as Request, res as Response)
 
-            expect(mockUpdateUser).toHaveBeenCalledWith('1', {
-                displayName: updateUserDto.displayName,
-                email: updateUserDto.email,
-                photoURL: updateUserDto.avatar,
-            })
+            expect(mockAuth.updateUser).toHaveBeenCalledWith(
+                userEntity2RolesMock.id,
+                {
+                    displayName: updateData.displayName,
+                    email: updateData.email,
+                    photoURL: updateData.avatar,
+                }
+            )
+            expect(mockAuth.setCustomUserClaims).toHaveBeenCalledWith(
+                userEntity2RolesMock.id,
+                { roles: updateData.roles }
+            )
             expect(mockStatus).toHaveBeenCalledWith(204)
         })
 
-        it('should update user roles if provided', async () => {
-            const updateUserDto: UserEntity = {
-                id: '1',
-                email: 'updated@test.com',
-                roles: [RoleType.MEMBER, RoleType.DJ],
+        it('should handle Firebase update failure', async () => {
+            const updateData = {
+                ...userEntity2RolesMock,
+                email: 'newemail@mail.fr',
+            }
+            req = {
+                params: { id: userEntity2RolesMock.id },
+                body: updateData,
             }
 
-            mockRequest.params = { id: '1' }
-            mockRequest.body = updateUserDto
+            const firebaseError: ApiError = new Error('Firebase update failed')
+            firebaseError.status = 500
+            firebaseError.code = 'FIREBASE_UPDATE_FAILED'
+            mockAuth.updateUser.mockRejectedValue(firebaseError)
 
-            await updateUser(mockRequest as Request, mockResponse as Response)
-
-            expect(mockSetCustomUserClaims).toHaveBeenCalledWith('1', {
-                roles: updateUserDto.roles,
-            })
-            expect(mockStatus).toHaveBeenCalledWith(204)
-        })
-
-        it('should handle update error', async () => {
-            mockRequest.params = { id: '1' }
-            mockRequest.body = { email: 'test@test.com' }
-            const error = new Error('Update failed')
-            mockUpdateUser.mockRejectedValue(error)
-
-            await updateUser(mockRequest as Request, mockResponse as Response)
+            await updateUser(req as Request, res as Response)
 
             expect(mockStatus).toHaveBeenCalledWith(500)
-            expect(mockSend).toHaveBeenCalledWith({ message: error.message })
+            expect(mockSend).toHaveBeenCalledWith({
+                message: 'FIREBASE_UPDATE_FAILED - Firebase update failed',
+            })
+        })
+
+        it('should handle member update failure', async () => {
+            const updateData = {
+                ...userEntity2RolesMock,
+                email: 'newemail@mail.fr',
+            }
+            req = {
+                params: { id: userEntity2RolesMock.id },
+                body: updateData,
+            }
+
+            const findMemberByUserIdMock = findMemberByUserId as jest.Mock
+            findMemberByUserIdMock.mockResolvedValue(memberEntity2RolesMock)
+
+            const updatePersonMock = updatePerson as jest.Mock
+            const error: ApiError = new Error(
+                'Member update failed but user was updated'
+            )
+            error.status = 500
+            error.code = 'MEMBER_UPDATE_FAILED'
+            updatePersonMock.mockRejectedValue(error)
+
+            mockAuth.updateUser.mockResolvedValue(undefined)
+
+            await updateUser(req as Request, res as Response)
+
+            expect(mockAuth.updateUser).toHaveBeenCalled()
+            expect(mockStatus).toHaveBeenCalledWith(500)
+            expect(mockSend).toHaveBeenCalledWith({
+                message:
+                    'MEMBER_UPDATE_FAILED - Member update failed but user was updated',
+            })
+        })
+
+        it('should update only Firebase user when no member exists', async () => {
+            const updateData = {
+                ...userEntity2RolesMock,
+                email: 'newemail@mail.fr',
+            }
+            req = {
+                params: { id: userEntity2RolesMock.id },
+                body: updateData,
+            }
+
+            const findMemberByUserIdMock = findMemberByUserId as jest.Mock
+            findMemberByUserIdMock.mockResolvedValue(null)
+
+            mockAuth.updateUser.mockResolvedValue(undefined)
+
+            await updateUser(req as Request, res as Response)
+
+            expect(mockAuth.updateUser).toHaveBeenCalled()
+            expect(updatePerson).not.toHaveBeenCalled()
+            expect(mockStatus).toHaveBeenCalledWith(204)
         })
     })
 
     describe('removeUser', () => {
-        it('should delete user successfully', async () => {
-            mockRequest.params = { id: '1' }
-            mockGetUser.mockResolvedValue({
-                customClaims: { roles: [RoleType.MEMBER] },
-            })
+        it('should not allow deleting admin user', async () => {
+            req = { params: { id: userEntityAdminMock.id } }
+            mockAuth.getUser.mockResolvedValue(
+                createFirebaseUserMock(userEntityAdminMock)
+            )
 
-            await removeUser(mockRequest as Request, mockResponse as Response)
+            const findMemberByUserIdMock = findMemberByUserId as jest.Mock
+            findMemberByUserIdMock.mockResolvedValue(memberEntityAdminMock)
 
-            expect(mockDeleteUser).toHaveBeenCalledWith('1')
-            expect(mockStatus).toHaveBeenCalledWith(204)
-        })
-
-        it('should not delete admin user', async () => {
-            mockRequest.params = { id: '1' }
-            mockGetUser.mockResolvedValue({
-                customClaims: { roles: [RoleType.ADMIN] },
-            })
-
-            await removeUser(mockRequest as Request, mockResponse as Response)
+            await removeUser(req as Request, res as Response)
 
             expect(mockStatus).toHaveBeenCalledWith(403)
             expect(mockSend).toHaveBeenCalledWith({
                 message: 'Cannot delete admin account',
             })
-            expect(mockDeleteUser).not.toHaveBeenCalled()
         })
 
-        it('should handle user not found before deletion', async () => {
-            mockRequest.params = { id: '1' }
-            const error = new Error('User not found')
-            mockGetUser.mockRejectedValue(error)
+        it('should delete user and associated member successfully', async () => {
+            req = { params: { id: userEntity2RolesMock.id } }
+            mockAuth.getUser.mockResolvedValue(
+                createFirebaseUserMock(userEntity2RolesMock)
+            )
 
-            await removeUser(mockRequest as Request, mockResponse as Response)
+            const findMemberByUserIdMock = findMemberByUserId as jest.Mock
+            findMemberByUserIdMock.mockResolvedValue(memberEntity2RolesMock)
 
+            const removeMemberMock = removePerson as jest.Mock
+            removeMemberMock.mockImplementation(
+                (req: Request, res: Response) => {
+                    res.status(204).send()
+                    return Promise.resolve()
+                }
+            )
+
+            await removeUser(req as Request, res as Response)
+
+            expect(mockAuth.deleteUser).toHaveBeenCalledWith(
+                userEntity2RolesMock.id
+            )
+            expect(removeMemberMock).toHaveBeenCalled()
+            expect(mockStatus).toHaveBeenCalledWith(204)
+        })
+
+        it('should delete user when no member exists', async () => {
+            req = { params: { id: userEntity2RolesMock.id } }
+            mockAuth.getUser.mockResolvedValue(
+                createFirebaseUserMock(userEntity2RolesMock)
+            )
+
+            const findMemberByUserIdMock = findMemberByUserId as jest.Mock
+            findMemberByUserIdMock.mockResolvedValue(null)
+
+            await removeUser(req as Request, res as Response)
+
+            expect(mockAuth.deleteUser).toHaveBeenCalledWith(
+                userEntity2RolesMock.id
+            )
+            expect(mockStatus).toHaveBeenCalledWith(204)
+        })
+
+        it('should handle Firebase deletion failure', async () => {
+            req = { params: { id: userEntity2RolesMock.id } }
+            const firebaseError = new Error('Firebase deletion failed')
+            mockAuth.getUser.mockRejectedValue(firebaseError)
+
+            await removeUser(req as Request, res as Response)
+
+            expect(mockAuth.deleteUser).not.toHaveBeenCalled()
             expect(mockStatus).toHaveBeenCalledWith(500)
-            expect(mockSend).toHaveBeenCalledWith({ message: error.message })
-        })
-
-        it('should handle deletion error', async () => {
-            mockRequest.params = { id: '1' }
-            mockGetUser.mockResolvedValue({
-                customClaims: { roles: [RoleType.MEMBER] },
+            expect(mockSend).toHaveBeenCalledWith({
+                message: 'Firebase deletion failed',
             })
-            const error = new Error('Deletion failed')
-            mockDeleteUser.mockRejectedValue(error)
+        })
 
-            await removeUser(mockRequest as Request, mockResponse as Response)
+        it('should handle member deletion failure', async () => {
+            req = { params: { id: userEntity2RolesMock.id } }
+            mockAuth.getUser.mockResolvedValue(
+                createFirebaseUserMock(userEntity2RolesMock)
+            )
 
+            const findMemberByUserIdMock = findMemberByUserId as jest.Mock
+            findMemberByUserIdMock.mockResolvedValue(memberEntity2RolesMock)
+
+            const error: ApiError = new Error('Member deletion failed')
+            error.status = 500
+            error.code = 'MEMBER_DELETION_FAILED'
+            const removeMemberMock = removePerson as jest.Mock
+            removeMemberMock.mockRejectedValue(error)
+
+            await removeUser(req as Request, res as Response)
+
+            expect(mockAuth.deleteUser).toHaveBeenCalledWith(
+                userEntity2RolesMock.id
+            )
             expect(mockStatus).toHaveBeenCalledWith(500)
-            expect(mockSend).toHaveBeenCalledWith({ message: error.message })
+            expect(mockSend).toHaveBeenCalledWith({
+                message: 'MEMBER_DELETION_FAILED - Member deletion failed',
+            })
         })
     })
 })
