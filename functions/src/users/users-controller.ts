@@ -86,7 +86,6 @@ export async function createUser(req: Request, res: Response) {
             await admin.auth().deleteUser(uid)
             const error: ApiError = new Error('Member creation failed')
             error.status = 500
-            error.code = 'MEMBER_CREATION_FAILED'
             return handleError(res, error)
         }
     } catch (err) {
@@ -103,7 +102,7 @@ export async function updateUser(req: Request, res: Response) {
         const authUpdate: Partial<UpdateRequest> = {
             displayName: userEntity.displayName,
             email: userEntity.email,
-            photoURL: userEntity.avatar,
+            photoURL: userEntity.avatar || null,
         }
         await admin.auth().updateUser(id, authUpdate)
 
@@ -123,16 +122,15 @@ export async function updateUser(req: Request, res: Response) {
                 }
                 req.params = { id: member.id }
                 req.body = updateData
-                await updatePerson(req, res)
+                return updatePerson(req, res)
+            } else {
+                return res.status(204).send()
             }
-
-            return res.status(204).send()
         } catch (personError) {
             const error: ApiError = new Error(
                 'Member update failed but user was updated'
             )
             error.status = 500
-            error.code = 'MEMBER_UPDATE_FAILED'
             return handleError(res, error)
         }
     } catch (err) {
@@ -171,7 +169,6 @@ export async function removeUser(req: Request, res: Response) {
         } catch (personError) {
             const error: ApiError = new Error('Member deletion failed')
             error.status = 500
-            error.code = 'MEMBER_DELETION_FAILED'
             return handleError(res, error)
         }
     } catch (err) {

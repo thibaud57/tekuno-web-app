@@ -8,6 +8,7 @@ export interface PersonEntity extends BaseModel {
     name: string
     firstName?: string
     email?: string
+    profilePicture?: string
 }
 
 export interface MemberEntity extends PersonEntity {

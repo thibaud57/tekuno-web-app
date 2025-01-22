@@ -5,13 +5,15 @@ import { BaseModel } from '../../../../functions/src/shared/models/base.model'
 export interface Person extends BaseModel {
     id: string
     personType: PersonType
-    nom: string
-    prenom?: string
+    name: string
+    firstName?: string
     email?: string
+    profilePicture?: string
 }
 
 export interface Member extends Person {
     // todo add organizationId with TekunoId
+    personType: PersonType.MEMBER
     roles: TypeRole[]
-    isUser: boolean
+    userId?: string
 }

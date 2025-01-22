@@ -154,7 +154,7 @@ describe('UsersController', () => {
                 createFirebaseUserMock(userEntity2RolesMock)
             mockAuth.createUser.mockResolvedValue(createdFirebaseUser)
 
-            const error = new Error('Member creation failed')
+            const error: ApiError = new Error('Member creation failed')
             const createPersonMock = createPerson as jest.Mock
             createPersonMock.mockRejectedValue(error)
 
@@ -165,7 +165,7 @@ describe('UsersController', () => {
             )
             expect(mockStatus).toHaveBeenCalledWith(500)
             expect(mockSend).toHaveBeenCalledWith({
-                message: 'MEMBER_CREATION_FAILED - Member creation failed',
+                message: 'Member creation failed',
             })
         })
 
@@ -189,6 +189,7 @@ describe('UsersController', () => {
             const updateData = {
                 ...userEntity2RolesMock,
                 email: 'newemail@mail.fr',
+                avatar: '',
             }
             req = {
                 params: { id: userEntity2RolesMock.id },
@@ -198,6 +199,14 @@ describe('UsersController', () => {
             const findMemberByUserIdMock = findMemberByUserId as jest.Mock
             findMemberByUserIdMock.mockResolvedValue(memberEntity2RolesMock)
 
+            const updatePersonMock = updatePerson as jest.Mock
+            updatePersonMock.mockImplementation(
+                (req: Request, res: Response) => {
+                    res.status(204).send()
+                    return Promise.resolve()
+                }
+            )
+
             await updateUser(req as Request, res as Response)
 
             expect(mockAuth.updateUser).toHaveBeenCalledWith(
@@ -205,7 +214,7 @@ describe('UsersController', () => {
                 {
                     displayName: updateData.displayName,
                     email: updateData.email,
-                    photoURL: updateData.avatar,
+                    photoURL: null,
                 }
             )
             expect(mockAuth.setCustomUserClaims).toHaveBeenCalledWith(
@@ -226,15 +235,13 @@ describe('UsersController', () => {
             }
 
             const firebaseError: ApiError = new Error('Firebase update failed')
-            firebaseError.status = 500
-            firebaseError.code = 'FIREBASE_UPDATE_FAILED'
             mockAuth.updateUser.mockRejectedValue(firebaseError)
 
             await updateUser(req as Request, res as Response)
 
             expect(mockStatus).toHaveBeenCalledWith(500)
             expect(mockSend).toHaveBeenCalledWith({
-                message: 'FIREBASE_UPDATE_FAILED - Firebase update failed',
+                message: 'Firebase update failed',
             })
         })
 
@@ -251,13 +258,15 @@ describe('UsersController', () => {
             const findMemberByUserIdMock = findMemberByUserId as jest.Mock
             findMemberByUserIdMock.mockResolvedValue(memberEntity2RolesMock)
 
-            const updatePersonMock = updatePerson as jest.Mock
             const error: ApiError = new Error(
                 'Member update failed but user was updated'
             )
-            error.status = 500
-            error.code = 'MEMBER_UPDATE_FAILED'
-            updatePersonMock.mockRejectedValue(error)
+            const updatePersonMock = updatePerson as jest.Mock
+            updatePersonMock.mockImplementation(
+                (req: Request, res: Response) => {
+                    throw error
+                }
+            )
 
             mockAuth.updateUser.mockResolvedValue(undefined)
 
@@ -266,8 +275,7 @@ describe('UsersController', () => {
             expect(mockAuth.updateUser).toHaveBeenCalled()
             expect(mockStatus).toHaveBeenCalledWith(500)
             expect(mockSend).toHaveBeenCalledWith({
-                message:
-                    'MEMBER_UPDATE_FAILED - Member update failed but user was updated',
+                message: 'Member update failed but user was updated',
             })
         })
 
@@ -379,8 +387,6 @@ describe('UsersController', () => {
             findMemberByUserIdMock.mockResolvedValue(memberEntity2RolesMock)
 
             const error: ApiError = new Error('Member deletion failed')
-            error.status = 500
-            error.code = 'MEMBER_DELETION_FAILED'
             const removeMemberMock = removePerson as jest.Mock
             removeMemberMock.mockRejectedValue(error)
 
@@ -391,7 +397,7 @@ describe('UsersController', () => {
             )
             expect(mockStatus).toHaveBeenCalledWith(500)
             expect(mockSend).toHaveBeenCalledWith({
-                message: 'MEMBER_DELETION_FAILED - Member deletion failed',
+                message: 'Member deletion failed',
             })
         })
     })
