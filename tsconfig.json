@@ -17,6 +17,9 @@
         "resolveJsonModule": true
     },
     "angularCompilerOptions": {
-        "enableI18nLegacyMessageIdFormat": false
+        "enableI18nLegacyMessageIdFormat": false,
+        "enableTemplateTypeChecker": true,
+        "strictTemplates": true,
+        "strictInjectionParameters": true
     }
 }

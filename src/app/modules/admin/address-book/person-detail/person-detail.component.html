@@ -1,0 +1,38 @@
+<div class="flex h-full flex-col">
+    <!-- Header -->
+    <div class="flex items-center justify-between p-6 sm:p-10">
+        <div class="flex items-center">
+            <div class="flex h-14 w-14 items-center justify-center overflow-hidden rounded-full">
+                <app-avatar [avatar]="person.profilePicture"></app-avatar>
+            </div>
+            <div class="ml-4">
+                <div class="text-2xl font-semibold">{{ person.firstName }} {{ person.name }}</div>
+                <div class="text-secondary">{{ 'enums.type-person.' + person.personType | transloco }}</div>
+            </div>
+        </div>
+        <button mat-icon-button (click)="onClose()">
+            <mat-icon [svgIcon]="'heroicons_outline:x-mark'"></mat-icon>
+        </button>
+    </div>
+
+    <!-- Contact info -->
+    <div class="overflow-y-auto px-6 sm:px-10">
+        <div class="mt-6">
+            <div class="text-lg font-medium">{{ TRANSLATION_PREFIX + 'contact' | transloco }}</div>
+            <div class="mt-4 grid grid-cols-1 gap-4">
+                <ng-container *ngIf="person.email">
+                    <div class="flex items-center">
+                        <mat-icon class="text-secondary icon-size-5" [svgIcon]="'heroicons_solid:envelope'"></mat-icon>
+                        <div class="ml-3">{{ person.email }}</div>
+                    </div>
+                </ng-container>
+                <!-- <ng-container *ngIf="person.phone">
+                    <div class="flex items-center">
+                        <mat-icon class="text-secondary icon-size-5" [svgIcon]="'heroicons_solid:phone'"></mat-icon>
+                        <div class="ml-3">{{ person.phone }}</div>
+                    </div>
+                </ng-container> -->
+            </div>
+        </div>
+    </div>
+</div>

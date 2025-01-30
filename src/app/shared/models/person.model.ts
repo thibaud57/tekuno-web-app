@@ -1,10 +1,10 @@
 import { TypeRole } from 'app/core/user/enums/type-role.enum'
-import { PersonType } from '../../../../functions/src/persons/enums/person-type.enum'
 import { BaseModel } from '../../../../functions/src/shared/models/base.model'
+import { TypePerson } from '../enums/type-person.enum'
 
 export interface Person extends BaseModel {
     id: string
-    personType: PersonType
+    personType: TypePerson
     name: string
     firstName?: string
     email?: string
@@ -13,7 +13,7 @@ export interface Person extends BaseModel {
 
 export interface Member extends Person {
     // todo add organizationId with TekunoId
-    personType: PersonType.MEMBER
+    personType: TypePerson.MEMBER
     roles: TypeRole[]
     userId?: string
 }

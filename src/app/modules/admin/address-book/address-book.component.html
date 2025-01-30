@@ -1,7 +1,59 @@
-<div class="h-full w-full">
-    <div class="h-full p-6 sm:p-10">
-        <div class="h-full w-full rounded-2xl border-2 border-dashed border-gray-300 p-6">
-            <p>address book works!</p>
-        </div>
-    </div>
+<div class="h-full w-full p-6 sm:p-10">
+    <mat-drawer-container class="border-gray-300mat-drawer-container bg-card h-full flex-auto rounded-2xl border-2 border-dashed dark:bg-transparent">
+        <mat-drawer #drawer class="w-full dark:bg-gray-900 sm:w-160" [mode]="'side'" [position]="'end'" [opened]="drawerOpened()">
+            <ng-container *ngIf="selectedPerson()">
+                <app-person-detail [person]="selectedPerson()!" (close)="togglePersonDetails(selectedPerson()!)"></app-person-detail>
+            </ng-container>
+        </mat-drawer>
+        <mat-drawer-content class="flex flex-col">
+            <!-- Header -->
+            <div class="flex flex-col justify-between border-b px-6 py-8 sm:flex-row md:flex-col md:px-8">
+                <div>
+                    <div class="text-4xl font-extrabold leading-none tracking-tight">{{ TRANSLATION_PREFIX + 'carnet-adresses' | transloco }}</div>
+                    <div class="text-secondary ml-0.5 font-medium">{{ TRANSLATION_PREFIX + 'nombre-contacts' | transloco: { count: persons().length } }}</div>
+                </div>
+                <div class="mt-4 flex items-center sm:mt-0 md:mt-4">
+                    <div class="flex-auto">
+                        <mat-form-field class="fuse-mat-dense fuse-mat-rounded w-full min-w-50" subscriptSizing="dynamic">
+                            <mat-icon class="icon-size-5" matPrefix svgIcon="heroicons_solid:magnifying-glass"></mat-icon>
+                            <input [formControl]="searchControl" matInput [placeholder]="TRANSLATION_PREFIX + 'rechercher' | transloco" />
+                        </mat-form-field>
+                    </div>
+                    <button mat-flat-button [color]="'primary'" class="ml-4" (click)="createPerson()">
+                        <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
+                        <span class="ml-2 mr-1">{{ TRANSLATION_PREFIX + 'ajouter' | transloco }}</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Contacts list -->
+            <div class="overflow-y-auto">
+                <ng-container *ngFor="let group of persons() | groupByLetter">
+                    <!-- Group -->
+                    <div class="text-secondary sticky top-0 z-10 -mt-px border-b border-t bg-gray-50 px-6 py-1 font-bold uppercase dark:bg-gray-900 md:px-8">
+                        {{ group.letter }}
+                    </div>
+
+                    <!-- Contacts -->
+                    <ng-container *ngFor="let person of group.items">
+                        <div
+                            class="z-20 flex cursor-pointer items-center border-b px-6 py-4 dark:hover:bg-hover hover:bg-gray-100 md:px-8"
+                            (click)="togglePersonDetails(person)">
+                            <!-- Avatar -->
+                            <div class="flex h-10 w-10 flex-0 items-center justify-center overflow-hidden rounded-full">
+                                <app-avatar [avatar]="person.profilePicture"></app-avatar>
+                            </div>
+                            <!-- Details -->
+                            <div class="ml-4 min-w-0">
+                                <div class="truncate font-medium leading-5">{{ person.firstName }} {{ person.name }}</div>
+                                <div class="text-secondary truncate leading-5">
+                                    {{ 'enums.type-person.' + person.personType | transloco }}
+                                </div>
+                            </div>
+                        </div>
+                    </ng-container>
+                </ng-container>
+            </div>
+        </mat-drawer-content>
+    </mat-drawer-container>
 </div>
