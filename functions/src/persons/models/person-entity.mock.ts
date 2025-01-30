@@ -1,49 +1,43 @@
 import { RoleType } from '../../auth/enums/role-type.enum'
-import {
-    USER_ENTITY_2_ROLES_UID,
-    USER_ENTITY_ADMIN_UID,
-} from '../../users/models/user-entity.mock'
+import { USER_2_ROLES_UID, USER_ADMIN_UID } from '../../users/models/user.mock'
 import { PersonType } from '../enums/person-type.enum'
-import { MemberEntity, PersonEntity } from './person-entity.model'
+import { Member, Person } from './person.model'
 
-export const MEMBER_ENTITY_ADMIN_UID = 'member-admin-123'
-export const MEMBER_ENTITY_2_ROLES_UID = 'member-user-456'
+export const MEMBER_ADMIN_ID = 'member-admin-123'
+export const MEMBER_2_ROLES_ID = 'member-user-456'
 
-export const memberEntityAdminMock: MemberEntity = {
-    id: MEMBER_ENTITY_ADMIN_UID,
+export const memberAdminMock: Member = {
+    id: MEMBER_ADMIN_ID,
     personType: PersonType.MEMBER,
     name: 'Doe',
     firstName: 'John',
     email: 'john@mail.fr',
     roles: [RoleType.ADMIN],
-    userId: USER_ENTITY_ADMIN_UID,
+    userId: USER_ADMIN_UID,
     createdAt: new Date(),
-    createdBy: USER_ENTITY_ADMIN_UID,
+    createdBy: USER_ADMIN_UID,
 }
 
-export const memberEntity2RolesMock: MemberEntity = {
-    id: MEMBER_ENTITY_2_ROLES_UID,
+export const member2RolesMock: Member = {
+    id: MEMBER_2_ROLES_ID,
     personType: PersonType.MEMBER,
     name: 'Watson',
     firstName: 'Emma',
     email: 'emma@mail.fr',
     roles: [RoleType.MEMBER, RoleType.ACCOUNTANT],
-    userId: USER_ENTITY_2_ROLES_UID,
+    userId: USER_2_ROLES_UID,
     createdAt: new Date(),
-    createdBy: USER_ENTITY_ADMIN_UID,
+    createdBy: USER_ADMIN_UID,
 }
 
-export const memberEntitiesMock: MemberEntity[] = [
-    memberEntityAdminMock,
-    memberEntity2RolesMock,
-]
+export const memberMock: Member[] = [memberAdminMock, member2RolesMock]
 
-export const personEntityMock: PersonEntity = {
+export const personMock: Person = {
     id: 'person-789',
-    personType: PersonType.DJ,
+    personType: PersonType.CUSTOMER,
     name: 'Smith',
     firstName: 'Alice',
     email: 'alice@mail.fr',
     createdAt: new Date(),
-    createdBy: USER_ENTITY_ADMIN_UID,
+    createdBy: USER_ADMIN_UID,
 }

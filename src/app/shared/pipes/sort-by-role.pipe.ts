@@ -1,13 +1,13 @@
 import { Pipe, PipeTransform } from '@angular/core'
-import { TypeRole } from 'app/core/user/enums/type-role.enum'
-import { User } from 'app/core/user/models/user.model'
+import { RoleType } from '@backend/auth/enums/role-type.enum'
+import { User } from '@backend/users/models/user.model'
 
 @Pipe({
     name: 'sortByRole',
     standalone: true,
 })
 export class SortByRolePipe implements PipeTransform {
-    transform(users: User[], roleToSort: TypeRole): User[] {
+    transform(users: User[], roleToSort: RoleType): User[] {
         if (!users) return []
 
         return [...users].sort((a, b) => {

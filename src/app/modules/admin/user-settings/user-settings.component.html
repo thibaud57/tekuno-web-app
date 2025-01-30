@@ -1,6 +1,6 @@
 <div class="h-full w-full p-6 sm:p-10">
     <div class="border-gray-300mat-drawer-container bg-card h-full flex-auto rounded-2xl border-2 border-dashed dark:bg-transparent">
-        @if (hasRole(TypeRole.ADMIN)) {
+        @if (hasRole(RoleType.ADMIN)) {
             <div class="bg-card flex h-full flex-col dark:bg-transparent">
                 <!-- Header -->
                 <div class="px-6 md:px-8">
@@ -27,8 +27,8 @@
                                 <mat-label>{{ TRANSLATION_PREFIX + 'roles' | transloco }}</mat-label>
                                 <mat-select formControlName="roles" multiple>
                                     @for (role of roles; track role) {
-                                        <mat-option [value]="role" [disabled]="role === TypeRole.ADMIN">
-                                            {{ 'enums.type-role.' + role | transloco }}
+                                        <mat-option [value]="role" [disabled]="role === RoleType.ADMIN">
+                                            {{ 'enums.role-type.' + role | transloco }}
                                         </mat-option>
                                     }
                                 </mat-select>
@@ -44,11 +44,11 @@
                 <!-- Content -->
                 <div class="flex-auto px-6 py-8 md:px-8">
                     <div class="user-list flex flex-col">
-                        @for (user of users() | sortByRole: TypeRole.ADMIN; track user.id) {
+                        @for (user of users() | sortByRole: RoleType.ADMIN; track user.id) {
                             <div class="border-b">
                                 <app-user-card
                                     [user]="user"
-                                    [showDeleteButton]="user.roles.indexOf(TypeRole.ADMIN) === -1"
+                                    [showDeleteButton]="user.roles.indexOf(RoleType.ADMIN) === -1"
                                     (roleChange)="updateUserRole($event)"
                                     (delete)="deleteUser($event)" />
                             </div>

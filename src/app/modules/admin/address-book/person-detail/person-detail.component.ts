@@ -2,9 +2,9 @@ import { NgIf } from '@angular/common'
 import { Component, EventEmitter, Input, Output } from '@angular/core'
 import { MatButtonModule } from '@angular/material/button'
 import { MatIconModule } from '@angular/material/icon'
+import { Person } from '@backend/persons/models/person.model'
 import { TranslocoModule } from '@ngneat/transloco'
 import { AvatarComponent } from 'app/shared/components/avatar/avatar.component'
-import { Person } from 'app/shared/models/person.model'
 
 @Component({
     selector: 'app-person-detail',

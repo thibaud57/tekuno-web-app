@@ -18,9 +18,9 @@ import { Request, Response } from 'express'
 import { RoleType } from '../auth/enums/role-type.enum'
 import { PersonType } from './enums/person-type.enum'
 import {
-    memberEntity2RolesMock,
-    memberEntityAdminMock,
-    personEntityMock,
+    member2RolesMock,
+    memberAdminMock,
+    personMock,
 } from './models/person-entity.mock'
 import {
     createPerson,
@@ -48,7 +48,7 @@ describe('PersonsController', () => {
             status: mockStatus,
             json: mockJson,
             locals: {
-                uid: memberEntityAdminMock.id,
+                uid: memberAdminMock.id,
                 roles: [RoleType.ADMIN],
             },
         }
@@ -63,7 +63,7 @@ describe('PersonsController', () => {
 
     describe('findAllPerson', () => {
         it('should return all persons', async () => {
-            const persons = [personEntityMock, memberEntityAdminMock]
+            const persons = [personMock, memberAdminMock]
             mockGet.mockResolvedValue({
                 docs: persons.map(person => ({
                     id: person.id,
@@ -98,24 +98,22 @@ describe('PersonsController', () => {
                 empty: false,
                 docs: [
                     {
-                        id: memberEntityAdminMock.id,
-                        data: () => ({ ...memberEntityAdminMock }),
+                        id: memberAdminMock.id,
+                        data: () => ({ ...memberAdminMock }),
                     },
                 ],
             })
 
-            const result = await findMemberByUserId(
-                memberEntityAdminMock.userId!
-            )
+            const result = await findMemberByUserId(memberAdminMock.userId!)
 
             expect(mockCollection).toHaveBeenCalledWith('persons')
             expect(mockWhere).toHaveBeenCalledWith(
                 'userId',
                 '==',
-                memberEntityAdminMock.userId
+                memberAdminMock.userId
             )
             expect(mockLimit).toHaveBeenCalledWith(1)
-            expect(result).toEqual(memberEntityAdminMock)
+            expect(result).toEqual(memberAdminMock)
         })
 
         it('should return null when member not found', async () => {
@@ -132,19 +130,19 @@ describe('PersonsController', () => {
 
     describe('findOnePerson', () => {
         it('should return person when found', async () => {
-            req = { params: { id: personEntityMock.id } }
+            req = { params: { id: personMock.id } }
             mockGet.mockResolvedValue({
                 exists: true,
-                id: personEntityMock.id,
-                data: () => ({ ...personEntityMock }),
+                id: personMock.id,
+                data: () => ({ ...personMock }),
             })
 
             await findOnePerson(req as Request, res as Response)
 
             expect(mockCollection).toHaveBeenCalledWith('persons')
-            expect(mockDoc).toHaveBeenCalledWith(personEntityMock.id)
+            expect(mockDoc).toHaveBeenCalledWith(personMock.id)
             expect(mockStatus).toHaveBeenCalledWith(200)
-            expect(mockSend).toHaveBeenCalledWith(personEntityMock)
+            expect(mockSend).toHaveBeenCalledWith(personMock)
         })
 
         it('should return 404 when person not found', async () => {
@@ -162,7 +160,7 @@ describe('PersonsController', () => {
         })
 
         it('should handle Firestore error', async () => {
-            req = { params: { id: personEntityMock.id } }
+            req = { params: { id: personMock.id } }
             const error = new Error('Firestore error')
             mockGet.mockRejectedValue(error)
 
@@ -193,7 +191,7 @@ describe('PersonsController', () => {
             expect(mockAdd).toHaveBeenCalledWith({
                 ...newPerson,
                 createdAt: expect.any(Object),
-                createdBy: memberEntityAdminMock.id,
+                createdBy: memberAdminMock.id,
             })
             expect(mockStatus).toHaveBeenCalledWith(201)
             expect(mockSend).toHaveBeenCalledWith({ id: newId })
@@ -240,22 +238,22 @@ describe('PersonsController', () => {
                 name: 'Updated Name',
             }
             req = {
-                params: { id: personEntityMock.id },
+                params: { id: personMock.id },
                 body: updateData,
             }
             mockGet.mockResolvedValue({
                 exists: true,
-                data: () => ({ ...personEntityMock }),
+                data: () => ({ ...personMock }),
             })
 
             await updatePerson(req as Request, res as Response)
 
             expect(mockCollection).toHaveBeenCalledWith('persons')
-            expect(mockDoc).toHaveBeenCalledWith(personEntityMock.id)
+            expect(mockDoc).toHaveBeenCalledWith(personMock.id)
             expect(mockUpdate).toHaveBeenCalledWith({
                 ...updateData,
                 updatedAt: expect.any(Object),
-                updatedBy: memberEntityAdminMock.id,
+                updatedBy: memberAdminMock.id,
             })
             expect(mockStatus).toHaveBeenCalledWith(204)
         })
@@ -283,19 +281,19 @@ describe('PersonsController', () => {
                 roles: [RoleType.MEMBER, RoleType.ACCOUNTANT],
             }
             req = {
-                params: { id: memberEntity2RolesMock.id },
+                params: { id: member2RolesMock.id },
                 body: updateData,
             }
             const nonAdminRes = {
                 ...res,
                 locals: {
-                    uid: memberEntity2RolesMock.id,
+                    uid: member2RolesMock.id,
                     roles: [RoleType.MEMBER],
                 },
             }
             mockGet.mockResolvedValue({
                 exists: true,
-                data: () => ({ ...memberEntity2RolesMock }),
+                data: () => ({ ...member2RolesMock }),
             })
 
             await updatePerson(req as Request, nonAdminRes as Response)
@@ -309,12 +307,12 @@ describe('PersonsController', () => {
 
         it('should handle Firestore error', async () => {
             req = {
-                params: { id: personEntityMock.id },
+                params: { id: personMock.id },
                 body: { name: 'Updated Name' },
             }
             mockGet.mockResolvedValue({
                 exists: true,
-                data: () => ({ ...personEntityMock }),
+                data: () => ({ ...personMock }),
             })
             const error = new Error('Firestore error')
             mockUpdate.mockRejectedValue(error)
@@ -330,7 +328,7 @@ describe('PersonsController', () => {
 
     describe('removePerson', () => {
         it('should delete person successfully', async () => {
-            req = { params: { id: personEntityMock.id } }
+            req = { params: { id: personMock.id } }
             mockGet.mockResolvedValue({
                 exists: true,
             })
@@ -338,7 +336,7 @@ describe('PersonsController', () => {
             await removePerson(req as Request, res as Response)
 
             expect(mockCollection).toHaveBeenCalledWith('persons')
-            expect(mockDoc).toHaveBeenCalledWith(personEntityMock.id)
+            expect(mockDoc).toHaveBeenCalledWith(personMock.id)
             expect(mockDelete).toHaveBeenCalled()
             expect(mockStatus).toHaveBeenCalledWith(204)
         })
@@ -359,7 +357,7 @@ describe('PersonsController', () => {
         })
 
         it('should handle Firestore error', async () => {
-            req = { params: { id: personEntityMock.id } }
+            req = { params: { id: personMock.id } }
             mockGet.mockResolvedValue({
                 exists: true,
             })

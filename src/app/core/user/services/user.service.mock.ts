@@ -1,8 +1,8 @@
 import { signal } from '@angular/core'
+import { RoleType } from '@backend/auth/enums/role-type.enum'
+import { userAdminMock, usersMock } from '@backend/users/models/user.mock'
+import { CreateUserDto, User } from '@backend/users/models/user.model'
 import { Observable, of } from 'rxjs'
-import { TypeRole } from '../enums/type-role.enum'
-import { userAdminMock, usersMock } from '../models/user.mock'
-import { CreateUser, User } from '../models/user.model'
 
 export class UserServiceMock {
     readonly user = signal<User | null>(null)
@@ -15,11 +15,11 @@ export class UserServiceMock {
         return of(userAdminMock)
     }
 
-    hasRole(role: TypeRole): boolean {
+    hasRole(role: RoleType): boolean {
         return this.user()?.roles.includes(role) ?? false
     }
 
-    createUser(user: CreateUser): Observable<void> {
+    createUser(user: CreateUserDto): Observable<void> {
         return of(void 0)
     }
 

@@ -130,7 +130,7 @@
         "ok": "OK"
     },
     "enums": {
-        "type-role": {
+        "role-type": {
             "ADMIN": "Admin",
             "MEMBER": "Membre",
             "DJ": "DJ",
@@ -139,7 +139,7 @@
             "SECRETARY": "Secrétaire",
             "TESTER": "Testeur"
         },
-        "type-person": {
+        "person-type": {
             "MEMBER": "Membre",
             "DJ": "DJ",
             "ORGANIZATION": "Organisation",

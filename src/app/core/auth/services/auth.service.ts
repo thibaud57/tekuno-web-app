@@ -1,7 +1,7 @@
 import { inject, Injectable, Signal, signal } from '@angular/core'
 import { User, UserCredential } from '@angular/fire/auth'
+import { RoleType } from '@backend/auth/enums/role-type.enum'
 import { AuthUtils } from 'app/core/auth/auth.utils'
-import { TypeRole } from 'app/core/user/enums/type-role.enum'
 import { UserService } from 'app/core/user/services/user.service'
 import {
     catchError,
@@ -78,7 +78,7 @@ export class AuthService {
                     displayName: userCredential.user.displayName,
                     email: userCredential.user.email,
                     avatar: userCredential.user.photoURL,
-                    roles: (tokenResult.claims.roles || []) as TypeRole[],
+                    roles: (tokenResult.claims.roles || []) as RoleType[],
                 })
             })
             .catch(error => {
@@ -110,7 +110,7 @@ export class AuthService {
                             email: user.email,
                             avatar: user.photoURL,
                             roles: (tokenResult.claims.roles ||
-                                []) as TypeRole[],
+                                []) as RoleType[],
                         })
                         return true
                     }),

@@ -1,6 +1,6 @@
 import { provideHttpClient } from '@angular/common/http'
 import { ComponentFixture, TestBed } from '@angular/core/testing'
-import { personMember2Mock } from 'app/shared/models/person.mock'
+import { member2RolesMock } from '@backend/persons/models/person-entity.mock'
 import { PersonDetailComponent } from './person-detail.component'
 
 describe('PersonDetailComponent', () => {
@@ -15,7 +15,7 @@ describe('PersonDetailComponent', () => {
 
         fixture = TestBed.createComponent(PersonDetailComponent)
         component = fixture.componentInstance
-        component.person = personMember2Mock
+        component.person = member2RolesMock
         fixture.detectChanges()
     })
 
@@ -31,8 +31,8 @@ describe('PersonDetailComponent', () => {
 
     it('should display person information', () => {
         const compiled = fixture.nativeElement
-        expect(compiled.textContent).toContain(personMember2Mock.firstName)
-        expect(compiled.textContent).toContain(personMember2Mock.name)
-        expect(compiled.textContent).toContain(personMember2Mock.email)
+        expect(compiled.textContent).toContain(member2RolesMock.firstName)
+        expect(compiled.textContent).toContain(member2RolesMock.name)
+        expect(compiled.textContent).toContain(member2RolesMock.email)
     })
 })

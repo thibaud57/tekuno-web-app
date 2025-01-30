@@ -3,12 +3,12 @@ import { ComponentFixture, TestBed } from '@angular/core/testing'
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms'
 import { By } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { RoleType } from '@backend/auth/enums/role-type.enum'
+import { userAdminMock, usersMock } from '@backend/users/models/user.mock'
 import { provideIcons } from 'app/core/icons/icons.provider'
 import { NotificationService } from 'app/core/services/notification.service'
 import { NotificationServiceMock } from 'app/core/services/notification.service.mock'
 import { getTranslocoModule } from 'app/core/translation/transloco/transloco-testing.module'
-import { TypeRole } from 'app/core/user/enums/type-role.enum'
-import { userAdminMock, usersMock } from 'app/core/user/models/user.mock'
 import { UserService } from 'app/core/user/services/user.service'
 import { UserServiceMock } from 'app/core/user/services/user.service.mock'
 import { of, throwError } from 'rxjs'
@@ -58,7 +58,7 @@ describe('UserSettingsComponent', () => {
                     expect(component.form.value).toEqual({
                         email: '',
                         password: '',
-                        roles: [TypeRole.MEMBER],
+                        roles: [RoleType.MEMBER],
                     })
                 })
 
@@ -116,7 +116,7 @@ describe('UserSettingsComponent', () => {
                 const newUser = {
                     email: 'test@example.com',
                     password: 'password123',
-                    roles: [TypeRole.MEMBER],
+                    roles: [RoleType.MEMBER],
                 }
                 component.form.patchValue(newUser)
 
@@ -133,7 +133,7 @@ describe('UserSettingsComponent', () => {
                 expect(component.form.value).toEqual({
                     email: '',
                     password: '',
-                    roles: [TypeRole.MEMBER],
+                    roles: [RoleType.MEMBER],
                 })
             })
 
@@ -142,7 +142,7 @@ describe('UserSettingsComponent', () => {
                 component.form.patchValue({
                     email: 'test@example.com',
                     password: 'password123',
-                    roles: [TypeRole.MEMBER],
+                    roles: [RoleType.MEMBER],
                 })
 
                 spyOn(userService, 'createUser').and.returnValue(
@@ -194,7 +194,7 @@ describe('UserSettingsComponent', () => {
             it('should update user role successfully', () => {
                 const updatedUser = {
                     ...userAdminMock,
-                    roles: [TypeRole.ACCOUNTANT],
+                    roles: [RoleType.ACCOUNTANT],
                 }
                 spyOn(userService, 'updateUser').and.returnValue(of(void 0))
                 spyOn(userService, 'getUsers').and.returnValue(of([]))

@@ -1,6 +1,6 @@
 import { PersonType } from '../enums/person-type.enum'
-import { MemberEntity, PersonEntity } from '../models/person-entity.model'
+import { Member, Person } from '../models/person.model'
 
-export function isMember(person: PersonEntity): person is MemberEntity {
+export function isMember(person: Person): person is Member {
     return person.personType === PersonType.MEMBER
 }

@@ -4,7 +4,7 @@ import { Timestamp } from 'firebase-admin/firestore'
 import { RoleType } from '../auth/enums/role-type.enum'
 import { ApiError } from '../shared/models/api-error.model'
 import { handleError } from '../shared/utils/error.utils'
-import { MemberEntity, PersonEntity } from './models/person-entity.model'
+import { Member, Person } from './models/person.model'
 import { isMember } from './utils/persons.utils'
 
 export async function findAllPerson(req: Request, res: Response) {
@@ -13,7 +13,7 @@ export async function findAllPerson(req: Request, res: Response) {
         const persons = snapshot.docs.map(doc => ({
             id: doc.id,
             ...doc.data(),
-        })) as PersonEntity[]
+        })) as Person[]
 
         return res.status(200).send(persons)
     } catch (err) {
@@ -23,7 +23,7 @@ export async function findAllPerson(req: Request, res: Response) {
 
 export async function findMemberByUserId(
     userId: string
-): Promise<MemberEntity | null> {
+): Promise<Member | null> {
     const snapshot = await admin
         .firestore()
         .collection('persons')
@@ -39,7 +39,7 @@ export async function findMemberByUserId(
     return {
         id: doc.id,
         ...doc.data(),
-    } as MemberEntity
+    } as Member
 }
 
 export async function findOnePerson(req: Request, res: Response) {
@@ -60,7 +60,7 @@ export async function findOnePerson(req: Request, res: Response) {
         const person = {
             id: snapshot.id,
             ...snapshot.data(),
-        } as PersonEntity
+        } as Person
 
         return res.status(200).send(person)
     } catch (err) {
@@ -70,7 +70,7 @@ export async function findOnePerson(req: Request, res: Response) {
 
 export async function createPerson(req: Request, res: Response) {
     try {
-        const personData: Omit<PersonEntity, 'id'> = req.body
+        const personData: Omit<Person, 'id'> = req.body
         const { uid } = res.locals
 
         if (!personData.name) {
@@ -97,7 +97,7 @@ export async function createPerson(req: Request, res: Response) {
 export async function updatePerson(req: Request, res: Response) {
     try {
         const { id } = req.params
-        const personData: Partial<PersonEntity> = req.body
+        const personData: Partial<Person> = req.body
         const { uid, roles } = res.locals
 
         const personRef = admin.firestore().collection('persons').doc(id)
@@ -109,10 +109,10 @@ export async function updatePerson(req: Request, res: Response) {
             return handleError(res, error)
         }
 
-        const existingPerson = person.data() as PersonEntity
+        const existingPerson = person.data() as Person
 
         if (isMember(existingPerson)) {
-            const memberData = personData as Partial<MemberEntity>
+            const memberData = personData as Partial<Member>
             if (
                 memberData.roles !== undefined ||
                 memberData.email !== undefined

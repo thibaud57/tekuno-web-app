@@ -1,7 +1,7 @@
 import { RoleType } from '../../auth/enums/role-type.enum'
 import { BaseModel } from '../../shared/models/base.model'
 
-export interface UserEntity extends BaseModel {
+export interface User extends BaseModel {
     id: string
     email: string
     roles: RoleType[]

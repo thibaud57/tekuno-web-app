@@ -10,8 +10,8 @@ jest.mock('../persons/persons-controller')
 import { Request, Response } from 'express'
 import { PersonType } from '../persons/enums/person-type.enum'
 import {
-    memberEntity2RolesMock,
-    memberEntityAdminMock,
+    member2RolesMock,
+    memberAdminMock,
 } from '../persons/models/person-entity.mock'
 import {
     createPerson,
@@ -21,12 +21,12 @@ import {
 } from '../persons/persons-controller'
 import { ApiError } from '../shared/models/api-error.model'
 import {
-    USER_ENTITY_ADMIN_UID,
+    USER_ADMIN_UID,
     createFirebaseUserMock,
     createUserDtoMock,
-    userEntity2RolesMock,
-    userEntityAdminMock,
-} from './models/user-entity.mock'
+    user2RolesMock,
+    userAdminMock,
+} from './models/user.mock'
 import {
     createUser,
     findAllUser,
@@ -51,7 +51,7 @@ describe('UsersController', () => {
             send: mockSend,
             status: mockStatus,
             json: mockJson,
-            locals: { uid: USER_ENTITY_ADMIN_UID },
+            locals: { uid: USER_ADMIN_UID },
         }
 
         // Reset all mocks
@@ -63,21 +63,21 @@ describe('UsersController', () => {
         it('should return all users with member data', async () => {
             mockAuth.listUsers.mockResolvedValue({
                 users: [
-                    createFirebaseUserMock(userEntityAdminMock),
-                    createFirebaseUserMock(userEntity2RolesMock),
+                    createFirebaseUserMock(userAdminMock),
+                    createFirebaseUserMock(user2RolesMock),
                 ],
             })
 
             const findMemberByUserIdMock = findMemberByUserId as jest.Mock
             findMemberByUserIdMock
-                .mockResolvedValueOnce(memberEntityAdminMock)
-                .mockResolvedValueOnce(memberEntity2RolesMock)
+                .mockResolvedValueOnce(memberAdminMock)
+                .mockResolvedValueOnce(member2RolesMock)
 
             await findAllUser(req as Request, res as Response)
 
             expect(mockSend).toHaveBeenCalledWith([
-                userEntityAdminMock,
-                userEntity2RolesMock,
+                userAdminMock,
+                user2RolesMock,
             ])
             expect(mockStatus).toHaveBeenCalledWith(200)
         })
@@ -85,17 +85,17 @@ describe('UsersController', () => {
 
     describe('findOneUser', () => {
         it('should return one user with member data', async () => {
-            req = { params: { id: userEntityAdminMock.id } }
+            req = { params: { id: userAdminMock.id } }
             mockAuth.getUser.mockResolvedValue(
-                createFirebaseUserMock(userEntityAdminMock)
+                createFirebaseUserMock(userAdminMock)
             )
 
             const findMemberByUserIdMock = findMemberByUserId as jest.Mock
-            findMemberByUserIdMock.mockResolvedValue(memberEntityAdminMock)
+            findMemberByUserIdMock.mockResolvedValue(memberAdminMock)
 
             await findOneUser(req as Request, res as Response)
 
-            expect(mockSend).toHaveBeenCalledWith(userEntityAdminMock)
+            expect(mockSend).toHaveBeenCalledWith(userAdminMock)
             expect(mockStatus).toHaveBeenCalledWith(200)
         })
     })
@@ -103,12 +103,11 @@ describe('UsersController', () => {
     describe('createUser', () => {
         it('should create a user with associated member successfully', async () => {
             req = { body: createUserDtoMock }
-            const createdFirebaseUser =
-                createFirebaseUserMock(userEntity2RolesMock)
+            const createdFirebaseUser = createFirebaseUserMock(user2RolesMock)
             mockAuth.createUser.mockResolvedValue(createdFirebaseUser)
 
             const findMemberByUserIdMock = findMemberByUserId as jest.Mock
-            findMemberByUserIdMock.mockResolvedValue(memberEntity2RolesMock)
+            findMemberByUserIdMock.mockResolvedValue(member2RolesMock)
 
             await createUser(req as Request, res as Response)
 
@@ -150,8 +149,7 @@ describe('UsersController', () => {
 
         it('should handle member creation failure and cleanup Firebase user', async () => {
             req = { body: createUserDtoMock }
-            const createdFirebaseUser =
-                createFirebaseUserMock(userEntity2RolesMock)
+            const createdFirebaseUser = createFirebaseUserMock(user2RolesMock)
             mockAuth.createUser.mockResolvedValue(createdFirebaseUser)
 
             const error: ApiError = new Error('Member creation failed')
@@ -187,17 +185,17 @@ describe('UsersController', () => {
     describe('updateUser', () => {
         it('should update user and member data successfully', async () => {
             const updateData = {
-                ...userEntity2RolesMock,
+                ...user2RolesMock,
                 email: 'newemail@mail.fr',
                 avatar: '',
             }
             req = {
-                params: { id: userEntity2RolesMock.id },
+                params: { id: user2RolesMock.id },
                 body: updateData,
             }
 
             const findMemberByUserIdMock = findMemberByUserId as jest.Mock
-            findMemberByUserIdMock.mockResolvedValue(memberEntity2RolesMock)
+            findMemberByUserIdMock.mockResolvedValue(member2RolesMock)
 
             const updatePersonMock = updatePerson as jest.Mock
             updatePersonMock.mockImplementation(
@@ -210,7 +208,7 @@ describe('UsersController', () => {
             await updateUser(req as Request, res as Response)
 
             expect(mockAuth.updateUser).toHaveBeenCalledWith(
-                userEntity2RolesMock.id,
+                user2RolesMock.id,
                 {
                     displayName: updateData.displayName,
                     email: updateData.email,
@@ -218,7 +216,7 @@ describe('UsersController', () => {
                 }
             )
             expect(mockAuth.setCustomUserClaims).toHaveBeenCalledWith(
-                userEntity2RolesMock.id,
+                user2RolesMock.id,
                 { roles: updateData.roles }
             )
             expect(mockStatus).toHaveBeenCalledWith(204)
@@ -226,11 +224,11 @@ describe('UsersController', () => {
 
         it('should handle Firebase update failure', async () => {
             const updateData = {
-                ...userEntity2RolesMock,
+                ...user2RolesMock,
                 email: 'newemail@mail.fr',
             }
             req = {
-                params: { id: userEntity2RolesMock.id },
+                params: { id: user2RolesMock.id },
                 body: updateData,
             }
 
@@ -247,16 +245,16 @@ describe('UsersController', () => {
 
         it('should handle member update failure', async () => {
             const updateData = {
-                ...userEntity2RolesMock,
+                ...user2RolesMock,
                 email: 'newemail@mail.fr',
             }
             req = {
-                params: { id: userEntity2RolesMock.id },
+                params: { id: user2RolesMock.id },
                 body: updateData,
             }
 
             const findMemberByUserIdMock = findMemberByUserId as jest.Mock
-            findMemberByUserIdMock.mockResolvedValue(memberEntity2RolesMock)
+            findMemberByUserIdMock.mockResolvedValue(member2RolesMock)
 
             const error: ApiError = new Error(
                 'Member update failed but user was updated'
@@ -281,11 +279,11 @@ describe('UsersController', () => {
 
         it('should update only Firebase user when no member exists', async () => {
             const updateData = {
-                ...userEntity2RolesMock,
+                ...user2RolesMock,
                 email: 'newemail@mail.fr',
             }
             req = {
-                params: { id: userEntity2RolesMock.id },
+                params: { id: user2RolesMock.id },
                 body: updateData,
             }
 
@@ -304,13 +302,13 @@ describe('UsersController', () => {
 
     describe('removeUser', () => {
         it('should not allow deleting admin user', async () => {
-            req = { params: { id: userEntityAdminMock.id } }
+            req = { params: { id: userAdminMock.id } }
             mockAuth.getUser.mockResolvedValue(
-                createFirebaseUserMock(userEntityAdminMock)
+                createFirebaseUserMock(userAdminMock)
             )
 
             const findMemberByUserIdMock = findMemberByUserId as jest.Mock
-            findMemberByUserIdMock.mockResolvedValue(memberEntityAdminMock)
+            findMemberByUserIdMock.mockResolvedValue(memberAdminMock)
 
             await removeUser(req as Request, res as Response)
 
@@ -321,13 +319,13 @@ describe('UsersController', () => {
         })
 
         it('should delete user and associated member successfully', async () => {
-            req = { params: { id: userEntity2RolesMock.id } }
+            req = { params: { id: user2RolesMock.id } }
             mockAuth.getUser.mockResolvedValue(
-                createFirebaseUserMock(userEntity2RolesMock)
+                createFirebaseUserMock(user2RolesMock)
             )
 
             const findMemberByUserIdMock = findMemberByUserId as jest.Mock
-            findMemberByUserIdMock.mockResolvedValue(memberEntity2RolesMock)
+            findMemberByUserIdMock.mockResolvedValue(member2RolesMock)
 
             const removeMemberMock = removePerson as jest.Mock
             removeMemberMock.mockImplementation(
@@ -339,17 +337,15 @@ describe('UsersController', () => {
 
             await removeUser(req as Request, res as Response)
 
-            expect(mockAuth.deleteUser).toHaveBeenCalledWith(
-                userEntity2RolesMock.id
-            )
+            expect(mockAuth.deleteUser).toHaveBeenCalledWith(user2RolesMock.id)
             expect(removeMemberMock).toHaveBeenCalled()
             expect(mockStatus).toHaveBeenCalledWith(204)
         })
 
         it('should delete user when no member exists', async () => {
-            req = { params: { id: userEntity2RolesMock.id } }
+            req = { params: { id: user2RolesMock.id } }
             mockAuth.getUser.mockResolvedValue(
-                createFirebaseUserMock(userEntity2RolesMock)
+                createFirebaseUserMock(user2RolesMock)
             )
 
             const findMemberByUserIdMock = findMemberByUserId as jest.Mock
@@ -357,14 +353,12 @@ describe('UsersController', () => {
 
             await removeUser(req as Request, res as Response)
 
-            expect(mockAuth.deleteUser).toHaveBeenCalledWith(
-                userEntity2RolesMock.id
-            )
+            expect(mockAuth.deleteUser).toHaveBeenCalledWith(user2RolesMock.id)
             expect(mockStatus).toHaveBeenCalledWith(204)
         })
 
         it('should handle Firebase deletion failure', async () => {
-            req = { params: { id: userEntity2RolesMock.id } }
+            req = { params: { id: user2RolesMock.id } }
             const firebaseError = new Error('Firebase deletion failed')
             mockAuth.getUser.mockRejectedValue(firebaseError)
 
@@ -378,13 +372,13 @@ describe('UsersController', () => {
         })
 
         it('should handle member deletion failure', async () => {
-            req = { params: { id: userEntity2RolesMock.id } }
+            req = { params: { id: user2RolesMock.id } }
             mockAuth.getUser.mockResolvedValue(
-                createFirebaseUserMock(userEntity2RolesMock)
+                createFirebaseUserMock(user2RolesMock)
             )
 
             const findMemberByUserIdMock = findMemberByUserId as jest.Mock
-            findMemberByUserIdMock.mockResolvedValue(memberEntity2RolesMock)
+            findMemberByUserIdMock.mockResolvedValue(member2RolesMock)
 
             const error: ApiError = new Error('Member deletion failed')
             const removeMemberMock = removePerson as jest.Mock
@@ -392,9 +386,7 @@ describe('UsersController', () => {
 
             await removeUser(req as Request, res as Response)
 
-            expect(mockAuth.deleteUser).toHaveBeenCalledWith(
-                userEntity2RolesMock.id
-            )
+            expect(mockAuth.deleteUser).toHaveBeenCalledWith(user2RolesMock.id)
             expect(mockStatus).toHaveBeenCalledWith(500)
             expect(mockSend).toHaveBeenCalledWith({
                 message: 'Member deletion failed',

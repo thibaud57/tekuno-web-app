@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http'
 import { Injectable, inject, signal } from '@angular/core'
+import { RoleType } from '@backend/auth/enums/role-type.enum'
+import { CreateUserDto, User } from '@backend/users/models/user.model'
 import { environment } from 'environments/environment'
 import { Observable } from 'rxjs'
-import { TypeRole } from '../enums/type-role.enum'
-import { CreateUser, User } from '../models/user.model'
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
@@ -21,11 +21,11 @@ export class UserService {
         return this.http.get<User>(`${this.apiUrl}/${id}`)
     }
 
-    hasRole(role: TypeRole): boolean {
+    hasRole(role: RoleType): boolean {
         return this.user()?.roles.includes(role) ?? false
     }
 
-    createUser(user: CreateUser): Observable<void> {
+    createUser(user: CreateUserDto): Observable<void> {
         return this.http.post<void>(this.apiUrl, user)
     }
 

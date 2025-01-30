@@ -2,10 +2,10 @@ import { provideHttpClient } from '@angular/common/http'
 import { ComponentFixture, TestBed } from '@angular/core/testing'
 import { By } from '@angular/platform-browser'
 import { NoopAnimationsModule } from '@angular/platform-browser/animations'
+import { RoleType } from '@backend/auth/enums/role-type.enum'
+import { user2RolesMock, userAdminMock } from '@backend/users/models/user.mock'
 import { provideIcons } from 'app/core/icons/icons.provider'
 import { getTranslocoModule } from 'app/core/translation/transloco/transloco-testing.module'
-import { TypeRole } from 'app/core/user/enums/type-role.enum'
-import { user2RolesMock, userAdminMock } from 'app/core/user/models/user.mock'
 import { UserCardComponent } from './user-card.component'
 
 describe('UserCardComponent', () => {
@@ -41,7 +41,7 @@ describe('UserCardComponent', () => {
 
     it('should emit roleChange event when role is changed', () => {
         const roleChangeSpy = spyOn(component.roleChange, 'emit')
-        const newRoles = [TypeRole.MEMBER, TypeRole.ACCOUNTANT]
+        const newRoles = [RoleType.MEMBER, RoleType.ACCOUNTANT]
 
         component.form.controls.roles.setValue(newRoles)
 
