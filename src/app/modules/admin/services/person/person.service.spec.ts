@@ -1,5 +1,8 @@
 import { provideHttpClient, withFetch } from '@angular/common/http'
-import { HttpTestingController } from '@angular/common/http/testing'
+import {
+    HttpTestingController,
+    provideHttpClientTesting,
+} from '@angular/common/http/testing'
 import { TestBed } from '@angular/core/testing'
 import { membersMock } from '@backend/persons/models/person.mock'
 import { environment } from 'environments/environment'
@@ -11,7 +14,11 @@ describe('PersonService', () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            providers: [PersonService, provideHttpClient(withFetch())],
+            providers: [
+                PersonService,
+                provideHttpClient(withFetch()),
+                provideHttpClientTesting(),
+            ],
         })
 
         service = TestBed.inject(PersonService)
@@ -23,9 +30,13 @@ describe('PersonService', () => {
     })
 
     describe('getPersons', () => {
-        it('should return persons list', () => {
-            service.getPersons().subscribe(persons => {
-                expect(persons).toEqual(membersMock)
+        it('should return persons list', done => {
+            service.getPersons().subscribe({
+                next: persons => {
+                    expect(persons).toEqual(membersMock)
+                    done()
+                },
+                error: done.fail,
             })
 
             const req = httpMock.expectOne(`${environment.apiBaseUrl}/persons`)

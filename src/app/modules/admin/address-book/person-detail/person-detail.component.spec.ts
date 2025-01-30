@@ -1,5 +1,7 @@
+import { provideHttpClient } from '@angular/common/http'
 import { ComponentFixture, TestBed } from '@angular/core/testing'
 import { member2RolesMock } from '@backend/persons/models/person.mock'
+import { provideIcons } from 'app/core/icons/icons.provider'
 import { getTranslocoModule } from 'app/core/translation/transloco/transloco-testing.module'
 import { PersonDetailComponent } from './person-detail.component'
 
@@ -10,6 +12,7 @@ describe('PersonDetailComponent', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             imports: [PersonDetailComponent, getTranslocoModule()],
+            providers: [provideIcons(), provideHttpClient()],
         }).compileComponents()
 
         fixture = TestBed.createComponent(PersonDetailComponent)

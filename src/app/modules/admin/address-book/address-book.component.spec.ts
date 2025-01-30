@@ -1,4 +1,4 @@
-import { HttpErrorResponse } from '@angular/common/http'
+import { HttpErrorResponse, provideHttpClient } from '@angular/common/http'
 import { ComponentFixture, TestBed } from '@angular/core/testing'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import {
@@ -6,6 +6,7 @@ import {
     member2RolesMock,
     memberAdminMock,
 } from '@backend/persons/models/person.mock'
+import { provideIcons } from 'app/core/icons/icons.provider'
 import { NotificationService } from 'app/core/services/notification.service'
 import { NotificationServiceMock } from 'app/core/services/notification.service.mock'
 import { getTranslocoModule } from 'app/core/translation/transloco/transloco-testing.module'
@@ -28,6 +29,8 @@ describe('AddressBookComponent', () => {
                 BrowserAnimationsModule,
             ],
             providers: [
+                provideHttpClient(),
+                provideIcons(),
                 { provide: PersonService, useClass: PersonServiceMock },
                 {
                     provide: NotificationService,

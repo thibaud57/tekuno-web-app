@@ -5,9 +5,13 @@ import { By } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { RoleType } from '@backend/auth/enums/role-type.enum'
 import { userAdminMock, usersMock } from '@backend/users/models/user.mock'
+import { AuthService } from 'app/core/auth/services/auth.service'
+import { AuthServiceMock } from 'app/core/auth/services/auth.service.mock'
 import { provideIcons } from 'app/core/icons/icons.provider'
 import { NotificationService } from 'app/core/services/notification.service'
 import { NotificationServiceMock } from 'app/core/services/notification.service.mock'
+import { TranslationService } from 'app/core/translation/translation.service'
+import { TranslationServiceMock } from 'app/core/translation/translation.service.mock'
 import { getTranslocoModule } from 'app/core/translation/transloco/transloco-testing.module'
 import { UserService } from 'app/core/user/services/user.service'
 import { UserServiceMock } from 'app/core/user/services/user.service.mock'
@@ -18,7 +22,9 @@ describe('UserSettingsComponent', () => {
     let component: UserSettingsComponent
     let fixture: ComponentFixture<UserSettingsComponent>
     let userService: UserService
+    let authService: AuthService
     let notificationService: NotificationService
+    let translationService: TranslationService
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
@@ -31,9 +37,14 @@ describe('UserSettingsComponent', () => {
             providers: [
                 FormBuilder,
                 { provide: UserService, useClass: UserServiceMock },
+                { provide: AuthService, useClass: AuthServiceMock },
                 {
                     provide: NotificationService,
                     useClass: NotificationServiceMock,
+                },
+                {
+                    provide: TranslationService,
+                    useClass: TranslationServiceMock,
                 },
                 provideHttpClient(),
                 provideIcons(),
@@ -41,7 +52,9 @@ describe('UserSettingsComponent', () => {
         }).compileComponents()
 
         userService = TestBed.inject(UserService)
+        authService = TestBed.inject(AuthService)
         notificationService = TestBed.inject(NotificationService)
+        translationService = TestBed.inject(TranslationService)
     })
 
     describe('User management', () => {

@@ -29,6 +29,7 @@ describe('AuthResetPasswordComponent', () => {
                 getTranslocoModule(),
             ],
             providers: [
+                provideIcons(),
                 { provide: AuthService, useClass: AuthServiceMock },
                 {
                     provide: TranslationService,
@@ -41,7 +42,6 @@ describe('AuthResetPasswordComponent', () => {
                     },
                 ]),
                 provideHttpClient(),
-                provideIcons(),
             ],
         }).compileComponents()
 
