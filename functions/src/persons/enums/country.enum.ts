@@ -1,0 +1,11 @@
+export enum Country {
+    FRANCE = 'FRANCE',
+    GERMANY = 'GERMANY',
+    LUXEMBOURG = 'LUXEMBOURG',
+    NETHERLANDS = 'NETHERLANDS',
+    UK = 'UK',
+    ITALY = 'ITALY',
+    PORTUGAL = 'PORTUGAL',
+    SPAIN = 'SPAIN',
+    SWITZERLAND = 'SWITZERLAND',
+}

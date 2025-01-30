@@ -1,0 +1,11 @@
+export enum CorrespondentType {
+    MANAGER = 'MANAGER',
+    OWNER = 'OWNER',
+    AGENT = 'AGENT',
+    EVENT_COORDINATOR = 'EVENT_COORDINATOR',
+    TECHNICAL = 'TECHNICAL',
+    SECURITY = 'SECURITY',
+    MARKETING = 'MARKETING',
+    FINANCE = 'FINANCE',
+    OTHER = 'OTHER',
+}

@@ -7,6 +7,7 @@ import { Observable } from 'rxjs'
 @Injectable({ providedIn: 'root' })
 export class PersonService {
     private readonly apiUrl = environment.apiBaseUrl + '/persons'
+
     private readonly http = inject(HttpClient)
 
     getPersons(): Observable<Person[]> {

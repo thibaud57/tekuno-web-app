@@ -18,10 +18,10 @@ import { Request, Response } from 'express'
 import { RoleType } from '../auth/enums/role-type.enum'
 import { PersonType } from './enums/person-type.enum'
 import {
+    customerMock,
     member2RolesMock,
     memberAdminMock,
-    personMock,
-} from './models/person-entity.mock'
+} from './models/person.mock'
 import {
     createPerson,
     findAllPerson,
@@ -53,17 +53,14 @@ describe('PersonsController', () => {
             },
         }
 
-        // Reset all mocks
         jest.clearAllMocks()
         resetFirebaseMocks()
-
-        // Setup Firestore mocks
         setupFirestoreMocks()
     })
 
     describe('findAllPerson', () => {
         it('should return all persons', async () => {
-            const persons = [personMock, memberAdminMock]
+            const persons = [customerMock, memberAdminMock]
             mockGet.mockResolvedValue({
                 docs: persons.map(person => ({
                     id: person.id,
@@ -130,19 +127,19 @@ describe('PersonsController', () => {
 
     describe('findOnePerson', () => {
         it('should return person when found', async () => {
-            req = { params: { id: personMock.id } }
+            req = { params: { id: customerMock.id } }
             mockGet.mockResolvedValue({
                 exists: true,
-                id: personMock.id,
-                data: () => ({ ...personMock }),
+                id: customerMock.id,
+                data: () => ({ ...customerMock }),
             })
 
             await findOnePerson(req as Request, res as Response)
 
             expect(mockCollection).toHaveBeenCalledWith('persons')
-            expect(mockDoc).toHaveBeenCalledWith(personMock.id)
+            expect(mockDoc).toHaveBeenCalledWith(customerMock.id)
             expect(mockStatus).toHaveBeenCalledWith(200)
-            expect(mockSend).toHaveBeenCalledWith(personMock)
+            expect(mockSend).toHaveBeenCalledWith(customerMock)
         })
 
         it('should return 404 when person not found', async () => {
@@ -160,7 +157,7 @@ describe('PersonsController', () => {
         })
 
         it('should handle Firestore error', async () => {
-            req = { params: { id: personMock.id } }
+            req = { params: { id: customerMock.id } }
             const error = new Error('Firestore error')
             mockGet.mockRejectedValue(error)
 
@@ -238,18 +235,18 @@ describe('PersonsController', () => {
                 name: 'Updated Name',
             }
             req = {
-                params: { id: personMock.id },
+                params: { id: customerMock.id },
                 body: updateData,
             }
             mockGet.mockResolvedValue({
                 exists: true,
-                data: () => ({ ...personMock }),
+                data: () => ({ ...customerMock }),
             })
 
             await updatePerson(req as Request, res as Response)
 
             expect(mockCollection).toHaveBeenCalledWith('persons')
-            expect(mockDoc).toHaveBeenCalledWith(personMock.id)
+            expect(mockDoc).toHaveBeenCalledWith(customerMock.id)
             expect(mockUpdate).toHaveBeenCalledWith({
                 ...updateData,
                 updatedAt: expect.any(Object),
@@ -307,12 +304,12 @@ describe('PersonsController', () => {
 
         it('should handle Firestore error', async () => {
             req = {
-                params: { id: personMock.id },
+                params: { id: customerMock.id },
                 body: { name: 'Updated Name' },
             }
             mockGet.mockResolvedValue({
                 exists: true,
-                data: () => ({ ...personMock }),
+                data: () => ({ ...customerMock }),
             })
             const error = new Error('Firestore error')
             mockUpdate.mockRejectedValue(error)
@@ -328,7 +325,7 @@ describe('PersonsController', () => {
 
     describe('removePerson', () => {
         it('should delete person successfully', async () => {
-            req = { params: { id: personMock.id } }
+            req = { params: { id: customerMock.id } }
             mockGet.mockResolvedValue({
                 exists: true,
             })
@@ -336,7 +333,7 @@ describe('PersonsController', () => {
             await removePerson(req as Request, res as Response)
 
             expect(mockCollection).toHaveBeenCalledWith('persons')
-            expect(mockDoc).toHaveBeenCalledWith(personMock.id)
+            expect(mockDoc).toHaveBeenCalledWith(customerMock.id)
             expect(mockDelete).toHaveBeenCalled()
             expect(mockStatus).toHaveBeenCalledWith(204)
         })
@@ -357,7 +354,7 @@ describe('PersonsController', () => {
         })
 
         it('should handle Firestore error', async () => {
-            req = { params: { id: personMock.id } }
+            req = { params: { id: customerMock.id } }
             mockGet.mockResolvedValue({
                 exists: true,
             })

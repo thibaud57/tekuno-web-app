@@ -1,6 +1,6 @@
-import { provideHttpClient } from '@angular/common/http'
 import { ComponentFixture, TestBed } from '@angular/core/testing'
-import { member2RolesMock } from '@backend/persons/models/person-entity.mock'
+import { member2RolesMock } from '@backend/persons/models/person.mock'
+import { getTranslocoModule } from 'app/core/translation/transloco/transloco-testing.module'
 import { PersonDetailComponent } from './person-detail.component'
 
 describe('PersonDetailComponent', () => {
@@ -9,18 +9,13 @@ describe('PersonDetailComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            imports: [PersonDetailComponent],
-            providers: [provideHttpClient()],
+            imports: [PersonDetailComponent, getTranslocoModule()],
         }).compileComponents()
 
         fixture = TestBed.createComponent(PersonDetailComponent)
         component = fixture.componentInstance
         component.person = member2RolesMock
         fixture.detectChanges()
-    })
-
-    it('should create', () => {
-        expect(component).toBeTruthy()
     })
 
     it('should emit close event when onClose is called', () => {

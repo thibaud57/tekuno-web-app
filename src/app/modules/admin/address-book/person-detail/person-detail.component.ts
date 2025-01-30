@@ -3,7 +3,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core'
 import { MatButtonModule } from '@angular/material/button'
 import { MatIconModule } from '@angular/material/icon'
 import { Person } from '@backend/persons/models/person.model'
-import { TranslocoModule } from '@ngneat/transloco'
+import { TranslocoPipe } from '@ngneat/transloco'
 import { AvatarComponent } from 'app/shared/components/avatar/avatar.component'
 
 @Component({
@@ -14,15 +14,15 @@ import { AvatarComponent } from 'app/shared/components/avatar/avatar.component'
     imports: [
         MatButtonModule,
         MatIconModule,
-        TranslocoModule,
+        TranslocoPipe,
         AvatarComponent,
         NgIf,
     ],
 })
 export class PersonDetailComponent {
-    readonly TRANSLATION_PREFIX = 'modules.admin.address-book.'
+    readonly TRANSLATION_PREFIX = 'modules.admin.address-book.person-detail.'
 
-    @Input({ required: true }) person!: Person
+    @Input({ required: true }) person: Person
     @Output() close = new EventEmitter<void>()
 
     onClose(): void {

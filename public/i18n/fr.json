@@ -89,7 +89,11 @@
                 "carnet-adresses": "Carnet d'adresses",
                 "nombre-contacts": "{{count}} contacts",
                 "rechercher": "Rechercher des contacts",
-                "ajouter": "Ajouter"
+                "ajouter": "Ajouter",
+                "aucun-contact": "Aucun contact trouvé",
+                "person-detail": {
+                    "contact": "Contact"
+                }
             },
             "mailbox": {
                 "boite-mail": "Boîte mail"

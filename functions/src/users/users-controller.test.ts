@@ -12,7 +12,7 @@ import { PersonType } from '../persons/enums/person-type.enum'
 import {
     member2RolesMock,
     memberAdminMock,
-} from '../persons/models/person-entity.mock'
+} from '../persons/models/person.mock'
 import {
     createPerson,
     findMemberByUserId,
