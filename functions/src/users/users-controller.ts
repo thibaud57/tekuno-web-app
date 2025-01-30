@@ -3,7 +3,7 @@ import * as admin from 'firebase-admin'
 import { UpdateRequest } from 'firebase-admin/auth'
 import { RoleType } from '../auth/enums/role-type.enum'
 import { PersonType } from '../persons/enums/person-type.enum'
-import { MemberEntity } from '../persons/models/person-entity.model'
+import { Member } from '../persons/models/person.model'
 import {
     createPerson,
     findMemberByUserId,
@@ -12,7 +12,7 @@ import {
 } from '../persons/persons-controller'
 import { ApiError } from '../shared/models/api-error.model'
 import { handleError } from '../shared/utils/error.utils'
-import { CreateUserDto, UserEntity } from './models/user-entity.model'
+import { CreateUserDto, User } from './models/user.model'
 import { mapUser } from './utils/users.utils'
 
 export async function findAllUser(req: Request, res: Response) {
@@ -71,7 +71,7 @@ export async function createUser(req: Request, res: Response) {
 
         try {
             // Create associated member
-            const memberData: Omit<MemberEntity, 'id'> = {
+            const memberData: Omit<Member, 'id'> = {
                 personType: PersonType.MEMBER,
                 name: 'User',
                 email: createUserDto.email,
@@ -96,7 +96,7 @@ export async function createUser(req: Request, res: Response) {
 export async function updateUser(req: Request, res: Response) {
     try {
         const { id } = req.params
-        const userEntity: UserEntity = req.body
+        const userEntity: User = req.body
 
         // Update Firebase user
         const authUpdate: Partial<UpdateRequest> = {
@@ -116,7 +116,7 @@ export async function updateUser(req: Request, res: Response) {
             // Try to find and update the associated member
             const member = await findMemberByUserId(id)
             if (member) {
-                const updateData: Partial<MemberEntity> = {
+                const updateData: Partial<Member> = {
                     email: userEntity.email,
                     roles: userEntity.roles,
                 }

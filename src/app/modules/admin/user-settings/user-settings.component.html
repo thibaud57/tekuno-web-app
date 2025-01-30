@@ -1,11 +1,17 @@
-<div class="h-full w-full">
-    <div class="h-full p-6 sm:p-10">
-        <div class="h-full w-full rounded-2xl border-2 border-dashed border-gray-300 p-6">
-            @if (hasRole(TypeRole.ADMIN)) {
-                <div class="flex flex-col">
-                    <div class="title text-3xl font-bold leading-none tracking-tight lg:ml-0">{{ TRANSLATION_PREFIX + 'mon-equipe' | transloco }}</div>
+<div class="h-full w-full p-6 sm:p-10">
+    <div class="border-gray-300mat-drawer-container bg-card h-full flex-auto rounded-2xl border-2 border-dashed dark:bg-transparent">
+        @if (hasRole(RoleType.ADMIN)) {
+            <div class="bg-card flex h-full flex-col dark:bg-transparent">
+                <!-- Header -->
+                <div class="px-6 md:px-8">
+                    <!-- Title -->
+                    <div class="py-8">
+                        <div class="mon-equipe text-4xl font-extrabold leading-none tracking-tight">{{ TRANSLATION_PREFIX + 'mon-equipe' | transloco }}</div>
+                        <div class="text-secondary ml-0.5 font-medium">{{ TRANSLATION_PREFIX + 'membres' | transloco: { count: users().length } }}</div>
+                    </div>
 
-                    <form class="my-6 flex flex-row gap-4" [formGroup]="form">
+                    <!-- Form -->
+                    <form class="flex flex-row gap-4" [formGroup]="form">
                         <mat-form-field class="flex-1" hideRequiredMarker>
                             <mat-label>{{ TRANSLATION_PREFIX + 'email' | transloco }}</mat-label>
                             <input matInput formControlName="email" type="email" />
@@ -21,8 +27,8 @@
                                 <mat-label>{{ TRANSLATION_PREFIX + 'roles' | transloco }}</mat-label>
                                 <mat-select formControlName="roles" multiple>
                                     @for (role of roles; track role) {
-                                        <mat-option [value]="role" [disabled]="role === TypeRole.ADMIN">
-                                            {{ 'enums.type-role.' + role | transloco }}
+                                        <mat-option [value]="role" [disabled]="role === RoleType.ADMIN">
+                                            {{ 'enums.role-type.' + role | transloco }}
                                         </mat-option>
                                     }
                                 </mat-select>
@@ -33,18 +39,23 @@
                             </button>
                         </div>
                     </form>
+                </div>
 
-                    <div class="user-list flex flex-col border-b">
-                        @for (user of users() | sortByRole: TypeRole.ADMIN; track user.id) {
-                            <app-user-card
-                                [user]="user"
-                                [showDeleteButton]="user.roles.indexOf(TypeRole.ADMIN) === -1"
-                                (roleChange)="updateUserRole($event)"
-                                (delete)="deleteUser($event)" />
+                <!-- Content -->
+                <div class="flex-auto px-6 py-8 md:px-8">
+                    <div class="user-list flex flex-col">
+                        @for (user of users() | sortByRole: RoleType.ADMIN; track user.id) {
+                            <div class="border-b">
+                                <app-user-card
+                                    [user]="user"
+                                    [showDeleteButton]="user.roles.indexOf(RoleType.ADMIN) === -1"
+                                    (roleChange)="updateUserRole($event)"
+                                    (delete)="deleteUser($event)" />
+                            </div>
                         }
                     </div>
                 </div>
-            }
-        </div>
+            </div>
+        }
     </div>
 </div>

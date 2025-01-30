@@ -11,9 +11,9 @@ import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms'
 import { MatButtonModule } from '@angular/material/button'
 import { MatIconModule } from '@angular/material/icon'
 import { MatSelectModule } from '@angular/material/select'
+import { RoleType } from '@backend/auth/enums/role-type.enum'
+import { User } from '@backend/users/models/user.model'
 import { TranslocoPipe } from '@ngneat/transloco'
-import { TypeRole } from 'app/core/user/enums/type-role.enum'
-import { User } from 'app/core/user/models/user.model'
 import { AvatarComponent } from '../avatar/avatar.component'
 
 @Component({
@@ -38,10 +38,11 @@ export class UserCardComponent implements OnInit {
     @Output() delete = new EventEmitter<User>()
 
     readonly TRANSLATION_PREFIX = 'modules.admin.user-settings.'
-    readonly roles = Object.values(TypeRole)
-    readonly TypeRole = TypeRole
+    readonly roles = Object.values(RoleType)
 
     form: FormGroup
+
+    protected readonly RoleType = RoleType
 
     private readonly formBuilder = inject(FormBuilder)
 

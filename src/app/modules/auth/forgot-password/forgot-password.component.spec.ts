@@ -1,9 +1,11 @@
+import { provideHttpClient } from '@angular/common/http'
 import { ComponentFixture, TestBed } from '@angular/core/testing'
 import { ReactiveFormsModule } from '@angular/forms'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { provideRouter } from '@angular/router'
 import { AuthService } from 'app/core/auth/services/auth.service'
 import { AuthServiceMock } from 'app/core/auth/services/auth.service.mock'
+import { provideIcons } from 'app/core/icons/icons.provider'
 import { TranslationService } from 'app/core/translation/translation.service'
 import { TranslationServiceMock } from 'app/core/translation/translation.service.mock'
 import { getTranslocoModule } from 'app/core/translation/transloco/transloco-testing.module'
@@ -25,6 +27,8 @@ describe('AuthForgotPasswordComponent', () => {
                 getTranslocoModule(),
             ],
             providers: [
+                provideIcons(),
+                provideHttpClient(),
                 { provide: AuthService, useClass: AuthServiceMock },
                 {
                     provide: TranslationService,

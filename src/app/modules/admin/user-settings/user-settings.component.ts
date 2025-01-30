@@ -12,10 +12,10 @@ import { MatFormFieldModule } from '@angular/material/form-field'
 import { MatIconModule } from '@angular/material/icon'
 import { MatInputModule } from '@angular/material/input'
 import { MatSelectModule } from '@angular/material/select'
+import { RoleType } from '@backend/auth/enums/role-type.enum'
+import { User } from '@backend/users/models/user.model'
 import { TranslocoPipe } from '@ngneat/transloco'
 import { NotificationService } from 'app/core/services/notification.service'
-import { TypeRole } from 'app/core/user/enums/type-role.enum'
-import { User } from 'app/core/user/models/user.model'
 import { UserService } from 'app/core/user/services/user.service'
 import { UserCardComponent } from 'app/shared/components/user-card/user-card.component'
 import { SortByRolePipe } from 'app/shared/pipes/sort-by-role.pipe'
@@ -41,29 +41,29 @@ import { SortByRolePipe } from 'app/shared/pipes/sort-by-role.pipe'
 })
 export class UserSettingsComponent implements OnInit {
     readonly TRANSLATION_PREFIX = 'modules.admin.user-settings.'
-    readonly roles = Object.values(TypeRole)
+    readonly roles = Object.values(RoleType)
 
     form: FormGroup
     users = signal<User[]>([])
 
-    protected readonly TypeRole = TypeRole
+    protected readonly RoleType = RoleType
 
     private readonly formBuilder = inject(FormBuilder)
     private readonly userService = inject(UserService)
     private readonly notificationService = inject(NotificationService)
 
     ngOnInit(): void {
-        if (this.hasRole(TypeRole.ADMIN)) {
+        if (this.hasRole(RoleType.ADMIN)) {
             this.form = this.formBuilder.nonNullable.group({
                 email: ['', [Validators.required, Validators.email]],
                 password: ['', Validators.required],
-                roles: [[TypeRole.MEMBER], Validators.required],
+                roles: [[RoleType.MEMBER], Validators.required],
             })
             this.loadUsers()
         }
     }
 
-    hasRole(role: TypeRole): boolean {
+    hasRole(role: RoleType): boolean {
         return this.userService.hasRole(role)
     }
 

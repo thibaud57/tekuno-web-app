@@ -15,7 +15,7 @@
             "user": {
                 "connecte": "Connected as",
                 "profil": "Profile",
-                "espace-admin": "Admin Area",
+                "espace-admin": "Admin area",
                 "parametres": "Settings",
                 "deconnexion": "Sign out"
             }
@@ -86,7 +86,17 @@
                 "tableau-de-bord": "Dashboard"
             },
             "address-book": {
-                "carnet-adresses": "Address Book"
+                "carnet-adresses": "Address Book",
+                "nombre-contacts": "{{count}} contacts",
+                "rechercher": "Search contacts",
+                "ajouter": "Add",
+                "aucun-contact": "No contacts found",
+                "person-detail": {
+                    "contact": "Contact"
+                },
+                "alertes": {
+                    "erreur-chargement-contacts": "Error loading contacts"
+                }
             },
             "mailbox": {
                 "boite-mail": "Mailbox"
@@ -104,14 +114,15 @@
                 "profil": "Profile"
             },
             "user-settings": {
-                "mon-equipe": "My Team",
+                "mon-equipe": "My team",
                 "email": "Email",
                 "mot-de-passe": "Password",
                 "roles": "Roles",
+                "membres": "{{count}} members",
                 "alertes": {
-                    "membre-ajoute": "Member has been successfully added",
-                    "utilisateur-supprime": "User has been successfully deleted",
-                    "role-modifie": "Roles have been successfully modified",
+                    "membre-ajoute": "Member has been added successfully",
+                    "utilisateur-supprime": "User has been deleted successfully",
+                    "role-modifie": "Roles have been modified successfully",
                     "erreur-ajout-membre": "Error adding member: {erreur}",
                     "erreur-suppression-utilisateur": "Error deleting user: {erreur}",
                     "erreur-chargement-utilisateurs": "Error loading users: {erreur}",
@@ -126,7 +137,7 @@
         "ok": "OK"
     },
     "enums": {
-        "type-role": {
+        "role-type": {
             "ADMIN": "Admin",
             "MEMBER": "Member",
             "DJ": "DJ",
@@ -134,6 +145,12 @@
             "ACCOUNTANT": "Accountant",
             "SECRETARY": "Secretary",
             "TESTER": "Tester"
+        },
+        "person-type": {
+            "MEMBER": "Member",
+            "DJ": "DJ",
+            "ORGANIZATION": "Organization",
+            "CUSTOMER": "Customer"
         }
     }
 }

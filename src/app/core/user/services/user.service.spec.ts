@@ -4,8 +4,8 @@ import {
     provideHttpClientTesting,
 } from '@angular/common/http/testing'
 import { TestBed } from '@angular/core/testing'
-import { TypeRole } from '../enums/type-role.enum'
-import { userAdminMock, usersMock } from '../models/user.mock'
+import { RoleType } from '@backend/auth/enums/role-type.enum'
+import { userAdminMock, usersMock } from '@backend/users/models/user.mock'
 import { UserService } from './user.service'
 
 describe('UserService', () => {
@@ -61,19 +61,19 @@ describe('UserService', () => {
         it('should return true when user has required role', () => {
             service.user.set({
                 ...userAdminMock,
-                roles: [TypeRole.ADMIN],
+                roles: [RoleType.ADMIN],
             })
 
-            expect(service.hasRole(TypeRole.ADMIN)).toBeTruthy()
+            expect(service.hasRole(RoleType.ADMIN)).toBeTruthy()
         })
 
         it('should return false when user does not have required role', () => {
             service.user.set({
                 ...userAdminMock,
-                roles: [TypeRole.MEMBER],
+                roles: [RoleType.MEMBER],
             })
 
-            expect(service.hasRole(TypeRole.ADMIN)).toBeFalsy()
+            expect(service.hasRole(RoleType.ADMIN)).toBeFalsy()
         })
 
         it('should return false when user has no roles', () => {
@@ -82,13 +82,13 @@ describe('UserService', () => {
                 roles: [],
             })
 
-            expect(service.hasRole(TypeRole.ADMIN)).toBeFalsy()
+            expect(service.hasRole(RoleType.ADMIN)).toBeFalsy()
         })
 
         it('should return false when no user is set', () => {
             service.user.set(null)
 
-            expect(service.hasRole(TypeRole.ADMIN)).toBeFalsy()
+            expect(service.hasRole(RoleType.ADMIN)).toBeFalsy()
         })
     })
 
@@ -114,7 +114,7 @@ describe('UserService', () => {
             const updatedUser = {
                 ...userAdminMock,
                 displayName: 'Updated Name',
-                roles: [TypeRole.ADMIN, TypeRole.MEMBER],
+                roles: [RoleType.ADMIN, RoleType.MEMBER],
             }
 
             service.updateUser(updatedUser).subscribe(() => done())
@@ -130,7 +130,7 @@ describe('UserService', () => {
         it('should update user roles', done => {
             const updatedUser = {
                 ...userAdminMock,
-                roles: [TypeRole.ADMIN, TypeRole.DJ],
+                roles: [RoleType.ADMIN, RoleType.DJ],
             }
 
             service.updateUser(updatedUser).subscribe(() => done())

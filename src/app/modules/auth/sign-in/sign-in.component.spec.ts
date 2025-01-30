@@ -28,6 +28,8 @@ describe('AuthSignInComponent', () => {
                 getTranslocoModule(),
             ],
             providers: [
+                provideIcons(),
+                provideHttpClient(),
                 { provide: AuthService, useClass: AuthServiceMock },
                 {
                     provide: TranslationService,
@@ -47,8 +49,6 @@ describe('AuthSignInComponent', () => {
                         component: AuthSignInComponent,
                     },
                 ]),
-                provideHttpClient(),
-                provideIcons(),
             ],
         }).compileComponents()
 

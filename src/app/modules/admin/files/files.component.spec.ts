@@ -1,4 +1,6 @@
+import { provideHttpClient } from '@angular/common/http'
 import { ComponentFixture, TestBed } from '@angular/core/testing'
+import { provideIcons } from 'app/core/icons/icons.provider'
 import { FilesComponent } from './files.component'
 
 describe('FilesComponent', () => {
@@ -8,6 +10,7 @@ describe('FilesComponent', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             imports: [FilesComponent],
+            providers: [provideIcons(), provideHttpClient()],
         }).compileComponents()
 
         fixture = TestBed.createComponent(FilesComponent)
