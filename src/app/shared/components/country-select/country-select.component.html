@@ -1,0 +1,26 @@
+<mat-select [formControl]="control">
+    <mat-select-trigger>
+        <span class="flex items-center">
+            <img [src]="getFlag(control.value?.isoCode)" class="h-4 w-6" [alt]="control.value?.name" />
+            @if (withPhonePrefix) {
+                <span class="ml-1">{{ control.value?.phonePrefix }}</span>
+            } @else {
+                <span class="ml-1">{{ 'enums.country.' + control.value?.name | transloco }}</span>
+            }
+        </span>
+    </mat-select-trigger>
+
+    @for (country of countries; track country.name) {
+        <mat-option [value]="country">
+            <span class="flex items-center">
+                <img [src]="getFlag(country.isoCode)" class="h-4 w-6" [alt]="country.name" />
+                @if (withPhonePrefix) {
+                    <span class="ml-2">{{ country.phonePrefix }}</span>
+                    <span class="text-secondary ml-2">{{ 'enums.country.' + country.name | transloco }}</span>
+                } @else {
+                    <span class="ml-2">{{ 'enums.country.' + country.name | transloco }}</span>
+                }
+            </span>
+        </mat-option>
+    }
+</mat-select>

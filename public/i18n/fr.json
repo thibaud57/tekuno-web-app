@@ -93,6 +93,19 @@
                 "aucun-contact": "Aucun contact trouvé",
                 "person-detail": {
                     "contact": "Contact"
+                },
+                "form": {
+                    "title": "Nouveau contact",
+                    "actions": {
+                        "save": "Enregistrer",
+                        "cancel": "Annuler"
+                    },
+                    "success": {
+                        "create": "Le contact a été créé avec succès"
+                    },
+                    "error": {
+                        "create": "Erreur lors de la création du contact"
+                    }
                 }
             },
             "mailbox": {
@@ -126,12 +139,103 @@
                     "erreur-modification-role": "Erreur lors de la modification des rôles : {erreur}",
                     "erreur-suppression-admin": "Impossible de supprimer un compte administrateur"
                 }
+            },
+            "person-form": {
+                "fields": {
+                    "person-type": "Type de contact",
+                    "name": "Nom",
+                    "first-name": "Prénom",
+                    "email": "Email",
+                    "phone": "Téléphone",
+                    "description": "Description",
+                    "gender": "Genre",
+                    "address": "Adresse",
+                    "alias": "Nom de scène",
+                    "price": "Tarif",
+                    "organization-type": "Type d'organisation",
+                    "siret": "SIRET",
+                    "organization-id": "Organisation",
+                    "correspondent-type": "Type de correspondant",
+                    "biography": "Biographie",
+                    "agency-id": "Agence",
+                    "bank-details": "Coordonnées bancaires",
+                    "vat": "TVA",
+                    "is-active": "Actif",
+                    "is-default": "Par défaut"
+                }
             }
         }
     },
     "common": {
         "erreur-api": "Une erreur est survenue : {erreur}",
-        "ok": "OK"
+        "ok": "OK",
+        "oui": "Oui",
+        "non": "Non"
+    },
+    "shared": {
+        "address-form": {
+            "title": "Adresse",
+            "fields": {
+                "street-number": "N°",
+                "street-name": "Nom de la rue",
+                "city": "Ville",
+                "postal-code": "Code postal",
+                "country": "Pays"
+            }
+        },
+        "person-form": {
+            "title": "Nouveau contact",
+            "fields": {
+                "person-type": "Type de contact",
+                "name": "Nom",
+                "first-name": "Prénom",
+                "email": "Email",
+                "phone": "Téléphone",
+                "description": "Description",
+                "gender": "Genre",
+                "address": "Adresse"
+            },
+            "actions": {
+                "save": "Enregistrer",
+                "cancel": "Annuler"
+            },
+            "dj-form": {
+                "fields": {
+                    "alias": "Nom de scène",
+                    "price": "Tarif",
+                    "biography": "Biographie",
+                    "agency-id": "Agence",
+                    "bank-details": "Coordonnées bancaires",
+                    "siret": "SIRET",
+                    "vat": "TVA"
+                }
+            },
+            "organization-form": {
+                "fields": {
+                    "organization-type": "Type d'organisation",
+                    "siret": "SIRET",
+                    "vat": "TVA",
+                    "bank-details": "Coordonnées bancaires"
+                }
+            },
+            "correspondent-form": {
+                "fields": {
+                    "organization-id": "Organisation",
+                    "correspondent-type": "Type de correspondant",
+                    "is-active": "Actif",
+                    "is-default": "Par défaut"
+                }
+            }
+        },
+        "bank-details-form": {
+            "title": "Coordonnées bancaires",
+            "fields": {
+                "name": "Nom",
+                "iban": "IBAN",
+                "bic": "BIC",
+                "paypal": "Paypal"
+            }
+        }
     },
     "enums": {
         "role-type": {
@@ -147,7 +251,33 @@
             "MEMBER": "Membre",
             "DJ": "DJ",
             "ORGANIZATION": "Organisation",
+            "CORRESPONDENT": "Correspondant",
             "CUSTOMER": "Client"
+        },
+        "gender": {
+            "MALE": "Homme",
+            "FEMALE": "Femme"
+        },
+        "country": {
+            "FRANCE": "France",
+            "GERMANY": "Allemagne",
+            "LUXEMBOURG": "Luxembourg",
+            "NETHERLANDS": "Pays-Bas",
+            "UK": "Royaume-Uni",
+            "ITALY": "Italie",
+            "PORTUGAL": "Portugal",
+            "SPAIN": "Espagne",
+            "SWITZERLAND": "Suisse"
+        },
+        "organization-type": {
+            "AGENCY": "Agence",
+            "ARTIST": "Artiste",
+            "ASSOCIATION": "Association",
+            "LOCATION": "Location",
+            "RENTAL": "Location",
+            "PHOTOGRAPHER": "Photographe",
+            "VJ": "VJ",
+            "SHOP": "Magasin"
         }
     }
 }

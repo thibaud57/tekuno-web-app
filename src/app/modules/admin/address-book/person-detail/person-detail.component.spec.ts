@@ -22,7 +22,7 @@ describe('PersonDetailComponent', () => {
     })
 
     it('should emit close event when onClose is called', () => {
-        const closeSpy = spyOn(component.close, 'emit')
+        const closeSpy = spyOn(component.closeDrawer, 'emit')
         component.onClose()
         expect(closeSpy).toHaveBeenCalled()
     })

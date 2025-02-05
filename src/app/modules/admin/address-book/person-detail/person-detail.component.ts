@@ -23,9 +23,10 @@ export class PersonDetailComponent {
     readonly TRANSLATION_PREFIX = 'modules.admin.address-book.person-detail.'
 
     @Input({ required: true }) person: Person
-    @Output() close = new EventEmitter<void>()
+
+    @Output() closeDrawer = new EventEmitter<void>()
 
     onClose(): void {
-        this.close.emit()
+        this.closeDrawer.emit()
     }
 }

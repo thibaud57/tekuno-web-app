@@ -1,0 +1,27 @@
+<div class="section-divider flex items-center gap-4">
+    <div class="h-px flex-1 bg-gray-300"></div>
+    <h3 class="text-lg font-medium">{{ 'enums.person-type.MEMBER' | transloco }}</h3>
+    <div class="h-px flex-1 bg-gray-300"></div>
+</div>
+
+<!-- Organisation -->
+<mat-form-field class="w-full">
+    <mat-label>{{ TRANSLATION_PREFIX + 'fields.organization-id' | transloco }}</mat-label>
+    <input matInput [formControl]="form.controls.organizationId" />
+</mat-form-field>
+
+<!-- Rôles -->
+<mat-form-field class="w-full">
+    <mat-label>{{ TRANSLATION_PREFIX + 'fields.roles' | transloco }}</mat-label>
+    <mat-select [formControl]="form.controls.roles" multiple>
+        <mat-option *ngFor="let role of roleTypes" [value]="role">
+            {{ 'enums.role-type.' + role | transloco }}
+        </mat-option>
+    </mat-select>
+</mat-form-field>
+
+<!-- User ID -->
+<mat-form-field class="w-full">
+    <mat-label>{{ TRANSLATION_PREFIX + 'fields.user-id' | transloco }}</mat-label>
+    <input matInput [formControl]="form.controls.userId" />
+</mat-form-field>

@@ -24,8 +24,6 @@ interface BasePerson extends BaseModel {
     equipments?: string[]
 }
 
-export type Person = Member | Dj | Organization | Correspondent | Customer
-
 export interface Member extends BasePerson {
     personType: PersonType.MEMBER
     organizationId?: string
@@ -50,7 +48,6 @@ export interface Dj extends BasePerson {
 export interface Organization extends BasePerson {
     personType: PersonType.ORGANIZATION
     organizationType: OrganizationType
-    logo?: string
     correspondentIds?: string[]
     bankDetails?: BankDetails
     siret?: number
@@ -69,3 +66,5 @@ export interface Customer extends BasePerson {
     personType: PersonType.CUSTOMER
     purchaseIds?: string[]
 }
+
+export type Person = Member | Dj | Organization | Correspondent | Customer

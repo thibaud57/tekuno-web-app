@@ -1,0 +1,45 @@
+<div class="section-divider flex items-center gap-4">
+    <div class="h-px flex-1 bg-gray-300"></div>
+    <h3 class="text-lg font-medium">{{ 'enums.person-type.DJ' | transloco }}</h3>
+    <div class="h-px flex-1 bg-gray-300"></div>
+</div>
+
+<!-- Nom de scène -->
+<mat-form-field class="w-full">
+    <mat-label>{{ TRANSLATION_PREFIX + 'fields.alias' | transloco }}</mat-label>
+    <input matInput [formControl]="form.controls.alias" />
+</mat-form-field>
+
+<!-- Biographie -->
+<mat-form-field class="w-full">
+    <mat-label>{{ TRANSLATION_PREFIX + 'fields.biography' | transloco }}</mat-label>
+    <textarea matInput [formControl]="form.controls.biography" rows="3"></textarea>
+</mat-form-field>
+
+<!-- Agence et Tarif -->
+<div class="grid grid-cols-10 gap-4">
+    <mat-form-field class="col-span-7">
+        <mat-label>{{ TRANSLATION_PREFIX + 'fields.agency-id' | transloco }}</mat-label>
+        <input matInput [formControl]="form.controls.agencyId" />
+    </mat-form-field>
+
+    <mat-form-field class="col-span-3">
+        <mat-label>{{ TRANSLATION_PREFIX + 'fields.price' | transloco }}</mat-label>
+        <input matInput type="text" [formControl]="form.controls.price" mask="separator.2" suffix=" €" thousandSeparator=" " class="text-right" />
+    </mat-form-field>
+</div>
+
+<!-- SIRET et TVA -->
+<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+    <mat-form-field>
+        <mat-label>{{ TRANSLATION_PREFIX + 'fields.siret' | transloco }}</mat-label>
+        <input matInput type="number" [formControl]="form.controls.siret" />
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>{{ TRANSLATION_PREFIX + 'fields.vat' | transloco }}</mat-label>
+        <input matInput [formControl]="form.controls.vat" />
+    </mat-form-field>
+</div>
+
+<app-bank-details-form [form]="form.controls.bankDetails"></app-bank-details-form>

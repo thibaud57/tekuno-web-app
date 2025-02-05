@@ -1,0 +1,85 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-4 p-6">
+    <div class="mb-4 flex items-center justify-between">
+        <h2 class="text-2xl font-semibold">{{ TRANSLATION_PREFIX + 'title' | transloco }}</h2>
+        <button mat-icon-button (click)="onClose()">
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+
+    <mat-form-field>
+        <mat-label>{{ TRANSLATION_PREFIX + 'fields.person-type' | transloco }}</mat-label>
+        <mat-select formControlName="personType">
+            @for (personType of personTypes | sortAlphabetically: 'enums.person-type.'; track personType) {
+                <mat-option [value]="personType">{{ 'enums.person-type.' + personType | transloco }}</mat-option>
+            }
+        </mat-select>
+    </mat-form-field>
+
+    <div class="grid grid-cols-1 gap-4" [class.sm:grid-cols-2]="!isOrganization()">
+        <mat-form-field [class.col-span-2]="isOrganization()">
+            <mat-label>{{ TRANSLATION_PREFIX + 'fields.name' | transloco }}</mat-label>
+            <input matInput formControlName="name" />
+        </mat-form-field>
+
+        <mat-form-field *ngIf="!isOrganization()">
+            <mat-label>{{ TRANSLATION_PREFIX + 'fields.first-name' | transloco }}</mat-label>
+            <input matInput formControlName="firstName" />
+        </mat-form-field>
+    </div>
+
+    <mat-form-field *ngIf="!isOrganization()">
+        <mat-label>{{ TRANSLATION_PREFIX + 'fields.gender' | transloco }}</mat-label>
+        <mat-select formControlName="gender">
+            <mat-option [value]="Gender.MALE">{{ 'enums.gender.MALE' | transloco }}</mat-option>
+            <mat-option [value]="Gender.FEMALE">{{ 'enums.gender.FEMALE' | transloco }}</mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <mat-form-field>
+            <mat-label>{{ TRANSLATION_PREFIX + 'fields.email' | transloco }}</mat-label>
+            <input matInput type="email" formControlName="email" />
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>{{ TRANSLATION_PREFIX + 'fields.phone' | transloco }}</mat-label>
+
+            <div class="grid grid-cols-12 gap-2">
+                <div class="col-span-4">
+                    <app-country-select [control]="form.controls.phonePrefix" [withPhonePrefix]="true"></app-country-select>
+                </div>
+                <div class="col-span-8">
+                    <input matInput formControlName="phone" (click)="$event.stopPropagation()" />
+                </div>
+            </div>
+        </mat-form-field>
+    </div>
+
+    <app-address-form [form]="form.controls.address" />
+
+    <mat-form-field class="w-full">
+        <mat-label>{{ TRANSLATION_PREFIX + 'fields.description' | transloco }}</mat-label>
+        <textarea matInput [formControl]="form.controls.description"></textarea>
+    </mat-form-field>
+
+    @switch (form.controls.personType.value) {
+        @case (PersonType.DJ) {
+            <app-dj-form [form]="form" />
+        }
+        @case (PersonType.ORGANIZATION) {
+            <app-organization-form [form]="form" />
+        }
+        @case (PersonType.CORRESPONDENT) {
+            <app-correspondent-form [form]="form" />
+        }
+    }
+
+    <div class="flex justify-end gap-2">
+        <button mat-button type="button" (click)="closeDrawer.emit()">
+            {{ TRANSLATION_PREFIX + 'actions.cancel' | transloco }}
+        </button>
+        <button mat-flat-button color="primary" type="submit">
+            {{ TRANSLATION_PREFIX + 'actions.save' | transloco }}
+        </button>
+    </div>
+</form>

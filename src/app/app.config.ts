@@ -19,6 +19,7 @@ import { TranslocoService, provideTransloco } from '@ngneat/transloco'
 import { appRoutes } from 'app/app.routes'
 import { provideAuth } from 'app/core/auth/auth.provider'
 import { provideIcons } from 'app/core/icons/icons.provider'
+import { provideNgxMask } from 'ngx-mask'
 import { firstValueFrom } from 'rxjs'
 import { environment } from '../environments/environment'
 import { TranslocoHttpLoader } from './core/translation/transloco/transloco.http-loader'
@@ -34,7 +35,7 @@ export const appConfig: ApplicationConfig = {
             withPreloading(PreloadAllModules),
             withInMemoryScrolling({ scrollPositionRestoration: 'enabled' })
         ),
-
+        provideNgxMask(),
         // Material Date Adapter
         {
             provide: DateAdapter,

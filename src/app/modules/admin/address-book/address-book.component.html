@@ -1,8 +1,13 @@
 <div class="h-full w-full p-6 sm:p-10">
-    <mat-drawer-container class="border-gray-300mat-drawer-container bg-card h-full flex-auto rounded-2xl border-2 border-dashed dark:bg-transparent">
+    <mat-drawer-container class="mat-drawer-container bg-card h-full flex-auto rounded-2xl border-2 border-dashed border-gray-300 dark:bg-transparent">
         <mat-drawer #drawer class="w-full dark:bg-gray-900 sm:w-160" [mode]="'side'" [position]="'end'" [opened]="drawerOpened()">
-            <ng-container *ngIf="selectedPerson()">
-                <app-person-detail [person]="selectedPerson()!" (close)="togglePersonDetails(selectedPerson()!)"></app-person-detail>
+            <!-- Person form -->
+            <ng-container *ngIf="isCreating()">
+                <app-person-form (closeDrawer)="closeDrawer()"></app-person-form>
+            </ng-container>
+            <!-- Person details -->
+            <ng-container *ngIf="selectedPerson() && !isCreating()">
+                <app-person-detail [person]="selectedPerson()!" (closeDrawer)="closeDrawer()"></app-person-detail>
             </ng-container>
         </mat-drawer>
         <mat-drawer-content class="flex flex-col">
