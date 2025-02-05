@@ -4,19 +4,11 @@
     <div class="h-px flex-1 bg-gray-300"></div>
 </div>
 
-<!-- Nom de scène -->
 <mat-form-field class="w-full">
     <mat-label>{{ TRANSLATION_PREFIX + 'fields.alias' | transloco }}</mat-label>
     <input matInput [formControl]="form.controls.alias" />
 </mat-form-field>
 
-<!-- Biographie -->
-<mat-form-field class="w-full">
-    <mat-label>{{ TRANSLATION_PREFIX + 'fields.biography' | transloco }}</mat-label>
-    <textarea matInput [formControl]="form.controls.biography" rows="3"></textarea>
-</mat-form-field>
-
-<!-- Agence et Tarif -->
 <div class="grid grid-cols-10 gap-4">
     <mat-form-field class="col-span-7">
         <mat-label>{{ TRANSLATION_PREFIX + 'fields.agency-id' | transloco }}</mat-label>
@@ -29,7 +21,6 @@
     </mat-form-field>
 </div>
 
-<!-- SIRET et TVA -->
 <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
     <mat-form-field>
         <mat-label>{{ TRANSLATION_PREFIX + 'fields.siret' | transloco }}</mat-label>
@@ -41,5 +32,10 @@
         <input matInput [formControl]="form.controls.vat" />
     </mat-form-field>
 </div>
+
+<mat-form-field class="w-full">
+    <mat-label>{{ TRANSLATION_PREFIX + 'fields.biography' | transloco }}</mat-label>
+    <textarea matInput [formControl]="form.controls.biography" rows="3"></textarea>
+</mat-form-field>
 
 <app-bank-details-form [form]="form.controls.bankDetails"></app-bank-details-form>

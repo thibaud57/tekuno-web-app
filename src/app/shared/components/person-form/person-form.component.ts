@@ -3,9 +3,9 @@ import {
     ChangeDetectionStrategy,
     Component,
     EventEmitter,
-    OnInit,
     Output,
     computed,
+    effect,
     inject,
     signal,
 } from '@angular/core'
@@ -15,9 +15,7 @@ import { MatFormFieldModule } from '@angular/material/form-field'
 import { MatIconModule } from '@angular/material/icon'
 import { MatInputModule } from '@angular/material/input'
 import { MatSelectModule } from '@angular/material/select'
-import { CorrespondentType } from '@backend/persons/enums/correspodent-type.enum'
 import { Gender } from '@backend/persons/enums/gender.enum'
-import { OrganizationType } from '@backend/persons/enums/organization-type.enum'
 import { PersonType } from '@backend/persons/enums/person-type.enum'
 import { Person } from '@backend/persons/models/person.model'
 import { TranslocoPipe } from '@ngneat/transloco'
@@ -57,48 +55,45 @@ import { OrganizationFormComponent } from './organization-form/organization-form
     styleUrl: './person-form.component.scss',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PersonFormComponent implements OnInit {
+export class PersonFormComponent {
+    private readonly personFormService = inject(PersonFormService)
+    private readonly personService = inject(PersonService)
+    private readonly notificationService = inject(NotificationService)
+
     @Output() closeDrawer = new EventEmitter<void>()
 
     readonly TRANSLATION_PREFIX = 'shared.person-form.'
-
     readonly personTypes = Object.values(PersonType).filter(
         type => type !== PersonType.CUSTOMER && type !== PersonType.MEMBER
     )
-    readonly correspondentTypes = Object.values(CorrespondentType)
-    readonly organizationTypes = Object.values(OrganizationType)
 
-    form!: FormGroup<PersonForm>
-    currentPersonType = signal<PersonType>(PersonType.ORGANIZATION)
+    form = signal<FormGroup<PersonForm>>(
+        this.personFormService.createPersonForm(PersonType.ORGANIZATION)
+    )
     isOrganization = computed(
-        () => this.currentPersonType() === PersonType.ORGANIZATION
+        () => this.form().controls.personType.value === PersonType.ORGANIZATION
     )
 
     protected readonly PersonType = PersonType
     protected readonly Gender = Gender
 
-    private readonly personFormService = inject(PersonFormService)
-    private readonly personService = inject(PersonService)
-    private readonly notificationService = inject(NotificationService)
-
     constructor() {
-        this.form = this.personFormService.createPersonForm(
-            PersonType.ORGANIZATION
-        )
-    }
+        effect(() => {
+            const form = this.form()
 
-    ngOnInit(): void {
-        this.form.controls.personType.valueChanges.subscribe(type => {
-            if (type) {
-                this.currentPersonType.set(type)
-                this.form = this.personFormService.createPersonForm(type)
-            }
+            form.controls.personType.valueChanges.subscribe(type => {
+                if (type) {
+                    const newForm =
+                        this.personFormService.createPersonForm(type)
+                    this.form.set(newForm)
+                }
+            })
         })
     }
 
     onSubmit(): void {
-        // if (this.form.valid) {
-        const formValue = this.form.value
+        const currentForm = this.form()
+        const formValue = currentForm.value
 
         // Nettoyer le numéro de téléphone avant l'envoi
         if (formValue.phone && formValue.phonePrefix?.phonePrefix) {
@@ -113,11 +108,14 @@ export class PersonFormComponent implements OnInit {
 
         const person = {
             ...formWithoutPrefix,
-            address: {
-                ...formValue.address,
-                country: formValue.address.country.name,
-            },
-        } as Omit<Person, 'id' | 'phonePrefix'>
+            address: formValue.address
+                ? {
+                      ...formValue.address,
+                      country: formValue.address.country?.name,
+                  }
+                : null,
+        } as unknown as Omit<Person, 'id' | 'phonePrefix'>
+
         console.log(person)
         // this.personService.createPerson(person).subscribe({
         //     next: () => {
@@ -134,7 +132,6 @@ export class PersonFormComponent implements OnInit {
         //     },
         // })
     }
-    // }
 
     onClose(): void {
         this.closeDrawer.emit()

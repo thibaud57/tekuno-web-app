@@ -5,7 +5,7 @@
             @if (withPhonePrefix) {
                 <span class="ml-1">{{ control.value?.phonePrefix }}</span>
             } @else {
-                <span class="ml-1">{{ 'enums.country.' + control.value?.name | transloco }}</span>
+                <span class="ml-2">{{ 'enums.country.' + control.value?.name | transloco }}</span>
             }
         </span>
     </mat-select-trigger>
