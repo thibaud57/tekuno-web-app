@@ -1,10 +1,10 @@
-<div class="section-divider flex items-center gap-4">
+<div class="section-divider flex items-center">
     <div class="h-px flex-1 bg-gray-300"></div>
     <h3 class="text-lg font-medium">{{ TRANSLATION_PREFIX + 'title' | transloco }}</h3>
     <div class="h-px flex-1 bg-gray-300"></div>
 </div>
 
-<form [formGroup]="form" class="flex flex-col gap-4">
+<form [formGroup]="form" class="flex flex-col gap-x-4">
     <div class="grid grid-cols-12 gap-4">
         <mat-form-field class="col-span-2">
             <mat-label>{{ TRANSLATION_PREFIX + 'fields.street-number' | transloco }}</mat-label>
@@ -14,6 +14,9 @@
         <mat-form-field class="col-span-10">
             <mat-label>{{ TRANSLATION_PREFIX + 'fields.street-name' | transloco }}</mat-label>
             <input matInput [formControl]="form.controls.streetName" />
+            <mat-error *ngIf="form.controls.streetName.errors?.['required']">
+                {{ 'common.errors.required' | transloco }}
+            </mat-error>
         </mat-form-field>
     </div>
 
@@ -21,11 +24,17 @@
         <mat-form-field>
             <mat-label>{{ TRANSLATION_PREFIX + 'fields.city' | transloco }}</mat-label>
             <input matInput [formControl]="form.controls.city" />
+            <mat-error *ngIf="form.controls.city.errors?.['required']">
+                {{ 'common.errors.required' | transloco }}
+            </mat-error>
         </mat-form-field>
 
         <mat-form-field>
             <mat-label>{{ TRANSLATION_PREFIX + 'fields.postal-code' | transloco }}</mat-label>
             <input matInput [formControl]="form.controls.postalCode" />
+            <mat-error *ngIf="form.controls.postalCode.errors?.['required']">
+                {{ 'common.errors.required' | transloco }}
+            </mat-error>
         </mat-form-field>
     </div>
 
@@ -33,9 +42,8 @@
         <mat-label>{{ TRANSLATION_PREFIX + 'fields.country' | transloco }}</mat-label>
         <app-country-select [control]="form.controls.country"></app-country-select>
         <input matInput class="hidden" />
+        <mat-error *ngIf="form.controls.country.errors?.['required']">
+            {{ 'common.errors.required' | transloco }}
+        </mat-error>
     </mat-form-field>
 </form>
-
-<div class="my-4 flex items-center">
-    <div class="h-px flex-1 bg-gray-300"></div>
-</div>

@@ -6,7 +6,7 @@ import { OrganizationType } from '../enums/organization-type.enum'
 import { PersonType } from '../enums/person-type.enum'
 import { Address } from './address.model'
 import { BankDetails } from './bank-details.model'
-import { SocialMedia, SocialMediaDj } from './social-media.model'
+import { SocialMedia } from './social-media.model'
 
 // Abstract
 interface BasePerson extends BaseModel {
@@ -33,7 +33,7 @@ export interface Member extends BasePerson {
 
 export interface Dj extends BasePerson {
     personType: PersonType.DJ
-    socialMedia: SocialMediaDj
+    socialMedia: SocialMedia
     alias: string
     biography?: string
     logo?: string

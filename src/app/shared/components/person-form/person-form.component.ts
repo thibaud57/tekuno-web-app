@@ -22,11 +22,13 @@ import { TranslocoPipe } from '@ngneat/transloco'
 import { NotificationService } from 'app/core/services/notification.service'
 import { AddressFormComponent } from 'app/shared/components/address-form/address-form.component'
 import { CountrySelectComponent } from 'app/shared/components/country-select/country-select.component'
+import { SocialMediaFormType } from 'app/shared/enums/social-media-form-type.enum'
 import { PersonForm } from 'app/shared/services/person-form/person-form.model'
 import { PersonFormService } from 'app/shared/services/person-form/person-form.service'
 import { cleanPhoneNumber } from 'app/shared/utils/phone.utils'
 import { PersonService } from '../../../modules/admin/services/person/person.service'
 import { SortAlphabeticallyPipe } from '../../pipes/sort-alphabetically.pipe'
+import { SocialMediaFormComponent } from '../social-media-form/social-media-form.component'
 import { CorrespondentFormComponent } from './correspondent-form/correspondent-form.component'
 import { DjFormComponent } from './dj-form/dj-form.component'
 import { OrganizationFormComponent } from './organization-form/organization-form.component'
@@ -50,6 +52,7 @@ import { OrganizationFormComponent } from './organization-form/organization-form
         OrganizationFormComponent,
         CorrespondentFormComponent,
         SortAlphabeticallyPipe,
+        SocialMediaFormComponent,
     ],
     templateUrl: './person-form.component.html',
     styleUrl: './person-form.component.scss',
@@ -72,6 +75,11 @@ export class PersonFormComponent {
     )
     isOrganization = computed(
         () => this.form().controls.personType.value === PersonType.ORGANIZATION
+    )
+    personTypeForm = computed(() =>
+        this.form().controls.personType.value === PersonType.DJ
+            ? SocialMediaFormType.DJ
+            : SocialMediaFormType.NORMAL
     )
 
     protected readonly PersonType = PersonType
@@ -116,21 +124,20 @@ export class PersonFormComponent {
                 : null,
         } as unknown as Omit<Person, 'id' | 'phonePrefix'>
 
-        console.log(person)
-        // this.personService.createPerson(person).subscribe({
-        //     next: () => {
-        //         this.notificationService.showSuccess(
-        //             this.TRANSLATION_PREFIX + 'success.create'
-        //         )
-        //         this.closeDrawer.emit()
-        //     },
-        //     error: error => {
-        //         this.notificationService.showError(
-        //             this.TRANSLATION_PREFIX + 'error.create',
-        //             error.error.message
-        //         )
-        //     },
-        // })
+        this.personService.createPerson(person).subscribe({
+            next: () => {
+                this.notificationService.showSuccess(
+                    this.TRANSLATION_PREFIX + 'success.create'
+                )
+                this.closeDrawer.emit()
+            },
+            error: error => {
+                this.notificationService.showError(
+                    this.TRANSLATION_PREFIX + 'error.create',
+                    error.error.message
+                )
+            },
+        })
     }
 
     onClose(): void {

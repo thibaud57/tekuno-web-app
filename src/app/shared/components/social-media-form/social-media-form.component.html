@@ -1,0 +1,19 @@
+<div class="section-divider flex items-center">
+    <div class="h-px flex-1 bg-gray-300"></div>
+    <h3 class="text-lg font-medium">{{ TRANSLATION_PREFIX + 'title' | transloco }}</h3>
+    <div class="h-px flex-1 bg-gray-300"></div>
+</div>
+
+<form [formGroup]="form" class="grid grid-cols-2 gap-x-4">
+    @for (media of socialMedias; track media.key) {
+        @if (isMediaVisible(media.key)) {
+            <mat-form-field class="w-full" floatLabel="always">
+                <div class="flex items-center" matPrefix>
+                    <img [src]="getLogo(media.logo)" [alt]="media.key" class="mr-2 h-4 w-6" />
+                </div>
+                <mat-label>{{ 'enums.social-media-type.' + media.key | transloco }}</mat-label>
+                <input matInput [formControlName]="media.controlName" [placeholder]="media.placeholder" type="url" />
+            </mat-form-field>
+        }
+    }
+</form>

@@ -50,6 +50,13 @@ import { passwordValidator } from '../validators/password-validator.directive'
     ],
 })
 export class AuthResetPasswordComponent implements OnInit {
+    private readonly authService = inject(AuthService)
+    private readonly formBuilder = inject(FormBuilder)
+    private readonly router = inject(Router)
+    private readonly route = inject(ActivatedRoute)
+    private readonly translationService = inject(TranslationService)
+    private readonly destroyRef = inject(DestroyRef)
+
     @ViewChild('resetPasswordNgForm') resetPasswordNgForm: NgForm
 
     readonly TRANSLATION_PREFIX = 'modules.auth.reset-password.'
@@ -61,13 +68,6 @@ export class AuthResetPasswordComponent implements OnInit {
     showAlert = false
     form: FormGroup
     oobCode?: string
-
-    private readonly authService = inject(AuthService)
-    private readonly formBuilder = inject(FormBuilder)
-    private readonly router = inject(Router)
-    private readonly route = inject(ActivatedRoute)
-    private readonly translationService = inject(TranslationService)
-    private readonly destroyRef = inject(DestroyRef)
 
     constructor() {
         this.route.queryParamMap

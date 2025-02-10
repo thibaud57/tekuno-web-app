@@ -17,10 +17,10 @@ import { FirebaseAuthWrapper } from './firebase-auth.wrapper.service'
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-    private authenticated = signal(false)
-
     private userService = inject(UserService)
     private firebaseAuthWrapper = inject(FirebaseAuthWrapper)
+
+    private authenticated = signal(false)
 
     set accessToken(token: string) {
         localStorage.setItem('accessToken', token)

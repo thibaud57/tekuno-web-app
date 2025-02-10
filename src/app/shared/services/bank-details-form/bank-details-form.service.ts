@@ -12,7 +12,9 @@ export class BankDetailsFormService {
             }),
             iban: new FormControl(''),
             bic: new FormControl(''),
-            paypal: new FormControl(''),
+            paypal: new FormControl('', {
+                validators: [Validators.email],
+            }),
         })
     }
 }

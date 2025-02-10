@@ -1,4 +1,4 @@
-<form [formGroup]="form()" (ngSubmit)="onSubmit()" class="flex flex-col gap-4 p-6">
+<form [formGroup]="form()" (ngSubmit)="onSubmit()" class="flex flex-col gap-x-4 p-6">
     <div class="mb-4 flex items-center justify-between">
         <h2 class="text-2xl font-semibold">{{ TRANSLATION_PREFIX + 'title' | transloco }}</h2>
         <button mat-icon-button (click)="onClose()">
@@ -19,6 +19,12 @@
         <mat-form-field [class.col-span-2]="isOrganization()">
             <mat-label>{{ TRANSLATION_PREFIX + 'fields.name' | transloco }}</mat-label>
             <input matInput formControlName="name" />
+            <mat-error *ngIf="form().controls.name.errors?.['required']">
+                {{ 'common.errors.required' | transloco }}
+            </mat-error>
+            <mat-error *ngIf="form().controls.name.errors?.['minlength'] && form().controls.name.touched">
+                {{ 'common.errors.minlength' | transloco: { min: 2 } }}
+            </mat-error>
         </mat-form-field>
 
         <mat-form-field *ngIf="!isOrganization()">
@@ -33,12 +39,18 @@
             <mat-option [value]="Gender.MALE">{{ 'enums.gender.MALE' | transloco }}</mat-option>
             <mat-option [value]="Gender.FEMALE">{{ 'enums.gender.FEMALE' | transloco }}</mat-option>
         </mat-select>
+        <mat-error *ngIf="form().controls.gender.errors?.['required']">
+            {{ 'common.errors.required' | transloco }}
+        </mat-error>
     </mat-form-field>
 
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <mat-form-field>
             <mat-label>{{ TRANSLATION_PREFIX + 'fields.email' | transloco }}</mat-label>
             <input matInput type="email" formControlName="email" />
+            <mat-error *ngIf="form().controls.email.errors?.['email']">
+                {{ 'common.errors.email' | transloco }}
+            </mat-error>
         </mat-form-field>
 
         <mat-form-field>
@@ -55,12 +67,14 @@
         </mat-form-field>
     </div>
 
-    <app-address-form [form]="form().controls.address" />
-
     <mat-form-field class="w-full">
         <mat-label>{{ TRANSLATION_PREFIX + 'fields.description' | transloco }}</mat-label>
         <textarea matInput formControlName="description"></textarea>
     </mat-form-field>
+
+    <app-address-form [form]="form().controls.address" />
+
+    <app-social-media-form [form]="form().controls.socialMedia" [typeSocialMediaForm]="personTypeForm()" />
 
     @switch (form().controls.personType.value) {
         @case (PersonType.DJ) {

@@ -40,6 +40,10 @@ import { SortByRolePipe } from 'app/shared/pipes/sort-by-role.pipe'
     styleUrl: './user-settings.component.scss',
 })
 export class UserSettingsComponent implements OnInit {
+    private readonly formBuilder = inject(FormBuilder)
+    private readonly userService = inject(UserService)
+    private readonly notificationService = inject(NotificationService)
+
     readonly TRANSLATION_PREFIX = 'modules.admin.user-settings.'
     readonly roles = Object.values(RoleType)
 
@@ -47,10 +51,6 @@ export class UserSettingsComponent implements OnInit {
     users = signal<User[]>([])
 
     protected readonly RoleType = RoleType
-
-    private readonly formBuilder = inject(FormBuilder)
-    private readonly userService = inject(UserService)
-    private readonly notificationService = inject(NotificationService)
 
     ngOnInit(): void {
         if (this.hasRole(RoleType.ADMIN)) {

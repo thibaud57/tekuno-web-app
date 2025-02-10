@@ -162,6 +162,50 @@
                     "vat": "TVA",
                     "is-active": "Actif",
                     "is-default": "Par défaut"
+                },
+                "actions": {
+                    "save": "Enregistrer",
+                    "cancel": "Annuler"
+                },
+                "dj-form": {
+                    "fields": {
+                        "alias": "Nom de scène",
+                        "price": "Tarif",
+                        "biography": "Biographie",
+                        "agency-id": {
+                            "agence": "Agence",
+                            "aucune-agence-disponible": "Aucune agence disponible",
+                            "aucune-agence": "Aucune agence"
+                        },
+                        "bank-details": "Coordonnées bancaires",
+                        "siret": "SIRET",
+                        "vat": "TVA"
+                    },
+                    "errors": {
+                        "siret-format": "Le SIRET doit contenir uniquement des chiffres"
+                    }
+                },
+                "organization-form": {
+                    "fields": {
+                        "organization-type": "Type d'organisation",
+                        "siret": "SIRET",
+                        "vat": "TVA",
+                        "bank-details": "Coordonnées bancaires"
+                    },
+                    "errors": {
+                        "siret-format": "Le SIRET doit contenir uniquement des chiffres"
+                    }
+                },
+                "correspondent-form": {
+                    "fields": {
+                        "organization-id": {
+                            "organisation": "Organisation",
+                            "aucune-organisation-disponible": "Aucune organisation disponible"
+                        },
+                        "correspondent-type": "Type de correspondant",
+                        "is-active": "Actif",
+                        "is-default": "Par défaut"
+                    }
                 }
             }
         }
@@ -170,7 +214,13 @@
         "erreur-api": "Une erreur est survenue : {erreur}",
         "ok": "OK",
         "oui": "Oui",
-        "non": "Non"
+        "non": "Non",
+        "errors": {
+            "required": "Ce champ est requis",
+            "email": "L'adresse email n'est pas valide",
+            "minlength": "Ce champ doit contenir au minimum {{min}} caractères",
+            "maxlength": "Ce champ doit contenir au maximum {{max}} caractères"
+        }
     },
     "shared": {
         "address-form": {
@@ -182,6 +232,9 @@
                 "postal-code": "Code postal",
                 "country": "Pays"
             }
+        },
+        "social-media-form": {
+            "title": "Réseaux sociaux"
         },
         "person-form": {
             "title": "Nouveau contact",
@@ -204,10 +257,17 @@
                     "alias": "Nom de scène",
                     "price": "Tarif",
                     "biography": "Biographie",
-                    "agency-id": "Agence",
+                    "agency-id": {
+                        "agence": "Agence",
+                        "aucune-agence-disponible": "Aucune agence disponible",
+                        "aucune-agence": "Aucune agence"
+                    },
                     "bank-details": "Coordonnées bancaires",
                     "siret": "SIRET",
                     "vat": "TVA"
+                },
+                "errors": {
+                    "siret-format": "Le SIRET doit contenir uniquement des chiffres"
                 }
             },
             "organization-form": {
@@ -216,11 +276,17 @@
                     "siret": "SIRET",
                     "vat": "TVA",
                     "bank-details": "Coordonnées bancaires"
+                },
+                "errors": {
+                    "siret-format": "Le SIRET doit contenir uniquement des chiffres"
                 }
             },
             "correspondent-form": {
                 "fields": {
-                    "organization-id": "Organisation",
+                    "organization-id": {
+                        "organisation": "Organisation",
+                        "aucune-organisation-disponible": "Aucune organisation disponible"
+                    },
                     "correspondent-type": "Type de correspondant",
                     "is-active": "Actif",
                     "is-default": "Par défaut"
@@ -273,11 +339,32 @@
             "AGENCY": "Agence",
             "ARTIST": "Artiste",
             "ASSOCIATION": "Association",
-            "LOCATION": "Location",
+            "LOCATION": "Lieu",
             "RENTAL": "Location",
             "PHOTOGRAPHER": "Photographe",
             "VJ": "VJ",
             "SHOP": "Magasin"
+        },
+        "social-media-type": {
+            "FACEBOOK": "Facebook",
+            "INSTAGRAM": "Instagram",
+            "WEBSITE": "Site web",
+            "SOUNDCLOUD": "Soundcloud",
+            "SPOTIFY": "Spotify",
+            "BEATPORT": "Beatport",
+            "BANDCAMP": "Bandcamp",
+            "RESIDENT_ADVISOR": "Resident Advisor"
+        },
+        "correspondent-type": {
+            "MANAGER": "Directeur",
+            "OWNER": "Propriétaire",
+            "AGENT": "Agent",
+            "EVENT_COORDINATOR": "Coordinateur événementiel",
+            "TECHNICAL": "Responsable technique",
+            "SECURITY": "Responsable sécurité",
+            "MARKETING": "Responsable marketing",
+            "FINANCE": "Responsable financier",
+            "OTHER": "Autre"
         }
     }
 }

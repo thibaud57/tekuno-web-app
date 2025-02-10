@@ -7,6 +7,7 @@ import { PersonType } from '@backend/persons/enums/person-type.enum'
 import { getDefaultCountry } from 'app/shared/utils/address.utils'
 import { AddressFormService } from '../address-form/address-form.service'
 import { BankDetailsFormService } from '../bank-details-form/bank-details-form.service'
+import { SocialMediaFormService } from '../social-media-form/social-media-form.service'
 import {
     BasePersonForm,
     CorrespondentForm,
@@ -17,6 +18,7 @@ import {
 @Injectable({ providedIn: 'root' })
 export class PersonFormService {
     private readonly addressFormService = inject(AddressFormService)
+    private readonly socialMediaFormService = inject(SocialMediaFormService)
     private readonly bankDetailsFormService = inject(BankDetailsFormService)
 
     createPersonForm(type: PersonType): FormGroup {
@@ -36,7 +38,10 @@ export class PersonFormService {
         const baseForm = this.createBaseForm(PersonType.DJ)
         return new FormGroup<DjForm>({
             ...baseForm.controls,
-            socialMedia: new FormControl(null),
+            gender: new FormControl<Gender | null>(null, {
+                nonNullable: true,
+                validators: [Validators.required],
+            }),
             alias: new FormControl('', {
                 nonNullable: true,
                 validators: [Validators.required],
@@ -47,7 +52,9 @@ export class PersonFormService {
             price: new FormControl(0),
             agencyId: new FormControl(null),
             bankDetails: this.bankDetailsFormService.createForm(),
-            siret: new FormControl(null),
+            siret: new FormControl(null, {
+                validators: [Validators.pattern('^[0-9]*$')],
+            }),
             vat: new FormControl(null),
         })
     }
@@ -62,7 +69,9 @@ export class PersonFormService {
             }),
             correspondentIds: new FormControl([]),
             bankDetails: this.bankDetailsFormService.createForm(),
-            siret: new FormControl(null),
+            siret: new FormControl(null, {
+                validators: [Validators.pattern('^[0-9]*$')],
+            }),
             vat: new FormControl(null),
         })
     }
@@ -71,6 +80,10 @@ export class PersonFormService {
         const baseForm = this.createBaseForm(PersonType.CORRESPONDENT)
         return new FormGroup<CorrespondentForm>({
             ...baseForm.controls,
+            gender: new FormControl<Gender | null>(null, {
+                nonNullable: true,
+                validators: [Validators.required],
+            }),
             organizationId: new FormControl('', {
                 nonNullable: true,
                 validators: [Validators.required],
@@ -103,7 +116,7 @@ export class PersonFormService {
             email: new FormControl(null, { validators: [Validators.email] }),
             phonePrefix: new FormControl(getDefaultCountry()),
             phone: new FormControl(null),
-            socialMedia: new FormControl(null),
+            socialMedia: this.socialMediaFormService.createForm(),
             profilePicture: new FormControl(null),
             description: new FormControl(null),
             equipments: new FormControl([]),

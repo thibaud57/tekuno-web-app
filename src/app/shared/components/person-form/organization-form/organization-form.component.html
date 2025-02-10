@@ -1,24 +1,25 @@
-<div class="section-divider flex items-center gap-4">
+<div class="section-divider flex items-center">
     <div class="h-px flex-1 bg-gray-300"></div>
     <h3 class="text-lg font-medium">{{ 'enums.person-type.ORGANIZATION' | transloco }}</h3>
     <div class="h-px flex-1 bg-gray-300"></div>
 </div>
 
-<!-- Type d'organisation -->
 <mat-form-field class="w-full">
     <mat-label>{{ TRANSLATION_PREFIX + 'fields.organization-type' | transloco }}</mat-label>
     <mat-select [formControl]="form.controls.organizationType">
-        <mat-option *ngFor="let type of organizationTypes | sortAlphabetically: 'enums.organization-type.'" [value]="type">
-            {{ 'enums.organization-type.' + type | transloco }}
-        </mat-option>
+        @for (type of organizationTypes | sortAlphabetically: 'enums.organization-type.'; track type) {
+            <mat-option [value]="type">{{ 'enums.organization-type.' + type | transloco }}</mat-option>
+        }
     </mat-select>
+    <mat-error *ngIf="form.controls.organizationType.errors?.['required']">
+        {{ 'common.errors.required' | transloco }}
+    </mat-error>
 </mat-form-field>
 
-<!-- SIRET et TVA -->
 <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
     <mat-form-field>
         <mat-label>{{ TRANSLATION_PREFIX + 'fields.siret' | transloco }}</mat-label>
-        <input matInput type="number" [formControl]="form.controls.siret" />
+        <input matInput type="number" [formControl]="form.controls.siret" class="hide-number-spinners" />
     </mat-form-field>
 
     <mat-form-field>
@@ -27,5 +28,4 @@
     </mat-form-field>
 </div>
 
-<!-- Coordonnées bancaires -->
 <app-bank-details-form [form]="form.controls.bankDetails"></app-bank-details-form>

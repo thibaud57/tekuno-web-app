@@ -1,8 +1,4 @@
-import {
-    SocialMedia,
-    SocialMediaDj,
-    SocialMediaEvent,
-} from './social-media.model'
+import { SocialMedia } from './social-media.model'
 
 export const socialMediaMock: SocialMedia = {
     facebook: 'https://facebook.com/basic',
@@ -10,7 +6,7 @@ export const socialMediaMock: SocialMedia = {
     website: 'https://www.basic-website.com',
 }
 
-export const socialMediaDjMock: SocialMediaDj = {
+export const socialMediaDjMock: SocialMedia = {
     facebook: 'https://facebook.com/dj',
     instagram: 'https://instagram.com/dj',
     website: 'https://www.dj-website.com',
@@ -18,12 +14,12 @@ export const socialMediaDjMock: SocialMediaDj = {
     spotify: 'https://open.spotify.com/artist/dj',
     beatport: 'https://www.beatport.com/artist/dj',
     bandcamp: 'https://dj.bandcamp.com',
-    residentadvisor: 'https://ra.co/dj/artist',
+    residentAdvisor: 'https://ra.co/dj/artist',
 }
 
-export const socialMediaEventMock: SocialMediaEvent = {
+export const socialMediaEventMock: SocialMedia = {
     facebook: 'https://facebook.com/event',
     instagram: 'https://instagram.com/event',
     website: 'https://www.event-website.com',
-    residentadvisor: 'https://ra.co/events/123456',
+    residentAdvisor: 'https://ra.co/events/123456',
 }

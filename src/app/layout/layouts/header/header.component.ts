@@ -23,12 +23,12 @@ import { UserComponent } from '../../common/user/user.component'
     ],
 })
 export class HeaderComponent {
+    private _fuseNavigationService = inject(FuseNavigationService)
+
     @Input() isScreenSmall: boolean
     @Input() isAuthenticated: boolean
     @Input() currentNavigation: FuseNavigationItem[]
     @Input() withSideBar = true
-
-    private _fuseNavigationService = inject(FuseNavigationService)
 
     toggleNavigation(name: string): void {
         const navigation =

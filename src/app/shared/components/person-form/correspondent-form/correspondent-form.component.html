@@ -1,5 +1,43 @@
-<div class="section-divider flex items-center gap-4">
+<div class="section-divider flex items-center">
     <div class="h-px flex-1 bg-gray-300"></div>
     <h3 class="text-lg font-medium">{{ 'enums.person-type.CORRESPONDENT' | transloco }}</h3>
     <div class="h-px flex-1 bg-gray-300"></div>
+</div>
+
+<mat-form-field class="w-full">
+    <mat-label>{{ TRANSLATION_PREFIX + 'fields.correspondent-type' | transloco }}</mat-label>
+    <mat-select [formControl]="form.controls.correspondentType">
+        @for (type of correspondentTypes | sortAlphabetically: 'enums.correspondent-type.'; track type) {
+            <mat-option [value]="type">{{ 'enums.correspondent-type.' + type | transloco }}</mat-option>
+        }
+    </mat-select>
+    <mat-error *ngIf="form.controls.correspondentType.errors?.['required']">
+        {{ 'common.errors.required' | transloco }}
+    </mat-error>
+</mat-form-field>
+
+<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+    <mat-form-field class="col-span-2">
+        <mat-label>{{ TRANSLATION_PREFIX + 'fields.organization-id.organisation' | transloco }}</mat-label>
+        <mat-select [formControl]="form.controls.organizationId">
+            @for (organization of organizations$ | async; track organization.id) {
+                <mat-option [value]="organization.id">{{ organization.name }}</mat-option>
+            } @empty {
+                <mat-option disabled>{{ TRANSLATION_PREFIX + 'fields.organization-id.aucune-organisation' | transloco }}</mat-option>
+            }
+        </mat-select>
+        <mat-error *ngIf="form.controls.organizationId.errors?.['required']">
+            {{ 'common.errors.required' | transloco }}
+        </mat-error>
+    </mat-form-field>
+</div>
+
+<div class="mb-4 flex gap-4">
+    <mat-slide-toggle [formControl]="form.controls.isActive" color="primary">
+        {{ TRANSLATION_PREFIX + 'fields.is-active' | transloco }}
+    </mat-slide-toggle>
+
+    <mat-slide-toggle [formControl]="form.controls.isDefault" color="primary">
+        {{ TRANSLATION_PREFIX + 'fields.is-default' | transloco }}
+    </mat-slide-toggle>
 </div>

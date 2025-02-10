@@ -1,5 +1,5 @@
 import { BooleanInput } from '@angular/cdk/coercion'
-import { NgClass } from '@angular/common'
+import { CommonModule } from '@angular/common'
 import {
     ChangeDetectionStrategy,
     Component,
@@ -13,7 +13,7 @@ import { MatDividerModule } from '@angular/material/divider'
 import { MatIconModule } from '@angular/material/icon'
 import { MatMenuModule } from '@angular/material/menu'
 import { Router, RouterModule } from '@angular/router'
-import { FuseUtilsService } from '@fuse/services/utils/utils.service'
+import { FuseUtilsService } from '@fuse/services/utils'
 import { TranslocoPipe } from '@ngneat/transloco'
 import { UserService } from 'app/core/user/services/user.service'
 import { AvatarComponent } from 'app/shared/components/avatar/avatar.component'
@@ -32,22 +32,22 @@ import { AvatarComponent } from 'app/shared/components/avatar/avatar.component'
         MatDividerModule,
         TranslocoPipe,
         RouterModule,
-        NgClass,
         AvatarComponent,
+        CommonModule,
     ],
 })
 export class UserComponent {
     static ngAcceptInputType_showAvatar: BooleanInput
+
+    private readonly _router = inject(Router)
+    private readonly _userService = inject(UserService)
+    private readonly _fuseUtilsService = inject(FuseUtilsService)
 
     @Input() showAvatar = true
 
     readonly TRANSLATION_PREFIX = 'layout.common.user.'
 
     readonly user = computed(() => this._userService.user())
-
-    private readonly _router = inject(Router)
-    private readonly _userService = inject(UserService)
-    private readonly _fuseUtilsService = inject(FuseUtilsService)
 
     isRouteActive(route: string): boolean {
         return this._router.isActive(

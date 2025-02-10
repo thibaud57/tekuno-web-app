@@ -1,9 +1,5 @@
-import {
-    ChangeDetectionStrategy,
-    Component,
-    Input,
-    OnInit,
-} from '@angular/core'
+import { CommonModule } from '@angular/common'
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core'
 import { FormGroup, ReactiveFormsModule } from '@angular/forms'
 import { MatFormFieldModule } from '@angular/material/form-field'
 import { MatInputModule } from '@angular/material/input'
@@ -25,14 +21,11 @@ import { CountrySelectComponent } from '../country-select/country-select.compone
         MatSelectModule,
         TranslocoPipe,
         CountrySelectComponent,
+        CommonModule,
     ],
 })
-export class AddressFormComponent implements OnInit {
+export class AddressFormComponent {
     readonly TRANSLATION_PREFIX = 'shared.address-form.'
 
     @Input({ required: true }) form!: FormGroup<AddressForm>
-
-    ngOnInit(): void {
-        console.log('iiziz')
-    }
 }

@@ -38,6 +38,9 @@ import { PersonDetailComponent } from './person-detail/person-detail.component'
     styleUrl: './address-book.component.scss',
 })
 export class AddressBookComponent implements OnInit {
+    private readonly personService = inject(PersonService)
+    private readonly notificationService = inject(NotificationService)
+
     readonly TRANSLATION_PREFIX = 'modules.admin.address-book.'
 
     drawerOpened = signal<boolean>(false)
@@ -45,9 +48,6 @@ export class AddressBookComponent implements OnInit {
     selectedPerson = signal<Person | null>(null)
     isCreating = signal<boolean>(false)
     searchControl = new FormControl('')
-
-    private readonly personService = inject(PersonService)
-    private readonly notificationService = inject(NotificationService)
 
     ngOnInit(): void {
         this.loadPersons()
@@ -79,6 +79,7 @@ export class AddressBookComponent implements OnInit {
         this.drawerOpened.set(false)
         this.selectedPerson.set(null)
         this.isCreating.set(false)
+        this.loadPersons()
     }
 
     private loadPersons(): void {

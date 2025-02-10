@@ -1,15 +1,35 @@
 import { Request, Response } from 'express'
 import * as admin from 'firebase-admin'
-import { Timestamp } from 'firebase-admin/firestore'
+import { CollectionReference, Query, Timestamp } from 'firebase-admin/firestore'
 import { RoleType } from '../auth/enums/role-type.enum'
 import { ApiError } from '../shared/models/api-error.model'
 import { handleError } from '../shared/utils/error.utils'
 import { Member, Person } from './models/person.model'
-import { isMember } from './utils/persons.utils'
+import { isMember, updateUserCustomClaims } from './utils/persons.utils'
 
 export async function findAllPerson(req: Request, res: Response) {
     try {
-        const snapshot = await admin.firestore().collection('persons').get()
+        let query: CollectionReference | Query = admin
+            .firestore()
+            .collection('persons')
+
+        if (req.query.personType) {
+            query = query.where('personType', '==', req.query.personType)
+        }
+
+        if (req.query.organizationType) {
+            query = query.where(
+                'organizationType',
+                '==',
+                req.query.organizationType
+            )
+        }
+
+        if (req.query.userId) {
+            query = query.where('userId', '==', req.query.userId)
+        }
+
+        const snapshot = await query.get()
         const persons = snapshot.docs.map(doc => ({
             id: doc.id,
             ...doc.data(),
@@ -123,6 +143,14 @@ export async function updatePerson(req: Request, res: Response) {
                     )
                     error.status = 403
                     return handleError(res, error)
+                }
+
+                if (memberData.roles && existingPerson.userId) {
+                    // Attention reconnexion nécessaire lors de la modif
+                    await updateUserCustomClaims(
+                        existingPerson.userId,
+                        memberData.roles
+                    )
                 }
             }
         }

@@ -1,13 +1,16 @@
-<div class="section-divider mt-4 flex items-center gap-4">
+<div class="section-divider flex items-center">
     <div class="h-px flex-1 bg-gray-300"></div>
     <h3 class="text-lg font-medium">{{ TRANSLATION_PREFIX + 'title' | transloco }}</h3>
     <div class="h-px flex-1 bg-gray-300"></div>
 </div>
 
-<form [formGroup]="form" class="flex flex-col gap-4">
+<form [formGroup]="form" class="flex flex-col gap-x-4">
     <mat-form-field class="w-full">
         <mat-label>{{ TRANSLATION_PREFIX + 'fields.name' | transloco }}</mat-label>
         <input matInput [formControl]="form.controls.name" />
+        <mat-error *ngIf="form.controls.name.errors?.['required']">
+            {{ 'common.errors.required' | transloco }}
+        </mat-error>
     </mat-form-field>
 
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-12">
@@ -24,6 +27,9 @@
 
     <mat-form-field class="w-full">
         <mat-label>{{ TRANSLATION_PREFIX + 'fields.paypal' | transloco }}</mat-label>
-        <input matInput [formControl]="form.controls.paypal" />
+        <input matInput type="email" [formControl]="form.controls.paypal" />
+        <mat-error *ngIf="form.controls.paypal.errors?.['email']">
+            {{ 'common.errors.email' | transloco }}
+        </mat-error>
     </mat-form-field>
 </form>

@@ -3,13 +3,10 @@ import { CorrespondentType } from '@backend/persons/enums/correspodent-type.enum
 import { Gender } from '@backend/persons/enums/gender.enum'
 import { OrganizationType } from '@backend/persons/enums/organization-type.enum'
 import { PersonType } from '@backend/persons/enums/person-type.enum'
-import {
-    SocialMedia,
-    SocialMediaDj,
-} from '@backend/persons/models/social-media.model'
 import { CountryInfo } from '../../../shared/models/country-info'
 import { AddressForm } from '../address-form/address-form.model'
 import { BankDetailsForm } from '../bank-details-form/bank-details-form.model'
+import { SocialMediaForm } from '../social-media-form/social-media-form.model'
 
 export interface BasePersonForm {
     personType: FormControl<PersonType>
@@ -20,14 +17,13 @@ export interface BasePersonForm {
     email: FormControl<string | null>
     phonePrefix: FormControl<CountryInfo | null>
     phone: FormControl<string | null>
-    socialMedia: FormControl<SocialMedia | null>
+    socialMedia: FormGroup<SocialMediaForm>
     profilePicture: FormControl<string | null>
     description: FormControl<string | null>
     equipments: FormControl<string[]>
 }
 
 export interface DjForm extends BasePersonForm {
-    socialMedia: FormControl<SocialMediaDj | null>
     alias: FormControl<string>
     biography: FormControl<string | null>
     logo: FormControl<string | null>

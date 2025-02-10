@@ -47,6 +47,12 @@ import { TranslationService } from 'app/core/translation/translation.service'
     ],
 })
 export class AuthSignInComponent implements OnInit {
+    private readonly route = inject(ActivatedRoute)
+    private readonly authService = inject(AuthService)
+    private readonly formBuilder = inject(FormBuilder)
+    private readonly router = inject(Router)
+    private readonly translationService = inject(TranslationService)
+
     @ViewChild('signInNgForm') signInNgForm: NgForm
 
     readonly TRANSLATION_PREFIX = 'modules.auth.sign-in.'
@@ -57,12 +63,6 @@ export class AuthSignInComponent implements OnInit {
     }
     showAlert = false
     form: FormGroup
-
-    private readonly route = inject(ActivatedRoute)
-    private readonly authService = inject(AuthService)
-    private readonly formBuilder = inject(FormBuilder)
-    private readonly router = inject(Router)
-    private readonly translationService = inject(TranslationService)
 
     ngOnInit(): void {
         this.form = this.formBuilder.group({

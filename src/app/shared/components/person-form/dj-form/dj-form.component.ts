@@ -1,11 +1,17 @@
 import { CommonModule } from '@angular/common'
-import { Component, Input } from '@angular/core'
+import { Component, inject, Input, OnInit } from '@angular/core'
 import { FormGroup, ReactiveFormsModule } from '@angular/forms'
 import { MatFormFieldModule } from '@angular/material/form-field'
 import { MatInputModule } from '@angular/material/input'
 import { MatSelectModule } from '@angular/material/select'
+import { OrganizationType } from '@backend/persons/enums/organization-type.enum'
+import { PersonType } from '@backend/persons/enums/person-type.enum'
+import { PersonFilters } from '@backend/persons/models/person-filter.model'
+import { Person } from '@backend/persons/models/person.model'
 import { TranslocoModule } from '@ngneat/transloco'
+import { PersonService } from 'app/modules/admin/services/person/person.service'
 import { NgxMaskDirective } from 'ngx-mask'
+import { map, Observable } from 'rxjs'
 import { DjForm } from '../../../services/person-form/person-form.model'
 import { BankDetailsFormComponent } from '../../bank-details-form/bank-details-form.component'
 
@@ -25,8 +31,26 @@ import { BankDetailsFormComponent } from '../../bank-details-form/bank-details-f
     templateUrl: './dj-form.component.html',
     styleUrls: ['./dj-form.component.scss'],
 })
-export class DjFormComponent {
+export class DjFormComponent implements OnInit {
+    private readonly personService = inject(PersonService)
+
     @Input({ required: true }) form!: FormGroup<DjForm>
 
     protected readonly TRANSLATION_PREFIX = 'shared.person-form.dj-form.'
+
+    agencies$!: Observable<Person[]>
+
+    ngOnInit(): void {
+        const filters: PersonFilters = {
+            personType: PersonType.ORGANIZATION,
+            organizationType: OrganizationType.AGENCY,
+        }
+        this.agencies$ = this.personService
+            .getPersons(filters)
+            .pipe(
+                map(persons =>
+                    persons.sort((a, b) => a.name.localeCompare(b.name))
+                )
+            )
+    }
 }
