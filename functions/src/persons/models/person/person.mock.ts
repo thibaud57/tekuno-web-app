@@ -1,10 +1,18 @@
-import { RoleType } from '../../auth/enums/role-type.enum'
-import { USER_2_ROLES_UID, USER_ADMIN_UID } from '../../users/models/user.mock'
-import { CorrespondentType } from '../enums/correspodent-type.enum'
-import { OrganizationType } from '../enums/organization-type.enum'
-import { PersonType } from '../enums/person-type.enum'
-import { addressMock } from './address.mock'
-import { bankDetailsIbanMock } from './bank-details.mock'
+import { RoleType } from '../../../auth/enums/role-type.enum'
+import {
+    USER_2_ROLES_UID,
+    USER_ADMIN_UID,
+} from '../../../users/models/user.mock'
+import { CorrespondentType } from '../../enums/correspodent-type.enum'
+import { Gender } from '../../enums/gender.enum'
+import { OrganizationType } from '../../enums/organization-type.enum'
+import { PersonType } from '../../enums/person-type.enum'
+import { addressMock } from '../address/address.mock'
+import { bankDetailsIbanMock } from '../bank-details/bank-details.mock'
+import {
+    socialMediaDjMock,
+    socialMediaMock,
+} from '../social-media/social-media.mock'
 import {
     Correspondent,
     Customer,
@@ -12,7 +20,6 @@ import {
     Member,
     Organization,
 } from './person.model'
-import { socialMediaDjMock, socialMediaMock } from './social-media.mock'
 
 export const MEMBER_ADMIN_ID = 'member-admin-123'
 export const MEMBER_2_ROLES_ID = 'member-user-456'
@@ -26,6 +33,7 @@ export const memberAdminMock: Member = {
     personType: PersonType.MEMBER,
     name: 'Doe',
     firstName: 'John',
+    gender: Gender.MALE,
     email: 'john@mail.fr',
     roles: [RoleType.ADMIN],
     userId: USER_ADMIN_UID,
@@ -39,6 +47,7 @@ export const member2RolesMock: Member = {
     personType: PersonType.MEMBER,
     name: 'Watson',
     firstName: 'Emma',
+    gender: Gender.FEMALE,
     email: 'emma@mail.fr',
     roles: [RoleType.MEMBER, RoleType.ACCOUNTANT],
     userId: USER_2_ROLES_UID,
@@ -54,6 +63,7 @@ export const djMock: Dj = {
     personType: PersonType.DJ,
     name: 'Cox',
     firstName: 'Carl',
+    gender: Gender.MALE,
     alias: 'Carl Cox',
     email: 'carl@intec.com',
     phone: '+44123456789',
@@ -115,6 +125,8 @@ export const correspondentKevinMock: Correspondent = {
     organizationId: ORGA_AEROGARE_ID,
     correspondentType: CorrespondentType.EVENT_COORDINATOR,
     name: 'Kevin',
+    firstName: 'Kevin',
+    gender: Gender.MALE,
     email: 'kevin@aerogare.fr',
     phone: '+33612345678',
     isActive: true,
@@ -128,6 +140,7 @@ export const customerMock: Customer = {
     personType: PersonType.CUSTOMER,
     name: 'Smith',
     firstName: 'Alice',
+    gender: Gender.FEMALE,
     email: 'alice@mail.fr',
     createdAt: new Date(),
     createdBy: USER_ADMIN_UID,

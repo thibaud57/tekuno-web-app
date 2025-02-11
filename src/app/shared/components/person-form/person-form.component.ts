@@ -17,7 +17,7 @@ import { MatInputModule } from '@angular/material/input'
 import { MatSelectModule } from '@angular/material/select'
 import { Gender } from '@backend/persons/enums/gender.enum'
 import { PersonType } from '@backend/persons/enums/person-type.enum'
-import { Person } from '@backend/persons/models/person.model'
+import { Person } from '@backend/persons/models/person/person.model'
 import { TranslocoPipe } from '@ngneat/transloco'
 import { NotificationService } from 'app/core/services/notification.service'
 import { AddressFormComponent } from 'app/shared/components/address-form/address-form.component'
@@ -121,8 +121,11 @@ export class PersonFormComponent {
                       ...formValue.address,
                       country: formValue.address.country?.name,
                   }
-                : null,
+                : undefined,
         } as unknown as Omit<Person, 'id' | 'phonePrefix'>
+
+        console.log('a')
+        console.log(person)
 
         this.personService.createPerson(person).subscribe({
             next: () => {

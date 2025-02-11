@@ -10,3 +10,8 @@ export const bankDetailsPaypalMock: BankDetails = {
     name: 'PayPal Business',
     paypal: 'business@mail.com',
 }
+
+export const bankDetailsInvalidPaypalMock: BankDetails = {
+    name: 'PayPal Invalid',
+    paypal: 'invalid-paypal-email',
+}

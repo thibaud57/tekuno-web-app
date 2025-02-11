@@ -10,9 +10,9 @@ export class BankDetailsFormService {
                 nonNullable: true,
                 validators: [Validators.required],
             }),
-            iban: new FormControl(''),
-            bic: new FormControl(''),
-            paypal: new FormControl('', {
+            iban: new FormControl(null),
+            bic: new FormControl(null),
+            paypal: new FormControl(null, {
                 validators: [Validators.email],
             }),
         })

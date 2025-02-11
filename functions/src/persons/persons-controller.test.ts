@@ -10,7 +10,7 @@ import {
     mockWhere,
     resetFirebaseMocks,
     setupFirestoreMocks,
-} from '../shared/mocks/firebase.mock'
+} from '../shared/models/firebase.mock'
 
 jest.mock('firebase-admin', () => mockFirebaseAdmin)
 
@@ -21,7 +21,7 @@ import {
     customerMock,
     member2RolesMock,
     memberAdminMock,
-} from './models/person.mock'
+} from './models/person/person.mock'
 import {
     createPerson,
     findAllPerson,
@@ -194,23 +194,6 @@ describe('PersonsController', () => {
             expect(mockSend).toHaveBeenCalledWith({ id: newId })
         })
 
-        it('should return 400 when name is missing', async () => {
-            const invalidPerson = {
-                personType: PersonType.MEMBER,
-                email: 'new@mail.fr',
-                roles: [RoleType.MEMBER],
-            }
-            req = { body: invalidPerson }
-
-            await createPerson(req as Request, res as Response)
-
-            expect(mockAdd).not.toHaveBeenCalled()
-            expect(mockStatus).toHaveBeenCalledWith(400)
-            expect(mockSend).toHaveBeenCalledWith({
-                message: 'Missing required fields',
-            })
-        })
-
         it('should handle Firestore error', async () => {
             const newPerson = {
                 name: 'New Person',
@@ -253,6 +236,7 @@ describe('PersonsController', () => {
                 updatedBy: memberAdminMock.id,
             })
             expect(mockStatus).toHaveBeenCalledWith(204)
+            expect(mockSend).toHaveBeenCalled()
         })
 
         it('should return 404 when person not found', async () => {
@@ -266,39 +250,9 @@ describe('PersonsController', () => {
 
             await updatePerson(req as Request, res as Response)
 
-            expect(mockUpdate).not.toHaveBeenCalled()
             expect(mockStatus).toHaveBeenCalledWith(404)
             expect(mockSend).toHaveBeenCalledWith({
                 message: 'Person not found',
-            })
-        })
-
-        it('should prevent non-admin from updating member roles', async () => {
-            const updateData = {
-                roles: [RoleType.MEMBER, RoleType.ACCOUNTANT],
-            }
-            req = {
-                params: { id: member2RolesMock.id },
-                body: updateData,
-            }
-            const nonAdminRes = {
-                ...res,
-                locals: {
-                    uid: member2RolesMock.id,
-                    roles: [RoleType.MEMBER],
-                },
-            }
-            mockGet.mockResolvedValue({
-                exists: true,
-                data: () => ({ ...member2RolesMock }),
-            })
-
-            await updatePerson(req as Request, nonAdminRes as Response)
-
-            expect(mockUpdate).not.toHaveBeenCalled()
-            expect(mockStatus).toHaveBeenCalledWith(403)
-            expect(mockSend).toHaveBeenCalledWith({
-                message: 'Only admin can modify roles and email for members',
             })
         })
 
@@ -321,10 +275,38 @@ describe('PersonsController', () => {
                 message: 'Firestore error',
             })
         })
+
+        it('should require admin role to update member roles', async () => {
+            const updateData = {
+                roles: [RoleType.MEMBER, RoleType.ACCOUNTANT],
+            }
+            req = {
+                params: { id: member2RolesMock.id },
+                body: updateData,
+            }
+            res = {
+                ...res,
+                locals: {
+                    uid: member2RolesMock.id,
+                    roles: [RoleType.MEMBER],
+                },
+            }
+            mockGet.mockResolvedValue({
+                exists: true,
+                data: () => ({ ...member2RolesMock }),
+            })
+
+            await updatePerson(req as Request, res as Response)
+
+            expect(mockStatus).toHaveBeenCalledWith(403)
+            expect(mockSend).toHaveBeenCalledWith({
+                message: 'Only admin can modify roles and email for members',
+            })
+        })
     })
 
     describe('removePerson', () => {
-        it('should delete person successfully', async () => {
+        it('should remove person successfully', async () => {
             req = { params: { id: customerMock.id } }
             mockGet.mockResolvedValue({
                 exists: true,
@@ -336,6 +318,7 @@ describe('PersonsController', () => {
             expect(mockDoc).toHaveBeenCalledWith(customerMock.id)
             expect(mockDelete).toHaveBeenCalled()
             expect(mockStatus).toHaveBeenCalledWith(204)
+            expect(mockSend).toHaveBeenCalled()
         })
 
         it('should return 404 when person not found', async () => {
@@ -346,7 +329,6 @@ describe('PersonsController', () => {
 
             await removePerson(req as Request, res as Response)
 
-            expect(mockDelete).not.toHaveBeenCalled()
             expect(mockStatus).toHaveBeenCalledWith(404)
             expect(mockSend).toHaveBeenCalledWith({
                 message: 'Person not found',

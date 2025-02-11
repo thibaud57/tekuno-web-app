@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http'
 import { Injectable, inject } from '@angular/core'
-import { PersonFilters } from '@backend/persons/models/person-filter.model'
-import { Person } from '@backend/persons/models/person.model'
+import { PersonFilters } from '@backend/persons/models/person/person-filter.model'
+import { Person } from '@backend/persons/models/person/person.model'
 import { environment } from 'environments/environment'
 import { Observable } from 'rxjs'
 

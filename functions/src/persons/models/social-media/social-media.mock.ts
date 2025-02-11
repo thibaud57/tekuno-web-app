@@ -23,3 +23,9 @@ export const socialMediaEventMock: SocialMedia = {
     website: 'https://www.event-website.com',
     residentAdvisor: 'https://ra.co/events/123456',
 }
+
+export const socialMediaInvalidUrlMock: SocialMedia = {
+    facebook: 'invalid-facebook-url',
+    instagram: 'https://instagram.com/basic',
+    website: 'https://www.basic-website.com',
+}

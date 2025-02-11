@@ -38,10 +38,6 @@ export class PersonFormService {
         const baseForm = this.createBaseForm(PersonType.DJ)
         return new FormGroup<DjForm>({
             ...baseForm.controls,
-            gender: new FormControl<Gender | null>(null, {
-                nonNullable: true,
-                validators: [Validators.required],
-            }),
             alias: new FormControl('', {
                 nonNullable: true,
                 validators: [Validators.required],
@@ -80,10 +76,6 @@ export class PersonFormService {
         const baseForm = this.createBaseForm(PersonType.CORRESPONDENT)
         return new FormGroup<CorrespondentForm>({
             ...baseForm.controls,
-            gender: new FormControl<Gender | null>(null, {
-                nonNullable: true,
-                validators: [Validators.required],
-            }),
             organizationId: new FormControl('', {
                 nonNullable: true,
                 validators: [Validators.required],
@@ -100,9 +92,9 @@ export class PersonFormService {
         })
     }
 
-    private createBaseForm(type: PersonType): FormGroup<BasePersonForm> {
+    private createBaseForm(personType: PersonType): FormGroup<BasePersonForm> {
         return new FormGroup<BasePersonForm>({
-            personType: new FormControl(type, {
+            personType: new FormControl(personType, {
                 nonNullable: true,
                 validators: [Validators.required],
             }),
@@ -110,8 +102,18 @@ export class PersonFormService {
                 nonNullable: true,
                 validators: [Validators.required, Validators.minLength(2)],
             }),
-            firstName: new FormControl(null),
-            gender: new FormControl<Gender | null>(null),
+            firstName: new FormControl(null, {
+                validators:
+                    personType === PersonType.ORGANIZATION
+                        ? []
+                        : [Validators.required],
+            }),
+            gender: new FormControl<Gender | null>(null, {
+                validators:
+                    personType === PersonType.ORGANIZATION
+                        ? []
+                        : [Validators.required],
+            }),
             address: this.addressFormService.createForm(),
             email: new FormControl(null, { validators: [Validators.email] }),
             phonePrefix: new FormControl(getDefaultCountry()),

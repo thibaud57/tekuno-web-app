@@ -3,7 +3,7 @@ import * as admin from 'firebase-admin'
 import { UpdateRequest } from 'firebase-admin/auth'
 import { RoleType } from '../auth/enums/role-type.enum'
 import { PersonType } from '../persons/enums/person-type.enum'
-import { Member } from '../persons/models/person.model'
+import { Member } from '../persons/models/person/person.model'
 import {
     createPerson,
     findMemberByUserId,

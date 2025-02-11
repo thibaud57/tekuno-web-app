@@ -2,7 +2,7 @@ import {
     mockAuth,
     mockFirebaseAdmin,
     resetFirebaseMocks,
-} from '../shared/mocks/firebase.mock'
+} from '../shared/models/firebase.mock'
 
 jest.mock('firebase-admin', () => mockFirebaseAdmin)
 jest.mock('../persons/persons-controller')
@@ -12,7 +12,7 @@ import { PersonType } from '../persons/enums/person-type.enum'
 import {
     member2RolesMock,
     memberAdminMock,
-} from '../persons/models/person.mock'
+} from '../persons/models/person/person.mock'
 import {
     createPerson,
     findMemberByUserId,

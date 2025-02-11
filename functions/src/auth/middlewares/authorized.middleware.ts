@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
-import { handleAuthorizationError } from '../shared/utils/error.utils'
-import { RoleType } from './enums/role-type.enum'
+import { handleAuthorizationError } from '../../shared/utils/error.utils'
+import { RoleType } from '../enums/role-type.enum'
 
 export function isAuthorized(opts: {
     hasRole: RoleType[]

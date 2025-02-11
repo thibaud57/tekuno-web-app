@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express'
-import { isAuthenticated } from './authenticated'
-import { isAuthorized } from './authorized'
-import { RoleType } from './enums/role-type.enum'
+import { RoleType } from '../enums/role-type.enum'
+import { isAuthenticated } from './authenticated.middleware'
+import { isAuthorized } from './authorized.middleware'
 
 const mockVerifyIdToken = jest.fn()
 jest.mock('firebase-admin', () => ({

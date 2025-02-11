@@ -1,7 +1,8 @@
 import { Application } from 'express'
-import { isAuthenticated } from '../auth/authenticated'
-import { isAuthorized } from '../auth/authorized'
 import { RoleType } from '../auth/enums/role-type.enum'
+import { isAuthenticated } from '../auth/middlewares/authenticated.middleware'
+import { isAuthorized } from '../auth/middlewares/authorized.middleware'
+import { validatePerson } from '../shared/middlewares/validation.middleware'
 import {
     createPerson,
     findAllPerson,
@@ -27,12 +28,14 @@ export function personsRoute(app: Application) {
         '/persons',
         isAuthenticated,
         isAuthorized({ hasRole: [RoleType.SECRETARY] }),
+        validatePerson,
         createPerson
     )
     app.patch(
         '/persons/:id',
         isAuthenticated,
         isAuthorized({ hasRole: [RoleType.SECRETARY] }),
+        validatePerson,
         updatePerson
     )
     app.delete(

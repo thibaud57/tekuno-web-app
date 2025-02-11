@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
 import * as admin from 'firebase-admin'
-import { handleAuthError } from '../shared/utils/error.utils'
+import { handleAuthError } from '../../shared/utils/error.utils'
 
 export async function isAuthenticated(
     req: Request,

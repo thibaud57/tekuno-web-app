@@ -3,8 +3,9 @@ import * as admin from 'firebase-admin'
 import { CollectionReference, Query, Timestamp } from 'firebase-admin/firestore'
 import { RoleType } from '../auth/enums/role-type.enum'
 import { ApiError } from '../shared/models/api-error.model'
+import { cleanData } from '../shared/utils/clean-data.utils'
 import { handleError } from '../shared/utils/error.utils'
-import { Member, Person } from './models/person.model'
+import { Member, Person } from './models/person/person.model'
 import { isMember, updateUserCustomClaims } from './utils/persons.utils'
 
 export async function findAllPerson(req: Request, res: Response) {
@@ -90,20 +91,14 @@ export async function findOnePerson(req: Request, res: Response) {
 
 export async function createPerson(req: Request, res: Response) {
     try {
-        const personData: Omit<Person, 'id'> = req.body
+        const cleanedData = cleanData(req.body) as Omit<Person, 'id'>
         const { uid } = res.locals
-
-        if (!personData.name) {
-            const error: ApiError = new Error('Missing required fields')
-            error.status = 400
-            return handleError(res, error)
-        }
 
         const personRef = await admin
             .firestore()
             .collection('persons')
             .add({
-                ...personData,
+                ...cleanedData,
                 createdAt: Timestamp.now(),
                 createdBy: uid,
             })
@@ -117,7 +112,7 @@ export async function createPerson(req: Request, res: Response) {
 export async function updatePerson(req: Request, res: Response) {
     try {
         const { id } = req.params
-        const personData: Partial<Person> = req.body
+        const cleanedData = cleanData(req.body) as Partial<Person>
         const { uid, roles } = res.locals
 
         const personRef = admin.firestore().collection('persons').doc(id)
@@ -132,7 +127,7 @@ export async function updatePerson(req: Request, res: Response) {
         const existingPerson = person.data() as Person
 
         if (isMember(existingPerson)) {
-            const memberData = personData as Partial<Member>
+            const memberData = cleanedData as Partial<Member>
             if (
                 memberData.roles !== undefined ||
                 memberData.email !== undefined
@@ -156,7 +151,7 @@ export async function updatePerson(req: Request, res: Response) {
         }
 
         await personRef.update({
-            ...personData,
+            ...cleanedData,
             updatedAt: Timestamp.now(),
             updatedBy: uid,
         })
