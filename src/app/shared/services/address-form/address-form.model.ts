@@ -3,8 +3,8 @@ import { CountryInfo } from 'app/shared/models/country-info'
 
 export interface AddressForm {
     streetNumber: FormControl<string | null>
-    streetName: FormControl<string>
-    city: FormControl<string>
-    postalCode: FormControl<string>
-    country: FormControl<CountryInfo>
+    streetName: FormControl<string | null>
+    city: FormControl<string | null>
+    postalCode: FormControl<string | null>
+    country: FormControl<CountryInfo | null>
 }

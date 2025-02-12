@@ -8,6 +8,8 @@ import { Address } from '../address/address.model'
 import { BankDetails } from '../bank-details/bank-details.model'
 import { SocialMedia } from '../social-media/social-media.model'
 
+export const SIRET_PATTERN = /^[0-9]{14}$/
+
 // Abstract
 interface BasePerson extends BaseModel {
     id: string

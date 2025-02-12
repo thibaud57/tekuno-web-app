@@ -4,6 +4,7 @@ import { CorrespondentType } from '../enums/correspodent-type.enum'
 import { Gender } from '../enums/gender.enum'
 import { OrganizationType } from '../enums/organization-type.enum'
 import { PersonType } from '../enums/person-type.enum'
+import { SIRET_PATTERN } from '../models/person/person.model'
 import { addressSchema } from './address.validator'
 import { bankDetailsSchema } from './bank-details.validator'
 import {
@@ -41,10 +42,13 @@ export const djSchema = basePersonSchema.extend({
     biography: z.string().nullish(),
     logo: z.string().url('Invalid logo URL').nullish(),
     eventIds: z.array(z.string()).nullish(),
-    price: z.number().nonnegative('Price must be zero or positive').nullish(),
+    price: z.number().nonnegative('Price must be zero or positive'),
     agencyId: z.string().nullish(),
     bankDetails: bankDetailsSchema,
-    siret: z.number().nullish(),
+    siret: z
+        .string()
+        .regex(SIRET_PATTERN, 'SIRET must be exactly 14 digits')
+        .nullish(),
     vat: z.string().nullish(),
     socialMedia: djSocialMediaSchema,
 })
@@ -58,7 +62,10 @@ export const organizationSchema = basePersonSchema.extend({
     }),
     correspondentIds: z.array(z.string()).nullish(),
     bankDetails: bankDetailsSchema,
-    siret: z.number().nullish(),
+    siret: z
+        .string()
+        .regex(SIRET_PATTERN, 'SIRET must be exactly 14 digits')
+        .nullish(),
     vat: z.string().nullish(),
 })
 

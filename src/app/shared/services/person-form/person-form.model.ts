@@ -16,7 +16,7 @@ export interface BasePersonForm {
     address: FormGroup<AddressForm>
     email: FormControl<string | null>
     phonePrefix: FormControl<CountryInfo | null>
-    phone: FormControl<string | null>
+    phone: FormControl<number | null>
     socialMedia: FormGroup<SocialMediaForm>
     profilePicture: FormControl<string | null>
     description: FormControl<string | null>
@@ -28,7 +28,7 @@ export interface DjForm extends BasePersonForm {
     biography: FormControl<string | null>
     logo: FormControl<string | null>
     eventIds: FormControl<string[]>
-    price: FormControl<number | null>
+    price: FormControl<number>
     agencyId: FormControl<string | null>
     bankDetails: FormGroup<BankDetailsForm>
     siret: FormControl<number | null>

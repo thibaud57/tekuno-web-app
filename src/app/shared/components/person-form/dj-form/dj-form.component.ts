@@ -1,7 +1,9 @@
 import { CommonModule } from '@angular/common'
 import { Component, inject, Input, OnInit } from '@angular/core'
 import { FormGroup, ReactiveFormsModule } from '@angular/forms'
+import { MatExpansionModule } from '@angular/material/expansion'
 import { MatFormFieldModule } from '@angular/material/form-field'
+import { MatIconModule } from '@angular/material/icon'
 import { MatInputModule } from '@angular/material/input'
 import { MatSelectModule } from '@angular/material/select'
 import { OrganizationType } from '@backend/persons/enums/organization-type.enum'
@@ -24,6 +26,8 @@ import { BankDetailsFormComponent } from '../../bank-details-form/bank-details-f
         MatFormFieldModule,
         MatInputModule,
         MatSelectModule,
+        MatExpansionModule,
+        MatIconModule,
         TranslocoModule,
         NgxMaskDirective,
         BankDetailsFormComponent,
@@ -52,5 +56,15 @@ export class DjFormComponent implements OnInit {
                     persons.sort((a, b) => a.name.localeCompare(b.name))
                 )
             )
+    }
+
+    enableBankDetailsForm(expanded: boolean): void {
+        const bankDetailsForm = this.form.controls.bankDetails
+        if (expanded) {
+            bankDetailsForm.enable()
+        } else {
+            bankDetailsForm.reset()
+            bankDetailsForm.disable()
+        }
     }
 }

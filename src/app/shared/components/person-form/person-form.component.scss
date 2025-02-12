@@ -1,1 +1,25 @@
+::ng-deep {
+    .mat-expansion-panel {
+        &:not([class*='mat-elevation-z']) {
+            box-shadow: none;
+        }
 
+        .mat-expansion-panel-header {
+            padding: 0;
+            height: auto !important;
+            margin: 1.5rem 0;
+
+            &:hover {
+                background: transparent !important;
+            }
+
+            .mat-expansion-indicator {
+                display: none;
+            }
+        }
+
+        .mat-expansion-panel-body {
+            padding: 1rem 0 !important;
+        }
+    }
+}

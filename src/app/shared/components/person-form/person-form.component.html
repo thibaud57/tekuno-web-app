@@ -9,7 +9,7 @@
     <mat-form-field>
         <mat-label>{{ TRANSLATION_PREFIX + 'fields.person-type' | transloco }}</mat-label>
         <mat-select formControlName="personType">
-            @for (personType of personTypes | sortAlphabetically: 'enums.person-type.'; track personType) {
+            @for (personType of selectablePersonTypes | sortAlphabetically: 'enums.person-type.'; track personType) {
                 <mat-option [value]="personType">{{ 'enums.person-type.' + personType | transloco }}</mat-option>
             }
         </mat-select>
@@ -30,6 +30,9 @@
         <mat-form-field *ngIf="!isOrganization()">
             <mat-label>{{ TRANSLATION_PREFIX + 'fields.first-name' | transloco }}</mat-label>
             <input matInput formControlName="firstName" />
+            <mat-error *ngIf="form().controls.firstName.errors?.['required']">
+                {{ 'common.errors.required' | transloco }}
+            </mat-error>
         </mat-form-field>
     </div>
 
@@ -72,10 +75,6 @@
         <textarea matInput formControlName="description"></textarea>
     </mat-form-field>
 
-    <app-address-form [form]="form().controls.address" />
-
-    <app-social-media-form [form]="form().controls.socialMedia" [typeSocialMediaForm]="personTypeForm()" />
-
     @switch (form().controls.personType.value) {
         @case (PersonType.DJ) {
             <app-dj-form [form]="form()" />
@@ -88,12 +87,52 @@
         }
     }
 
-    <div class="flex justify-end gap-2">
+    <mat-expansion-panel
+        class="border-0 bg-transparent shadow-none"
+        #addressPanel="matExpansionPanel"
+        (afterExpand)="enableAddressForm(true)"
+        (afterCollapse)="enableAddressForm(false)">
+        <mat-expansion-panel-header>
+            <div class="flex w-full items-center gap-4">
+                <div class="h-px flex-1 bg-gray-300"></div>
+                <div class="flex items-center gap-2">
+                    <span class="text-gray-700">{{ TRANSLATION_PREFIX + (addressPanel.expanded ? 'retirer-adresse' : 'ajouter-adresse') | transloco }}</span>
+                    <mat-icon class="text-gray-500">{{ addressPanel.expanded ? 'remove' : 'add' }}</mat-icon>
+                </div>
+                <div class="h-px flex-1 bg-gray-300"></div>
+            </div>
+        </mat-expansion-panel-header>
+
+        <app-address-form [form]="form().controls.address" />
+    </mat-expansion-panel>
+
+    <mat-expansion-panel
+        class="border-0 bg-transparent shadow-none"
+        #socialPanel="matExpansionPanel"
+        (afterExpand)="enableSocialMediaForm(true)"
+        (afterCollapse)="enableSocialMediaForm(false)">
+        <mat-expansion-panel-header>
+            <div class="flex w-full items-center gap-4">
+                <div class="h-px flex-1 bg-gray-300"></div>
+                <div class="flex items-center gap-2">
+                    <span class="text-gray-700">
+                        {{ TRANSLATION_PREFIX + (socialPanel.expanded ? 'retirer-reseaux-sociaux' : 'ajouter-reseaux-sociaux') | transloco }}
+                    </span>
+                    <mat-icon class="text-gray-500">{{ socialPanel.expanded ? 'remove' : 'add' }}</mat-icon>
+                </div>
+                <div class="h-px flex-1 bg-gray-300"></div>
+            </div>
+        </mat-expansion-panel-header>
+
+        <app-social-media-form [form]="form().controls.socialMedia" [typeSocialMediaForm]="typeSocialMediaForm()" />
+    </mat-expansion-panel>
+
+    <div class="mt-4 flex justify-end gap-2">
         <button mat-button type="button" (click)="closeDrawer.emit()">
-            {{ TRANSLATION_PREFIX + 'actions.cancel' | transloco }}
+            {{ 'common.actions.annuler' | transloco }}
         </button>
         <button mat-flat-button color="primary" type="submit">
-            {{ TRANSLATION_PREFIX + 'actions.save' | transloco }}
+            {{ 'common.actions.enregistrer' | transloco }}
         </button>
     </div>
 </form>

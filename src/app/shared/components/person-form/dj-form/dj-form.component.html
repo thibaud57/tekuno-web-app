@@ -51,4 +51,23 @@
     <textarea matInput [formControl]="form.controls.biography" rows="3"></textarea>
 </mat-form-field>
 
-<app-bank-details-form [form]="form.controls.bankDetails"></app-bank-details-form>
+<mat-expansion-panel
+    class="border-0 bg-transparent shadow-none"
+    #bankPanel="matExpansionPanel"
+    (afterExpand)="enableBankDetailsForm(true)"
+    (afterCollapse)="enableBankDetailsForm(false)">
+    <mat-expansion-panel-header>
+        <div class="flex w-full items-center gap-4">
+            <div class="h-px flex-1 bg-gray-300"></div>
+            <div class="flex items-center gap-2">
+                <span class="text-gray-700">
+                    {{ TRANSLATION_PREFIX + (bankPanel.expanded ? 'retirer-coordonnees-bancaires' : 'ajouter-coordonnees-bancaires') | transloco }}
+                </span>
+                <mat-icon class="text-gray-500">{{ bankPanel.expanded ? 'remove' : 'add' }}</mat-icon>
+            </div>
+            <div class="h-px flex-1 bg-gray-300"></div>
+        </div>
+    </mat-expansion-panel-header>
+
+    <app-bank-details-form [form]="form.controls.bankDetails" />
+</mat-expansion-panel>
