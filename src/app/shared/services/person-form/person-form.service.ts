@@ -41,7 +41,7 @@ export class PersonFormService {
         }
     }
 
-    getPerson(form: FormGroup<PersonForm>): Person {
+    buildPerson(form: FormGroup<PersonForm>): Person {
         const formValue = form.value
 
         const phone = cleanPhoneNumber(

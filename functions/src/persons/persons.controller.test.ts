@@ -29,7 +29,7 @@ import {
     findOnePerson,
     removePerson,
     updatePerson,
-} from './persons-controller'
+} from './persons.controller'
 
 describe('PersonsController', () => {
     let req: Partial<Request>

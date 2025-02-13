@@ -9,7 +9,7 @@ import {
     findMemberByUserId,
     removePerson,
     updatePerson,
-} from '../persons/persons-controller'
+} from '../persons/persons.controller'
 import { ApiError } from '../shared/models/api-error.model'
 import { handleError } from '../shared/utils/error.utils'
 import { CreateUserDto, User } from './models/user.model'

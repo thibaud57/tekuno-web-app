@@ -1,10 +1,5 @@
 import { CommonModule } from '@angular/common'
-import {
-    ChangeDetectionStrategy,
-    Component,
-    effect,
-    Input,
-} from '@angular/core'
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core'
 import { FormGroup, ReactiveFormsModule } from '@angular/forms'
 import { MatFormFieldModule } from '@angular/material/form-field'
 import { MatInputModule } from '@angular/material/input'
@@ -33,10 +28,4 @@ export class AddressFormComponent {
     readonly TRANSLATION_PREFIX = 'shared.address-form.'
 
     @Input({ required: true }) form!: FormGroup<AddressForm>
-
-    constructor() {
-        effect(() => {
-            console.log('aaeffodskdffdl')
-        })
-    }
 }

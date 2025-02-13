@@ -10,10 +10,8 @@ export function validatePerson(
 ) {
     try {
         const validationResult = personSchema.safeParse(req.body)
-        console.log('Validation Result:', validationResult)
 
         if (!validationResult.success) {
-            console.log('Validation Errors:', validationResult.error.errors)
             const error: ApiError = new Error(
                 validationResult.error.errors
                     .map(err => `${err.path.join('.')}: ${err.message}`)

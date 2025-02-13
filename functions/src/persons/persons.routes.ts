@@ -9,7 +9,7 @@ import {
     findOnePerson,
     removePerson,
     updatePerson,
-} from './persons-controller'
+} from './persons.controller'
 
 export function personsRoute(app: Application) {
     app.get(

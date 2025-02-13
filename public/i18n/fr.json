@@ -91,21 +91,11 @@
                 "rechercher": "Rechercher des contacts",
                 "ajouter": "Ajouter",
                 "aucun-contact": "Aucun contact trouvé",
+                "alertes": {
+                    "erreur-chargement-contacts": "Erreur lors du chargement des contacts : {erreur}"
+                },
                 "person-detail": {
                     "contact": "Contact"
-                },
-                "form": {
-                    "title": "Nouveau contact",
-                    "actions": {
-                        "save": "Enregistrer",
-                        "cancel": "Annuler"
-                    },
-                    "success": {
-                        "create": "Le contact a été créé avec succès"
-                    },
-                    "error": {
-                        "create": "Erreur lors de la création du contact"
-                    }
                 }
             },
             "mailbox": {
@@ -174,7 +164,9 @@
             },
             "alertes": {
                 "contact-ajoute": "Le contact a été ajouté avec succès",
-                "erreur-creation-contact": "Erreur lors de la création du contact : {erreur}"
+                "erreur-creation-contact": "Erreur lors de la création du contact : {erreur}",
+                "avatar-upload-succes": "Photo de profil mise à jour avec succès",
+                "avatar-upload-erreur": "Erreur lors de la mise à jour de la photo de profil : {erreur}"
             },
             "ajouter-adresse": "Ajouter une adresse",
             "retirer-adresse": "Retirer l'adresse",

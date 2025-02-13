@@ -25,8 +25,11 @@ import { CountrySelectComponent } from 'app/shared/components/country-select/cou
 import { SocialMediaFormType } from 'app/shared/enums/social-media-form-type.enum'
 import { PersonForm } from 'app/shared/services/person-form/person-form.model'
 import { PersonFormService } from 'app/shared/services/person-form/person-form.service'
+import { getAvatarFileName } from 'app/shared/utils/file.utils'
 import { PersonService } from '../../../modules/admin/services/person/person.service'
 import { SortAlphabeticallyPipe } from '../../pipes/sort-alphabetically.pipe'
+import { UploadService } from '../../services/upload/upload.service'
+import { AvatarComponent } from '../avatar/avatar.component'
 import { SocialMediaFormComponent } from '../social-media-form/social-media-form.component'
 import { CorrespondentFormComponent } from './correspondent-form/correspondent-form.component'
 import { DjFormComponent } from './dj-form/dj-form.component'
@@ -53,6 +56,7 @@ import { OrganizationFormComponent } from './organization-form/organization-form
         CorrespondentFormComponent,
         SortAlphabeticallyPipe,
         SocialMediaFormComponent,
+        AvatarComponent,
     ],
     templateUrl: './person-form.component.html',
     styleUrl: './person-form.component.scss',
@@ -62,6 +66,7 @@ export class PersonFormComponent {
     private readonly personFormService = inject(PersonFormService)
     private readonly personService = inject(PersonService)
     private readonly notificationService = inject(NotificationService)
+    private readonly uploadService = inject(UploadService)
 
     @Output() closeDrawer = new EventEmitter<void>()
 
@@ -126,18 +131,18 @@ export class PersonFormComponent {
         }
 
         const currentForm = this.form()
-        const person = this.personFormService.getPerson(currentForm)
+        const person = this.personFormService.buildPerson(currentForm)
 
         this.personService.createPerson(person).subscribe({
             next: () => {
                 this.notificationService.showSuccess(
-                    this.TRANSLATION_PREFIX + 'success.create'
+                    this.TRANSLATION_PREFIX + 'alertes.contact-ajoute'
                 )
                 this.closeDrawer.emit()
             },
             error: error => {
                 this.notificationService.showError(
-                    this.TRANSLATION_PREFIX + 'error.create',
+                    this.TRANSLATION_PREFIX + 'alertes.erreur-creation-contact',
                     error.error.message
                 )
             },
@@ -146,5 +151,30 @@ export class PersonFormComponent {
 
     onClose(): void {
         this.closeDrawer.emit()
+    }
+
+    onAvatarUpload(file: File): void {
+        const path = getAvatarFileName(file.name)
+        const form = this.form()
+
+        this.uploadService.uploadPicture(file, path).subscribe({
+            next: url => {
+                form.patchValue({ profilePicture: url })
+                this.notificationService.showSuccess(
+                    this.TRANSLATION_PREFIX + 'alertes.avatar-upload-succes'
+                )
+            },
+            error: error => {
+                this.notificationService.showError(
+                    this.TRANSLATION_PREFIX + 'alertes.avatar-upload-erreur',
+                    error.error?.message
+                )
+            },
+        })
+    }
+
+    onAvatarDelete(): void {
+        const form = this.form()
+        form.patchValue({ profilePicture: null })
     }
 }

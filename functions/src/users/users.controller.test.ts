@@ -18,7 +18,7 @@ import {
     findMemberByUserId,
     removePerson,
     updatePerson,
-} from '../persons/persons-controller'
+} from '../persons/persons.controller'
 import { ApiError } from '../shared/models/api-error.model'
 import {
     USER_ADMIN_UID,
@@ -33,7 +33,7 @@ import {
     findOneUser,
     removeUser,
     updateUser,
-} from './users-controller'
+} from './users.controller'
 
 describe('UsersController', () => {
     let req: Partial<Request>

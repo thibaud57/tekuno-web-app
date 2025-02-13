@@ -8,7 +8,7 @@ import {
     findOneUser,
     removeUser,
     updateUser,
-} from './users-controller'
+} from './users.controller'
 
 export function usersRoute(app: Application) {
     app.get(
