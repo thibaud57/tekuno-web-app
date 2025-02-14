@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core'
+import { Component, Input, input, output } from '@angular/core'
 import { MatButtonModule } from '@angular/material/button'
 import { MatRippleModule } from '@angular/material/core'
 import { MatIconModule } from '@angular/material/icon'
@@ -14,8 +14,8 @@ export class AvatarComponent {
     readonly MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
 
     avatar = input<string>()
-    size = input<number>(40)
-    showUploadButton = input<boolean>(false)
+    @Input() size = 40
+    @Input() showUploadButton = false
 
     uploadAvatar = output<File>()
     deleteAvatar = output<void>()

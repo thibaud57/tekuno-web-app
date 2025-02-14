@@ -1,8 +1,8 @@
 import { getIsoDate } from './date.utils'
 
-export const getAvatarFileName = (fileName: string): string => {
+export const getFileName = (fileName: string): string => {
     const name = getFileNameWithoutExtension(fileName)
-    return `avatars/${name}_${getIsoDate()}`
+    return `${name}_${getIsoDate()}`
 }
 
 const getFileNameWithoutExtension = (fileName: string): string => {

@@ -2,7 +2,7 @@
     <div class="mb-4 flex items-center justify-between">
         <div class="flex items-center gap-4">
             <app-avatar
-                [avatar]="form().controls.profilePicture.value"
+                [avatar]="profilePictureUrl()"
                 [size]="80"
                 [showUploadButton]="true"
                 (uploadAvatar)="onAvatarUpload($event)"

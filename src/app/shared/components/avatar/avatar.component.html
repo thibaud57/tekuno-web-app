@@ -1,13 +1,13 @@
 <div class="group relative">
     <div class="flex items-center justify-center">
         @if (avatar()) {
-            <img [src]="avatar()" alt="Avatar" class="rounded-full object-cover" [style.width.px]="size()" [style.height.px]="size()" />
+            <img [src]="avatar()" alt="Avatar" class="rounded-full object-cover" [style.width.px]="size" [style.height.px]="size" />
         } @else {
-            <mat-icon [svgIcon]="'heroicons_outline:user-circle'" [style.width.px]="size()" [style.height.px]="size()" [style.fontSize.px]="size()"></mat-icon>
+            <mat-icon [svgIcon]="'heroicons_outline:user-circle'" [style.width.px]="size" [style.height.px]="size"></mat-icon>
         }
     </div>
 
-    @if (showUploadButton()) {
+    @if (showUploadButton) {
         <div
             class="absolute inset-0 z-20 flex items-center justify-center rounded-full bg-black/50 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
             <div>

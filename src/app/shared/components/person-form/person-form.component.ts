@@ -25,7 +25,7 @@ import { CountrySelectComponent } from 'app/shared/components/country-select/cou
 import { SocialMediaFormType } from 'app/shared/enums/social-media-form-type.enum'
 import { PersonForm } from 'app/shared/services/person-form/person-form.model'
 import { PersonFormService } from 'app/shared/services/person-form/person-form.service'
-import { getAvatarFileName } from 'app/shared/utils/file.utils'
+import { getFileName as formatFileName } from 'app/shared/utils/file.utils'
 import { PersonService } from '../../../modules/admin/services/person/person.service'
 import { SortAlphabeticallyPipe } from '../../pipes/sort-alphabetically.pipe'
 import { UploadService } from '../../services/upload/upload.service'
@@ -75,33 +75,45 @@ export class PersonFormComponent {
         type => type !== PersonType.CUSTOMER && type !== PersonType.MEMBER
     )
 
-    form = signal<FormGroup<PersonForm>>(
-        this.personFormService.createPersonForm(PersonType.ORGANIZATION)
-    )
-    isOrganization = computed(
+    readonly isOrganization = computed(
         () => this.form().controls.personType.value === PersonType.ORGANIZATION
     )
-    typeSocialMediaForm = computed(() =>
+    readonly typeSocialMediaForm = computed(() =>
         this.form().controls.personType.value === PersonType.DJ
             ? SocialMediaFormType.DJ
             : SocialMediaFormType.NORMAL
+    )
+    private readonly _profilePictureUrl = signal<string | null>(null)
+    readonly profilePictureUrl = this._profilePictureUrl.asReadonly()
+
+    form = signal<FormGroup<PersonForm>>(
+        this.personFormService.createPersonForm(PersonType.ORGANIZATION)
     )
 
     protected readonly PersonType = PersonType
     protected readonly Gender = Gender
 
-    constructor() {
-        effect(() => {
-            const form = this.form()
+    private readonly FOLDER_NAME = 'persons'
 
-            form.controls.personType.valueChanges.subscribe(type => {
-                if (type) {
-                    const newForm =
-                        this.personFormService.createPersonForm(type)
-                    this.form.set(newForm)
-                }
-            })
-        })
+    constructor() {
+        effect(
+            () => {
+                const form = this.form()
+
+                form.controls.personType.valueChanges.subscribe(type => {
+                    if (type) {
+                        const newForm =
+                            this.personFormService.createPersonForm(type)
+                        this.form.set(newForm)
+                    }
+                })
+
+                form.controls.profilePicture.valueChanges.subscribe(value => {
+                    this._profilePictureUrl.set(value)
+                })
+            },
+            { allowSignalWrites: true }
+        )
     }
 
     enableAddressForm(expanded: boolean): void {
@@ -154,27 +166,55 @@ export class PersonFormComponent {
     }
 
     onAvatarUpload(file: File): void {
-        const path = getAvatarFileName(file.name)
-        const form = this.form()
+        const fileName = formatFileName(file.name)
 
-        this.uploadService.uploadPicture(file, path).subscribe({
-            next: url => {
-                form.patchValue({ profilePicture: url })
-                this.notificationService.showSuccess(
-                    this.TRANSLATION_PREFIX + 'alertes.avatar-upload-succes'
-                )
-            },
-            error: error => {
-                this.notificationService.showError(
-                    this.TRANSLATION_PREFIX + 'alertes.avatar-upload-erreur',
-                    error.error?.message
-                )
-            },
-        })
+        this.uploadService
+            .uploadFile(file, this.FOLDER_NAME, fileName)
+            .subscribe({
+                next: result => {
+                    const form = this.form()
+                    form.controls.profilePicture.setValue(result.url)
+                    this.notificationService.showSuccess(
+                        this.TRANSLATION_PREFIX + 'alertes.avatar-upload-succes'
+                    )
+                },
+                error: error => {
+                    this.notificationService.showError(
+                        this.TRANSLATION_PREFIX +
+                            'alertes.avatar-upload-erreur',
+                        error.error?.message
+                    )
+                },
+            })
     }
 
     onAvatarDelete(): void {
         const form = this.form()
-        form.patchValue({ profilePicture: null })
+        const currentUrl = form.controls.profilePicture.value
+
+        if (currentUrl) {
+            this.uploadService
+                .deleteFile(currentUrl, this.FOLDER_NAME)
+                .subscribe({
+                    next: () => {
+                        form.controls.profilePicture.setValue(null)
+                        this.notificationService.showSuccess(
+                            this.TRANSLATION_PREFIX +
+                                'alertes.avatar-supprime-succes'
+                        )
+                    },
+                    error: error => {
+                        this.notificationService.showError(
+                            this.TRANSLATION_PREFIX +
+                                'alertes.avatar-supprime-erreur',
+                            error.error?.message
+                        )
+                    },
+                })
+        } else {
+            this.notificationService.showError(
+                this.TRANSLATION_PREFIX + 'alertes.avatar-non-trouve'
+            )
+        }
     }
 }

@@ -166,7 +166,10 @@
                 "contact-ajoute": "Le contact a été ajouté avec succès",
                 "erreur-creation-contact": "Erreur lors de la création du contact : {erreur}",
                 "avatar-upload-succes": "Photo de profil mise à jour avec succès",
-                "avatar-upload-erreur": "Erreur lors de la mise à jour de la photo de profil : {erreur}"
+                "avatar-upload-erreur": "Erreur lors de la mise à jour de la photo de profil : {erreur}",
+                "avatar-non-trouve": "Aucune photo de profil trouvée",
+                "avatar-supprime-succes": "Photo de profil supprimée avec succès",
+                "avatar-supprime-erreur": "Erreur lors de la suppression de la photo de profil : {erreur}"
             },
             "ajouter-adresse": "Ajouter une adresse",
             "retirer-adresse": "Retirer l'adresse",

@@ -11,11 +11,26 @@ export class UploadService {
 
     private readonly apiUrl = environment.apiBaseUrl
 
-    uploadPicture(file: File, path: string): Observable<string> {
+    uploadFile(
+        file: File,
+        folderName: string,
+        fileName: string
+    ): Observable<{ url: string }> {
         const formData = new FormData()
         formData.append('file', file)
-        formData.append('path', path)
+        formData.append('folderName', folderName)
+        formData.append('fileName', fileName)
 
-        return this.http.post<string>(`${this.apiUrl}/storage/upload`, formData)
+        return this.http.post<{ url: string }>(
+            `${this.apiUrl}/storage/upload`,
+            formData
+        )
+    }
+
+    deleteFile(url: string, folderName: string): Observable<void> {
+        return this.http.post<void>(`${this.apiUrl}/storage/delete`, {
+            url,
+            folderName,
+        })
     }
 }
