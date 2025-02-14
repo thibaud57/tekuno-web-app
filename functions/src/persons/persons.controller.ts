@@ -2,11 +2,16 @@ import { Request, Response } from 'express'
 import * as admin from 'firebase-admin'
 import { CollectionReference, Query, Timestamp } from 'firebase-admin/firestore'
 import { RoleType } from '../auth/enums/role-type.enum'
+import { FirebaseAuthService } from '../auth/services/firebase-auth.service'
 import { ApiError } from '../shared/models/api-error.model'
 import { cleanData } from '../shared/utils/data.utils'
-import { handleError } from '../shared/utils/error.utils'
+import {
+    handleAuthorizationError,
+    handleError,
+    handleNotFoundError,
+} from '../shared/utils/error.utils'
 import { Member, Person } from './models/person/person.model'
-import { isMember, updateUserCustomClaims } from './utils/persons.utils'
+import { isMember } from './utils/persons.utils'
 
 export async function findAllPerson(req: Request, res: Response) {
     try {
@@ -74,8 +79,7 @@ export async function findOnePerson(req: Request, res: Response) {
 
         if (!snapshot.exists) {
             const error: ApiError = new Error('Person not found')
-            error.status = 404
-            return handleError(res, error)
+            return handleNotFoundError(res, error)
         }
 
         const person = {
@@ -91,7 +95,7 @@ export async function findOnePerson(req: Request, res: Response) {
 
 export async function createPerson(req: Request, res: Response) {
     try {
-        const cleanedData = cleanData(req.body) as Omit<Person, 'id'>
+        const cleanedData = cleanData<Person>(req.body)
         const { uid } = res.locals
 
         const personRef = await admin
@@ -112,7 +116,7 @@ export async function createPerson(req: Request, res: Response) {
 export async function updatePerson(req: Request, res: Response) {
     try {
         const { id } = req.params
-        const cleanedData = cleanData(req.body) as Partial<Person>
+        const cleanedData = cleanData<Person>(req.body)
         const { uid, roles } = res.locals
 
         const personRef = admin.firestore().collection('persons').doc(id)
@@ -120,8 +124,7 @@ export async function updatePerson(req: Request, res: Response) {
 
         if (!person.exists) {
             const error: ApiError = new Error('Person not found')
-            error.status = 404
-            return handleError(res, error)
+            return handleNotFoundError(res, error)
         }
 
         const existingPerson = person.data() as Person
@@ -136,13 +139,13 @@ export async function updatePerson(req: Request, res: Response) {
                     const error: ApiError = new Error(
                         'Only admin can modify roles and email for members'
                     )
-                    error.status = 403
-                    return handleError(res, error)
+                    return handleAuthorizationError(res, error)
                 }
 
                 if (memberData.roles && existingPerson.userId) {
                     // Attention reconnexion nécessaire lors de la modif
-                    await updateUserCustomClaims(
+                    const firebaseAuthService = new FirebaseAuthService()
+                    await firebaseAuthService.updateUserCustomClaims(
                         existingPerson.userId,
                         memberData.roles
                     )
@@ -170,8 +173,7 @@ export async function removePerson(req: Request, res: Response) {
 
         if (!person.exists) {
             const error: ApiError = new Error('Person not found')
-            error.status = 404
-            return handleError(res, error)
+            return handleNotFoundError(res, error)
         }
 
         await personRef.delete()

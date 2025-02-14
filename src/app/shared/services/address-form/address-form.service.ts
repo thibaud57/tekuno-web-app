@@ -29,7 +29,7 @@ export class AddressFormService {
     }
 
     getAddress(form: FormGroup<AddressForm>): Address | undefined {
-        const formValue = form.value
+        const formValue = form.getRawValue()
 
         if (!formValue.streetName || !formValue.city || !formValue.postalCode) {
             return undefined

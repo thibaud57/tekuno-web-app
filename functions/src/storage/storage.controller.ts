@@ -1,7 +1,7 @@
 import * as Busboy from 'busboy'
 import { Request, Response } from 'express'
 import { ApiError } from '../shared/models/api-error.model'
-import { handleError } from '../shared/utils/error.utils'
+import { handleBadRequestError, handleError } from '../shared/utils/error.utils'
 import { RequestWithRawBody } from './middlewares/upload.middleware'
 import { StorageService } from './services/storage.service'
 
@@ -22,8 +22,7 @@ export async function uploadFile(req: RequestWithRawBody, res: Response) {
             !file?.mimeType
         ) {
             const error: ApiError = new Error('Missing required upload data')
-            error.status = 400
-            return handleError(res, error)
+            return handleBadRequestError(res, error)
         }
 
         const url = await storageService.uploadFile(
@@ -46,8 +45,7 @@ export async function deleteFile(req: Request, res: Response) {
 
         if (!url) {
             const error: ApiError = new Error('Missing required url')
-            error.status = 400
-            return handleError(res, error)
+            return handleBadRequestError(res, error)
         }
 
         const filePath = storageService.extractFilePathFromUrl(url, folderName)

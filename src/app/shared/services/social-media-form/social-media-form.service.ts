@@ -19,7 +19,7 @@ export class SocialMediaFormService {
     }
 
     getSocialMedia(form: FormGroup<SocialMediaForm>): SocialMedia | undefined {
-        const formValue = form.value
+        const formValue = form.getRawValue()
 
         if (
             !formValue.facebook &&

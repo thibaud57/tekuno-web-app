@@ -20,7 +20,7 @@ export class BankDetailsFormService {
     }
 
     getBankDetails(form: FormGroup<BankDetailsForm>): BankDetails | undefined {
-        const formValue = form.value
+        const formValue = form.getRawValue()
 
         if (
             !formValue.name ||

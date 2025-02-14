@@ -2,6 +2,7 @@ import { Request, Response } from 'express'
 import * as admin from 'firebase-admin'
 import { UpdateRequest } from 'firebase-admin/auth'
 import { RoleType } from '../auth/enums/role-type.enum'
+import { FirebaseAuthService } from '../auth/services/firebase-auth.service'
 import { PersonType } from '../persons/enums/person-type.enum'
 import { Member } from '../persons/models/person/person.model'
 import {
@@ -11,7 +12,11 @@ import {
     updatePerson,
 } from '../persons/persons.controller'
 import { ApiError } from '../shared/models/api-error.model'
-import { handleError } from '../shared/utils/error.utils'
+import {
+    handleAuthorizationError,
+    handleBadRequestError,
+    handleError,
+} from '../shared/utils/error.utils'
 import { CreateUserDto, User } from './models/user.model'
 import { mapUser } from './utils/users.utils'
 
@@ -54,8 +59,7 @@ export async function createUser(req: Request, res: Response) {
             createUserDto.roles.length === 0
         ) {
             const error: ApiError = new Error('Missing required fields')
-            error.status = 400
-            return handleError(res, error)
+            return handleBadRequestError(res, error)
         }
 
         // Create Firebase user
@@ -65,9 +69,11 @@ export async function createUser(req: Request, res: Response) {
         })
 
         // Assign roles
-        await admin
-            .auth()
-            .setCustomUserClaims(uid, { roles: createUserDto.roles })
+        const firebaseAuthService = new FirebaseAuthService()
+        await firebaseAuthService.updateUserCustomClaims(
+            uid,
+            createUserDto.roles
+        )
 
         try {
             // Create associated member
@@ -85,7 +91,6 @@ export async function createUser(req: Request, res: Response) {
             // If member creation fails, clean up the Firebase user
             await admin.auth().deleteUser(uid)
             const error: ApiError = new Error('Member creation failed')
-            error.status = 500
             return handleError(res, error)
         }
     } catch (err) {
@@ -130,7 +135,6 @@ export async function updateUser(req: Request, res: Response) {
             const error: ApiError = new Error(
                 'Member update failed but user was updated'
             )
-            error.status = 500
             return handleError(res, error)
         }
     } catch (err) {
@@ -147,8 +151,7 @@ export async function removeUser(req: Request, res: Response) {
 
         if (roles.includes(RoleType.ADMIN)) {
             const error: ApiError = new Error('Cannot delete admin account')
-            error.status = 403
-            return handleError(res, error)
+            return handleAuthorizationError(res, error)
         }
 
         try {
@@ -168,7 +171,6 @@ export async function removeUser(req: Request, res: Response) {
             return res.status(204).send()
         } catch (personError) {
             const error: ApiError = new Error('Member deletion failed')
-            error.status = 500
             return handleError(res, error)
         }
     } catch (err) {

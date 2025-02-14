@@ -1,7 +1,8 @@
 import { NextFunction, Request, Response } from 'express'
+import { mapValues } from 'lodash'
 import { personSchema } from '../../persons/validators/person.validator'
 import { ApiError } from '../models/api-error.model'
-import { handleError } from '../utils/error.utils'
+import { handleBadRequestError } from '../utils/error.utils'
 
 export function validatePerson(
     req: Request,
@@ -9,6 +10,9 @@ export function validatePerson(
     next: NextFunction
 ) {
     try {
+        // Convertit les strings vides en undefined pour les champs optionnels
+        req.body = mapValues(req.body, v => (v === '' ? undefined : v))
+
         const validationResult = personSchema.safeParse(req.body)
 
         if (!validationResult.success) {
@@ -17,16 +21,13 @@ export function validatePerson(
                     .map(err => `${err.path.join('.')}: ${err.message}`)
                     .join(', ')
             )
-            error.status = 400
-            return handleError(res, error)
+            return handleBadRequestError(res, error)
         }
 
         req.body = validationResult.data
         return next()
     } catch (err) {
-        console.error('Validation Error:', err)
         const error: ApiError = new Error('Validation error')
-        error.status = 400
-        return handleError(res, error)
+        return handleBadRequestError(res, error)
     }
 }

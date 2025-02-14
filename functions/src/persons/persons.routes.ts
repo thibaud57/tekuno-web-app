@@ -34,7 +34,10 @@ export function personsRoute(app: Application) {
     app.patch(
         '/persons/:id',
         isAuthenticated,
-        isAuthorized({ hasRole: [RoleType.SECRETARY] }),
+        isAuthorized({
+            hasRole: [RoleType.SECRETARY],
+            allowSameUser: true,
+        }),
         validatePerson,
         updatePerson
     )

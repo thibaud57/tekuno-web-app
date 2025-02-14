@@ -42,7 +42,7 @@ export class PersonFormService {
     }
 
     buildPerson(form: FormGroup<PersonForm>): Person {
-        const formValue = form.value
+        const formValue = form.getRawValue()
 
         const phone = cleanPhoneNumber(
             formValue.phone,
@@ -176,7 +176,7 @@ export class PersonFormService {
     private getBankDetailsFromForm(
         form: FormGroup<PersonForm>
     ): BankDetails | undefined {
-        const formValue = form.value
+        const formValue = form.getRawValue()
 
         if (
             formValue.personType !== PersonType.DJ &&

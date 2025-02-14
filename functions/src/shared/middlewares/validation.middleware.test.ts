@@ -268,4 +268,81 @@ describe('Validation Middleware', () => {
             })
         })
     })
+
+    describe('Empty string handling', () => {
+        it('should convert empty email to undefined', () => {
+            mockRequest.body = {
+                ...djMock,
+                email: '',
+            }
+
+            validatePerson(
+                mockRequest as Request,
+                mockResponse as Response,
+                nextFunction
+            )
+
+            expect(mockRequest.body.email).toBeUndefined()
+            expect(nextFunction).toHaveBeenCalled()
+        })
+
+        it('should reject empty required field (name)', () => {
+            mockRequest.body = {
+                ...djMock,
+                name: '',
+            }
+
+            validatePerson(
+                mockRequest as Request,
+                mockResponse as Response,
+                nextFunction
+            )
+
+            expect(mockStatus).toHaveBeenCalledWith(400)
+            expect(mockSend).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    message: expect.stringContaining(
+                        'Name must be at least 2 characters'
+                    ),
+                })
+            )
+        })
+    })
+
+    describe('Optional fields validation', () => {
+        it('should accept null for optional fields in Organization', () => {
+            const orgData = {
+                ...orgaTekunoMock,
+                description: null,
+                equipments: null,
+            }
+            mockRequest.body = orgData
+
+            validatePerson(
+                mockRequest as Request,
+                mockResponse as Response,
+                nextFunction
+            )
+
+            expect(nextFunction).toHaveBeenCalled()
+            expect(mockRequest.body.description).toBeNull()
+        })
+
+        it('should accept undefined for optional fields', () => {
+            const orgData = {
+                ...orgaTekunoMock,
+                email: undefined,
+            }
+            mockRequest.body = orgData
+
+            validatePerson(
+                mockRequest as Request,
+                mockResponse as Response,
+                nextFunction
+            )
+
+            expect(nextFunction).toHaveBeenCalled()
+            expect(mockRequest.body.email).toBeUndefined()
+        })
+    })
 })
