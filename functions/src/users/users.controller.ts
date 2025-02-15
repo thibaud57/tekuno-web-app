@@ -112,9 +112,11 @@ export async function updateUser(req: Request, res: Response) {
         await admin.auth().updateUser(id, authUpdate)
 
         if (userEntity.roles) {
-            await admin
-                .auth()
-                .setCustomUserClaims(id, { roles: userEntity.roles })
+            const firebaseAuthService = new FirebaseAuthService()
+            await firebaseAuthService.updateUserCustomClaims(
+                id,
+                userEntity.roles
+            )
         }
 
         try {

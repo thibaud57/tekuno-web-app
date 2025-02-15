@@ -12,15 +12,16 @@ import {
     setupFirestoreMocks,
 } from '../shared/models/firebase.mock'
 
-jest.mock('firebase-admin', () => mockFirebaseAdmin)
-
 import { Request, Response } from 'express'
 import { RoleType } from '../auth/enums/role-type.enum'
+import { FirebaseAuthService } from '../auth/services/firebase-auth.service'
+import { OrganizationType } from './enums/organization-type.enum'
 import { PersonType } from './enums/person-type.enum'
 import {
     customerMock,
     member2RolesMock,
     memberAdminMock,
+    orgaTekunoMock,
 } from './models/person/person.mock'
 import {
     createPerson,
@@ -30,6 +31,8 @@ import {
     removePerson,
     updatePerson,
 } from './persons.controller'
+
+jest.mock('firebase-admin', () => mockFirebaseAdmin)
 
 describe('PersonsController', () => {
     let req: Partial<Request>
@@ -61,24 +64,36 @@ describe('PersonsController', () => {
     describe('findAllPerson', () => {
         it('should return all persons', async () => {
             const persons = [customerMock, memberAdminMock]
-            mockGet.mockResolvedValue({
-                docs: persons.map(person => ({
-                    id: person.id,
-                    data: () => ({ ...person }),
-                })),
-            })
+            const mockQuery = {
+                where: jest.fn().mockReturnThis(),
+                get: jest.fn().mockResolvedValue({
+                    docs: persons.map(person => ({
+                        id: person.id,
+                        data: () => ({ ...person }),
+                    })),
+                }),
+            }
+            mockCollection.mockReturnValue(mockQuery)
+
+            req = { query: {} }
 
             await findAllPerson(req as Request, res as Response)
 
             expect(mockCollection).toHaveBeenCalledWith('persons')
-            expect(mockGet).toHaveBeenCalled()
+            expect(mockQuery.get).toHaveBeenCalled()
             expect(mockStatus).toHaveBeenCalledWith(200)
             expect(mockSend).toHaveBeenCalledWith(persons)
         })
 
         it('should handle Firestore error', async () => {
             const error = new Error('Firestore error')
-            mockGet.mockRejectedValue(error)
+            const mockQuery = {
+                where: jest.fn().mockReturnThis(),
+                get: jest.fn().mockRejectedValue(error),
+            }
+            mockCollection.mockReturnValue(mockQuery)
+
+            req = { query: {} }
 
             await findAllPerson(req as Request, res as Response)
 
@@ -86,6 +101,112 @@ describe('PersonsController', () => {
             expect(mockSend).toHaveBeenCalledWith({
                 message: 'Firestore error',
             })
+        })
+
+        it('should apply filters when query parameters are provided', async () => {
+            const persons = [memberAdminMock]
+            const mockQuery = {
+                where: jest.fn().mockReturnThis(),
+                get: jest.fn().mockResolvedValue({
+                    docs: persons.map(person => ({
+                        id: person.id,
+                        data: () => ({ ...person }),
+                    })),
+                }),
+            }
+            mockCollection.mockReturnValue(mockQuery)
+
+            req = {
+                query: {
+                    personType: PersonType.MEMBER,
+                    userId: memberAdminMock.userId,
+                },
+            }
+
+            await findAllPerson(req as Request, res as Response)
+
+            expect(mockCollection).toHaveBeenCalledWith('persons')
+            expect(mockQuery.where).toHaveBeenCalledWith(
+                'personType',
+                '==',
+                PersonType.MEMBER
+            )
+            expect(mockQuery.where).toHaveBeenCalledWith(
+                'userId',
+                '==',
+                memberAdminMock.userId
+            )
+            expect(mockQuery.get).toHaveBeenCalled()
+            expect(mockStatus).toHaveBeenCalledWith(200)
+            expect(mockSend).toHaveBeenCalledWith(persons)
+        })
+
+        it('should filter by organizationType', async () => {
+            const persons = [orgaTekunoMock]
+            const mockQuery = {
+                where: jest.fn().mockReturnThis(),
+                get: jest.fn().mockResolvedValue({
+                    docs: persons.map(person => ({
+                        id: person.id,
+                        data: () => ({ ...person }),
+                    })),
+                }),
+            }
+            mockCollection.mockReturnValue(mockQuery)
+
+            req = {
+                query: {
+                    organizationType: OrganizationType.ASSOCIATION,
+                },
+            }
+
+            await findAllPerson(req as Request, res as Response)
+
+            expect(mockCollection).toHaveBeenCalledWith('persons')
+            expect(mockQuery.where).toHaveBeenCalledWith(
+                'organizationType',
+                '==',
+                OrganizationType.ASSOCIATION
+            )
+            expect(mockStatus).toHaveBeenCalledWith(200)
+            expect(mockSend).toHaveBeenCalledWith(persons)
+        })
+
+        it('should combine organizationType and personType filters', async () => {
+            const persons = [orgaTekunoMock]
+            const mockQuery = {
+                where: jest.fn().mockReturnThis(),
+                get: jest.fn().mockResolvedValue({
+                    docs: persons.map(person => ({
+                        id: person.id,
+                        data: () => ({ ...person }),
+                    })),
+                }),
+            }
+            mockCollection.mockReturnValue(mockQuery)
+
+            req = {
+                query: {
+                    organizationType: OrganizationType.ASSOCIATION,
+                    personType: PersonType.ORGANIZATION,
+                },
+            }
+
+            await findAllPerson(req as Request, res as Response)
+
+            expect(mockCollection).toHaveBeenCalledWith('persons')
+            expect(mockQuery.where).toHaveBeenCalledWith(
+                'organizationType',
+                '==',
+                OrganizationType.ASSOCIATION
+            )
+            expect(mockQuery.where).toHaveBeenCalledWith(
+                'personType',
+                '==',
+                PersonType.ORGANIZATION
+            )
+            expect(mockStatus).toHaveBeenCalledWith(200)
+            expect(mockSend).toHaveBeenCalledWith(persons)
         })
     })
 
@@ -173,10 +294,10 @@ describe('PersonsController', () => {
     describe('createPerson', () => {
         it('should create person successfully', async () => {
             const newPerson = {
-                name: 'New Person',
-                personType: PersonType.MEMBER,
-                email: 'new@mail.fr',
-                roles: [RoleType.MEMBER],
+                ...member2RolesMock,
+                id: undefined,
+                createdAt: undefined,
+                createdBy: undefined,
             }
             req = { body: newPerson }
             const newId = 'new-person-id'
@@ -196,8 +317,10 @@ describe('PersonsController', () => {
 
         it('should handle Firestore error', async () => {
             const newPerson = {
-                name: 'New Person',
-                personType: PersonType.MEMBER,
+                ...member2RolesMock,
+                id: undefined,
+                createdAt: undefined,
+                createdBy: undefined,
             }
             req = { body: newPerson }
             const error = new Error('Firestore error')
@@ -302,6 +425,91 @@ describe('PersonsController', () => {
             expect(mockSend).toHaveBeenCalledWith({
                 message: 'Only admin can modify roles and email for members',
             })
+        })
+
+        it('should update member roles and Firebase claims', async () => {
+            const updateData = {
+                roles: [RoleType.MEMBER, RoleType.ACCOUNTANT],
+            }
+            req = {
+                params: { id: member2RolesMock.id },
+                body: updateData,
+            }
+            res = {
+                ...res,
+                locals: {
+                    uid: memberAdminMock.id,
+                    roles: [RoleType.ADMIN],
+                },
+            }
+            mockGet.mockResolvedValue({
+                exists: true,
+                data: () => ({ ...member2RolesMock }),
+            })
+
+            const mockFirebaseAuthService = {
+                updateUserCustomClaims: jest.fn().mockResolvedValue(undefined),
+            }
+
+            jest.spyOn(
+                FirebaseAuthService.prototype,
+                'updateUserCustomClaims'
+            ).mockImplementation(mockFirebaseAuthService.updateUserCustomClaims)
+
+            await updatePerson(req as Request, res as Response)
+
+            expect(
+                mockFirebaseAuthService.updateUserCustomClaims
+            ).toHaveBeenCalledWith(member2RolesMock.userId, updateData.roles)
+            expect(mockUpdate).toHaveBeenCalledWith({
+                ...updateData,
+                updatedAt: expect.any(Object),
+                updatedBy: memberAdminMock.id,
+            })
+            expect(mockStatus).toHaveBeenCalledWith(204)
+            expect(mockSend).toHaveBeenCalled()
+        })
+
+        it('should handle Firebase claims update failure', async () => {
+            const updateData = {
+                roles: [RoleType.MEMBER, RoleType.ACCOUNTANT],
+            }
+            req = {
+                params: { id: member2RolesMock.id },
+                body: updateData,
+            }
+            res = {
+                ...res,
+                locals: {
+                    uid: memberAdminMock.id,
+                    roles: [RoleType.ADMIN],
+                },
+            }
+            mockGet.mockResolvedValue({
+                exists: true,
+                data: () => ({ ...member2RolesMock }),
+            })
+
+            const mockFirebaseAuthService = {
+                updateUserCustomClaims: jest
+                    .fn()
+                    .mockRejectedValue(
+                        new Error('Firebase claims update failed')
+                    ),
+            }
+
+            jest.spyOn(
+                FirebaseAuthService.prototype,
+                'updateUserCustomClaims'
+            ).mockImplementation(mockFirebaseAuthService.updateUserCustomClaims)
+
+            await updatePerson(req as Request, res as Response)
+
+            expect(mockStatus).toHaveBeenCalledWith(500)
+            expect(mockSend).toHaveBeenCalledWith({
+                message: 'Firebase claims update failed',
+            })
+            expect(mockUpdate).not.toHaveBeenCalled()
         })
     })
 

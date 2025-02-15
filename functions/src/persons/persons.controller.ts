@@ -143,12 +143,16 @@ export async function updatePerson(req: Request, res: Response) {
                 }
 
                 if (memberData.roles && existingPerson.userId) {
-                    // Attention reconnexion nécessaire lors de la modif
-                    const firebaseAuthService = new FirebaseAuthService()
-                    await firebaseAuthService.updateUserCustomClaims(
-                        existingPerson.userId,
-                        memberData.roles
-                    )
+                    try {
+                        // Attention reconnexion nécessaire lors de la modif
+                        const firebaseAuthService = new FirebaseAuthService()
+                        await firebaseAuthService.updateUserCustomClaims(
+                            existingPerson.userId,
+                            memberData.roles
+                        )
+                    } catch (firebaseError) {
+                        return handleError(res, firebaseError as Error)
+                    }
                 }
             }
         }

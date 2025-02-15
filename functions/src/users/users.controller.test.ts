@@ -4,10 +4,8 @@ import {
     resetFirebaseMocks,
 } from '../shared/models/firebase.mock'
 
-jest.mock('firebase-admin', () => mockFirebaseAdmin)
-jest.mock('../persons/persons-controller')
-
 import { Request, Response } from 'express'
+import { FirebaseAuthService } from '../auth/services/firebase-auth.service'
 import { PersonType } from '../persons/enums/person-type.enum'
 import {
     member2RolesMock,
@@ -34,6 +32,9 @@ import {
     removeUser,
     updateUser,
 } from './users.controller'
+
+jest.mock('firebase-admin', () => mockFirebaseAdmin)
+jest.mock('../persons/persons.controller')
 
 describe('UsersController', () => {
     let req: Partial<Request>
@@ -180,6 +181,33 @@ describe('UsersController', () => {
                 message: 'Firebase creation failed',
             })
         })
+
+        it('should call FirebaseAuthService correctly', async () => {
+            req = { body: createUserDtoMock }
+            const createdFirebaseUser = createFirebaseUserMock(user2RolesMock)
+            mockAuth.createUser.mockResolvedValue(createdFirebaseUser)
+
+            const mockFirebaseAuthService = {
+                updateUserCustomClaims: jest.fn().mockResolvedValue(undefined),
+            }
+
+            jest.spyOn(
+                FirebaseAuthService.prototype,
+                'updateUserCustomClaims'
+            ).mockImplementation(mockFirebaseAuthService.updateUserCustomClaims)
+
+            const findMemberByUserIdMock = findMemberByUserId as jest.Mock
+            findMemberByUserIdMock.mockResolvedValue(member2RolesMock)
+
+            await createUser(req as Request, res as Response)
+
+            expect(
+                mockFirebaseAuthService.updateUserCustomClaims
+            ).toHaveBeenCalledWith(
+                createdFirebaseUser.uid,
+                createUserDtoMock.roles
+            )
+        })
     })
 
     describe('updateUser', () => {
@@ -205,6 +233,17 @@ describe('UsersController', () => {
                 }
             )
 
+            const mockFirebaseAuthService = {
+                updateUserCustomClaims: jest.fn().mockResolvedValue(undefined),
+            }
+
+            jest.spyOn(
+                FirebaseAuthService.prototype,
+                'updateUserCustomClaims'
+            ).mockImplementation(mockFirebaseAuthService.updateUserCustomClaims)
+
+            mockAuth.updateUser.mockResolvedValue(undefined)
+
             await updateUser(req as Request, res as Response)
 
             expect(mockAuth.updateUser).toHaveBeenCalledWith(
@@ -215,10 +254,9 @@ describe('UsersController', () => {
                     photoURL: null,
                 }
             )
-            expect(mockAuth.setCustomUserClaims).toHaveBeenCalledWith(
-                user2RolesMock.id,
-                { roles: updateData.roles }
-            )
+            expect(
+                mockFirebaseAuthService.updateUserCustomClaims
+            ).toHaveBeenCalledWith(user2RolesMock.id, updateData.roles)
             expect(mockStatus).toHaveBeenCalledWith(204)
         })
 
@@ -297,6 +335,37 @@ describe('UsersController', () => {
             expect(mockAuth.updateUser).toHaveBeenCalled()
             expect(updatePerson).not.toHaveBeenCalled()
             expect(mockStatus).toHaveBeenCalledWith(204)
+        })
+
+        it('should use FirebaseAuthService for claims update', async () => {
+            const updateData = {
+                ...user2RolesMock,
+                email: 'newemail@mail.fr',
+            }
+            req = {
+                params: { id: user2RolesMock.id },
+                body: updateData,
+            }
+
+            const mockFirebaseAuthService = {
+                updateUserCustomClaims: jest.fn().mockResolvedValue(undefined),
+            }
+
+            jest.spyOn(
+                FirebaseAuthService.prototype,
+                'updateUserCustomClaims'
+            ).mockImplementation(mockFirebaseAuthService.updateUserCustomClaims)
+
+            const findMemberByUserIdMock = findMemberByUserId as jest.Mock
+            findMemberByUserIdMock.mockResolvedValue(member2RolesMock)
+
+            mockAuth.updateUser.mockResolvedValue(undefined)
+
+            await updateUser(req as Request, res as Response)
+
+            expect(
+                mockFirebaseAuthService.updateUserCustomClaims
+            ).toHaveBeenCalledWith(user2RolesMock.id, updateData.roles)
         })
     })
 

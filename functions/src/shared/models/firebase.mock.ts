@@ -8,6 +8,22 @@ export const mockAuth = {
     setCustomUserClaims: jest.fn(),
 }
 
+// Firebase Storage mocks
+export const mockStorageSave = jest.fn().mockResolvedValue(undefined)
+export const mockStorageMakePublic = jest.fn().mockResolvedValue(undefined)
+export const mockStorageDelete = jest.fn().mockResolvedValue(undefined)
+export const mockStorageFile = {
+    save: mockStorageSave,
+    makePublic: mockStorageMakePublic,
+    delete: mockStorageDelete,
+}
+
+export const mockStorageBucketFile = jest.fn().mockReturnValue(mockStorageFile)
+export const mockStorageBucket = {
+    file: mockStorageBucketFile,
+    name: 'test-bucket',
+}
+
 // Firestore mocks
 export const mockCollection = jest.fn()
 export const mockDoc = jest.fn()
@@ -21,6 +37,9 @@ export const mockGet = jest.fn()
 // Firebase Admin mock
 export const mockFirebaseAdmin = {
     auth: () => mockAuth,
+    storage: () => ({
+        bucket: jest.fn().mockReturnValue(mockStorageBucket),
+    }),
     firestore: () => ({
         collection: mockCollection,
         Timestamp: {
@@ -44,6 +63,8 @@ export const setupFirestoreMocks = () => {
     })
     mockWhere.mockReturnValue({
         limit: mockLimit,
+        get: mockGet,
+        where: mockWhere,
     })
     mockLimit.mockReturnValue({
         get: mockGet,
@@ -59,6 +80,13 @@ export const resetFirebaseMocks = () => {
     mockAuth.updateUser.mockReset()
     mockAuth.deleteUser.mockReset()
     mockAuth.setCustomUserClaims.mockReset()
+
+    // Reset Storage mocks
+    mockStorageSave.mockReset()
+    mockStorageMakePublic.mockReset()
+    mockStorageDelete.mockReset()
+    mockStorageBucketFile.mockReset()
+    mockStorageBucketFile.mockReturnValue(mockStorageFile)
 
     // Reset Firestore mocks
     mockCollection.mockReset()

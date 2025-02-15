@@ -42,7 +42,7 @@ export class PersonFormService {
     }
 
     buildPerson(form: FormGroup<PersonForm>): Person {
-        const formValue = form.getRawValue()
+        const formValue = form.value
 
         const phone = cleanPhoneNumber(
             formValue.phone,
