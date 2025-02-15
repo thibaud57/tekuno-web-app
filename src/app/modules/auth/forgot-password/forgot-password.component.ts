@@ -44,6 +44,10 @@ import { finalize } from 'rxjs'
     ],
 })
 export class AuthForgotPasswordComponent implements OnInit {
+    private readonly authService = inject(AuthService)
+    private readonly formBuilder = inject(FormBuilder)
+    private readonly translationService = inject(TranslationService)
+
     @ViewChild('forgotPasswordNgForm') forgotPasswordNgForm: NgForm
 
     readonly TRANSLATION_PREFIX = 'modules.auth.forgot-password.'
@@ -54,10 +58,6 @@ export class AuthForgotPasswordComponent implements OnInit {
     }
     showAlert = false
     form: FormGroup
-
-    private readonly authService = inject(AuthService)
-    private readonly formBuilder = inject(FormBuilder)
-    private readonly translationService = inject(TranslationService)
 
     ngOnInit(): void {
         this.form = this.formBuilder.group({

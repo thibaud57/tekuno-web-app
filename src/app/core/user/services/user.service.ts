@@ -7,11 +7,11 @@ import { Observable } from 'rxjs'
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
+    private readonly http = inject(HttpClient)
+
     readonly user = signal<User | null>(null)
 
     private readonly apiUrl = environment.apiBaseUrl + '/users'
-
-    private readonly http = inject(HttpClient)
 
     getUsers(): Observable<User[]> {
         return this.http.get<User[]>(this.apiUrl)

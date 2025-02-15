@@ -3,8 +3,9 @@ import * as cors from 'cors'
 import * as express from 'express'
 import * as admin from 'firebase-admin'
 import * as functions from 'firebase-functions'
-import { personsRoute } from './persons/persons-routes'
-import { usersRoute } from './users/users-routes'
+import { personsRoute } from './persons/persons.routes'
+import { storageRoute } from './storage/storage.routes'
+import { usersRoute } from './users/users.routes'
 
 admin.initializeApp()
 
@@ -14,6 +15,7 @@ app.use(cors({ origin: true }))
 
 usersRoute(app)
 personsRoute(app)
+storageRoute(app)
 
 functions.setGlobalOptions({ region: 'europe-west1' })
 

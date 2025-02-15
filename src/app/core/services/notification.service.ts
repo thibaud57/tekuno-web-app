@@ -23,7 +23,6 @@ export class NotificationService {
     }
 
     showError(messageKey: string, errorMessage?: string): void {
-        console.log('Error:', errorMessage)
         const message = errorMessage
             ? this.translationService
                   .getTranslation(messageKey)

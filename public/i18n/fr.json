@@ -91,6 +91,9 @@
                 "rechercher": "Rechercher des contacts",
                 "ajouter": "Ajouter",
                 "aucun-contact": "Aucun contact trouvé",
+                "alertes": {
+                    "erreur-chargement-contacts": "Erreur lors du chargement des contacts : {erreur}"
+                },
                 "person-detail": {
                     "contact": "Contact"
                 }
@@ -131,7 +134,111 @@
     },
     "common": {
         "erreur-api": "Une erreur est survenue : {erreur}",
-        "ok": "OK"
+        "ok": "OK",
+        "oui": "Oui",
+        "non": "Non",
+        "errors": {
+            "required": "Ce champ est requis",
+            "email": "L'adresse email n'est pas valide",
+            "minlength": "Ce champ doit contenir au minimum {{min}} caractères",
+            "maxlength": "Ce champ doit contenir au maximum {{max}} caractères",
+            "invalid-form": "Le formulaire est invalide"
+        },
+        "actions": {
+            "enregistrer": "Enregistrer",
+            "annuler": "Annuler"
+        }
+    },
+    "shared": {
+        "person-form": {
+            "title": "Nouveau contact",
+            "fields": {
+                "person-type": "Type de contact",
+                "name": "Nom",
+                "first-name": "Prénom",
+                "email": "Email",
+                "phone": "Téléphone",
+                "description": "Description",
+                "gender": "Genre",
+                "address": "Adresse"
+            },
+            "alertes": {
+                "contact-ajoute": "Le contact a été ajouté avec succès",
+                "erreur-creation-contact": "Erreur lors de la création du contact : {erreur}",
+                "avatar-upload-succes": "Photo de profil mise à jour avec succès",
+                "avatar-upload-erreur": "Erreur lors de la mise à jour de la photo de profil : {erreur}",
+                "avatar-non-trouve": "Aucune photo de profil trouvée",
+                "avatar-supprime-succes": "Photo de profil supprimée avec succès",
+                "avatar-supprime-erreur": "Erreur lors de la suppression de la photo de profil : {erreur}"
+            },
+            "ajouter-adresse": "Ajouter une adresse",
+            "retirer-adresse": "Retirer l'adresse",
+            "ajouter-reseaux-sociaux": "Ajouter des réseaux sociaux",
+            "retirer-reseaux-sociaux": "Retirer les réseaux sociaux",
+            "dj-form": {
+                "fields": {
+                    "alias": "Nom de scène",
+                    "price": "Tarif",
+                    "biography": "Biographie",
+                    "agency-id": {
+                        "agence": "Agence",
+                        "aucune-agence-disponible": "Aucune agence disponible",
+                        "aucune-agence": "Aucune agence"
+                    },
+                    "bank-details": "Coordonnées bancaires",
+                    "siret": "SIRET",
+                    "vat": "TVA"
+                },
+                "ajouter-coordonnees-bancaires": "Ajouter des coordonnées bancaires",
+                "retirer-coordonnees-bancaires": "Retirer les coordonnées bancaires",
+                "errors": {
+                    "siret-format": "Le SIRET doit être constitué de 14 chiffres"
+                }
+            },
+            "organization-form": {
+                "fields": {
+                    "organization-type": "Type d'organisation",
+                    "siret": "SIRET",
+                    "vat": "TVA",
+                    "bank-details": "Coordonnées bancaires"
+                },
+                "ajouter-coordonnees-bancaires": "Ajouter des coordonnées bancaires",
+                "retirer-coordonnees-bancaires": "Retirer les coordonnées bancaires",
+                "errors": {
+                    "siret-format": "Le SIRET doit être constitué de 14 chiffres"
+                }
+            },
+            "correspondent-form": {
+                "fields": {
+                    "organization-id": {
+                        "organisation": "Organisation",
+                        "aucune-organisation-disponible": "Aucune organisation disponible"
+                    },
+                    "correspondent-type": "Type de correspondant",
+                    "is-active": "Actif",
+                    "is-default": "Par défaut"
+                }
+            }
+        },
+        "address-form": {
+            "fields": {
+                "street-number": "N°",
+                "street-name": "Nom de la rue",
+                "city": "Ville",
+                "postal-code": "Code postal",
+                "country": "Pays"
+            }
+        },
+        "social-media-form": {},
+        "bank-details-form": {
+            "title": "Coordonnées bancaires",
+            "fields": {
+                "name": "Nom",
+                "iban": "IBAN",
+                "bic": "BIC",
+                "paypal": "Paypal"
+            }
+        }
     },
     "enums": {
         "role-type": {
@@ -147,7 +254,54 @@
             "MEMBER": "Membre",
             "DJ": "DJ",
             "ORGANIZATION": "Organisation",
+            "CORRESPONDENT": "Correspondant",
             "CUSTOMER": "Client"
+        },
+        "gender": {
+            "MALE": "Homme",
+            "FEMALE": "Femme"
+        },
+        "country": {
+            "FRANCE": "France",
+            "GERMANY": "Allemagne",
+            "LUXEMBOURG": "Luxembourg",
+            "NETHERLANDS": "Pays-Bas",
+            "UK": "Royaume-Uni",
+            "ITALY": "Italie",
+            "PORTUGAL": "Portugal",
+            "SPAIN": "Espagne",
+            "SWITZERLAND": "Suisse"
+        },
+        "organization-type": {
+            "AGENCY": "Agence",
+            "ARTIST": "Artiste",
+            "ASSOCIATION": "Association",
+            "LOCATION": "Lieu",
+            "RENTAL": "Location",
+            "PHOTOGRAPHER": "Photographe",
+            "VJ": "VJ",
+            "SHOP": "Magasin"
+        },
+        "social-media-type": {
+            "FACEBOOK": "Facebook",
+            "INSTAGRAM": "Instagram",
+            "WEBSITE": "Site web",
+            "SOUNDCLOUD": "Soundcloud",
+            "SPOTIFY": "Spotify",
+            "BEATPORT": "Beatport",
+            "BANDCAMP": "Bandcamp",
+            "RESIDENT_ADVISOR": "Resident Advisor"
+        },
+        "correspondent-type": {
+            "MANAGER": "Directeur",
+            "OWNER": "Propriétaire",
+            "AGENT": "Agent",
+            "EVENT_COORDINATOR": "Coordinateur événementiel",
+            "TECHNICAL": "Responsable technique",
+            "SECURITY": "Responsable sécurité",
+            "MARKETING": "Responsable marketing",
+            "FINANCE": "Responsable financier",
+            "OTHER": "Autre"
         }
     }
 }

@@ -10,3 +10,25 @@
 .error-snackbar {
     --mdc-snackbar-container-color: var(--fuse-warn);
 }
+
+.section-divider {
+    @apply mb-8 mt-2;
+}
+
+.hide-number-spinners {
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    &[type='number'] {
+        -moz-appearance: textfield;
+    }
+}
+
+.mat-mdc-form-field {
+    &.mat-form-field-invalid {
+        @apply mb-2;
+    }
+}

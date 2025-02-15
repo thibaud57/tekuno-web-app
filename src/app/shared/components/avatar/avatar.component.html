@@ -1,5 +1,37 @@
-@if (avatar()) {
-    <img [src]="avatar()" alt="Avatar" class="h-full w-full rounded-full object-cover" />
-} @else {
-    <mat-icon [svgIcon]="'heroicons_outline:user-circle'" class="h-full w-full"></mat-icon>
-}
+<div class="group relative">
+    <div class="flex items-center justify-center">
+        @if (avatar()) {
+            <img [src]="avatar()" alt="Avatar" class="rounded-full object-cover" [style.width.px]="size" [style.height.px]="size" />
+        } @else {
+            <mat-icon [svgIcon]="'heroicons_outline:user-circle'" [style.width.px]="size" [style.height.px]="size"></mat-icon>
+        }
+    </div>
+
+    @if (showUploadButton) {
+        <div
+            class="absolute inset-0 z-20 flex items-center justify-center rounded-full bg-black/50 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+            <div>
+                <input
+                    #fileInput
+                    id="avatar-upload"
+                    type="file"
+                    [accept]="ACCEPTED_FILE_TYPES"
+                    [multiple]="false"
+                    class="pointer-events-none invisible absolute h-0 w-0 opacity-0"
+                    (change)="onFileSelected($event)" />
+
+                <label for="avatar-upload" matRipple class="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full hover:bg-hover">
+                    <mat-icon [svgIcon]="'heroicons_outline:camera'" class="text-white"></mat-icon>
+                </label>
+            </div>
+
+            @if (avatar()) {
+                <div>
+                    <button mat-icon-button (click)="onDelete($event)">
+                        <mat-icon [svgIcon]="'heroicons_outline:trash'" class="text-white"></mat-icon>
+                    </button>
+                </div>
+            }
+        </div>
+    }
+</div>

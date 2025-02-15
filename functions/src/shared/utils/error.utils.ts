@@ -26,3 +26,19 @@ export function handleAuthorizationError(
         message: err.message || 'Forbidden',
     })
 }
+
+export function handleNotFoundError(res: Response, err: Error): Response {
+    return handleError(res, {
+        ...err,
+        status: 404,
+        message: err.message || 'Not Found',
+    })
+}
+
+export function handleBadRequestError(res: Response, err: Error): Response {
+    return handleError(res, {
+        ...err,
+        status: 400,
+        message: err.message || 'Bad Request',
+    })
+}

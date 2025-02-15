@@ -1,5 +1,5 @@
 import { UserRecord } from 'firebase-admin/auth'
-import { Member } from '../../persons/models/person.model'
+import { Member } from '../../persons/models/person/person.model'
 import { User } from '../models/user.model'
 
 export function mapUser(user: UserRecord, member?: Member | null): User {

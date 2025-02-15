@@ -1,0 +1,146 @@
+<form [formGroup]="form()" (ngSubmit)="onSubmit()" class="flex flex-col gap-x-4 p-6">
+    <div class="mb-4 flex items-center justify-between">
+        <div class="flex items-center gap-4">
+            <app-avatar
+                [avatar]="profilePictureUrl()"
+                [size]="80"
+                [showUploadButton]="true"
+                (uploadAvatar)="onAvatarUpload($event)"
+                (deleteAvatar)="onAvatarDelete()" />
+            <h2 class="text-2xl font-semibold">{{ TRANSLATION_PREFIX + 'title' | transloco }}</h2>
+        </div>
+        <button mat-icon-button (click)="onClose()">
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+
+    <mat-form-field>
+        <mat-label>{{ TRANSLATION_PREFIX + 'fields.person-type' | transloco }}</mat-label>
+        <mat-select formControlName="personType">
+            @for (personType of selectablePersonTypes | sortAlphabetically: 'enums.person-type.'; track personType) {
+                <mat-option [value]="personType">{{ 'enums.person-type.' + personType | transloco }}</mat-option>
+            }
+        </mat-select>
+    </mat-form-field>
+
+    <div class="grid grid-cols-1 gap-4" [class.sm:grid-cols-2]="!isOrganization()">
+        <mat-form-field [class.col-span-2]="isOrganization()">
+            <mat-label>{{ TRANSLATION_PREFIX + 'fields.name' | transloco }}</mat-label>
+            <input matInput formControlName="name" />
+            <mat-error *ngIf="form().controls.name.errors?.['required']">
+                {{ 'common.errors.required' | transloco }}
+            </mat-error>
+            <mat-error *ngIf="form().controls.name.errors?.['minlength'] && form().controls.name.touched">
+                {{ 'common.errors.minlength' | transloco: { min: 2 } }}
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field *ngIf="!isOrganization()">
+            <mat-label>{{ TRANSLATION_PREFIX + 'fields.first-name' | transloco }}</mat-label>
+            <input matInput formControlName="firstName" />
+            <mat-error *ngIf="form().controls.firstName.errors?.['required']">
+                {{ 'common.errors.required' | transloco }}
+            </mat-error>
+        </mat-form-field>
+    </div>
+
+    <mat-form-field *ngIf="!isOrganization()">
+        <mat-label>{{ TRANSLATION_PREFIX + 'fields.gender' | transloco }}</mat-label>
+        <mat-select formControlName="gender">
+            <mat-option [value]="Gender.MALE">{{ 'enums.gender.MALE' | transloco }}</mat-option>
+            <mat-option [value]="Gender.FEMALE">{{ 'enums.gender.FEMALE' | transloco }}</mat-option>
+        </mat-select>
+        <mat-error *ngIf="form().controls.gender.errors?.['required']">
+            {{ 'common.errors.required' | transloco }}
+        </mat-error>
+    </mat-form-field>
+
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <mat-form-field>
+            <mat-label>{{ TRANSLATION_PREFIX + 'fields.email' | transloco }}</mat-label>
+            <input matInput type="email" formControlName="email" />
+            <mat-error *ngIf="form().controls.email.errors?.['email']">
+                {{ 'common.errors.email' | transloco }}
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>{{ TRANSLATION_PREFIX + 'fields.phone' | transloco }}</mat-label>
+
+            <div class="grid grid-cols-12 gap-2">
+                <div class="col-span-4">
+                    <app-country-select [control]="form().controls.phonePrefix" [withPhonePrefix]="true"></app-country-select>
+                </div>
+                <div class="col-span-8">
+                    <input matInput type="tel" formControlName="phone" (click)="$event.stopPropagation()" />
+                </div>
+            </div>
+        </mat-form-field>
+    </div>
+
+    <mat-form-field class="w-full">
+        <mat-label>{{ TRANSLATION_PREFIX + 'fields.description' | transloco }}</mat-label>
+        <textarea matInput formControlName="description"></textarea>
+    </mat-form-field>
+
+    @switch (form().controls.personType.value) {
+        @case (PersonType.DJ) {
+            <app-dj-form [form]="form()" />
+        }
+        @case (PersonType.ORGANIZATION) {
+            <app-organization-form [form]="form()" />
+        }
+        @case (PersonType.CORRESPONDENT) {
+            <app-correspondent-form [form]="form()" />
+        }
+    }
+
+    <mat-expansion-panel
+        class="border-0 bg-transparent shadow-none"
+        #addressPanel="matExpansionPanel"
+        (afterExpand)="enableAddressForm(true)"
+        (afterCollapse)="enableAddressForm(false)">
+        <mat-expansion-panel-header>
+            <div class="flex w-full items-center gap-4">
+                <div class="h-px flex-1 bg-gray-300"></div>
+                <div class="flex items-center gap-2">
+                    <span class="text-gray-700">{{ TRANSLATION_PREFIX + (addressPanel.expanded ? 'retirer-adresse' : 'ajouter-adresse') | transloco }}</span>
+                    <mat-icon class="text-gray-500">{{ addressPanel.expanded ? 'remove' : 'add' }}</mat-icon>
+                </div>
+                <div class="h-px flex-1 bg-gray-300"></div>
+            </div>
+        </mat-expansion-panel-header>
+
+        <app-address-form [form]="form().controls.address" />
+    </mat-expansion-panel>
+
+    <mat-expansion-panel
+        class="border-0 bg-transparent shadow-none"
+        #socialPanel="matExpansionPanel"
+        (afterExpand)="enableSocialMediaForm(true)"
+        (afterCollapse)="enableSocialMediaForm(false)">
+        <mat-expansion-panel-header>
+            <div class="flex w-full items-center gap-4">
+                <div class="h-px flex-1 bg-gray-300"></div>
+                <div class="flex items-center gap-2">
+                    <span class="text-gray-700">
+                        {{ TRANSLATION_PREFIX + (socialPanel.expanded ? 'retirer-reseaux-sociaux' : 'ajouter-reseaux-sociaux') | transloco }}
+                    </span>
+                    <mat-icon class="text-gray-500">{{ socialPanel.expanded ? 'remove' : 'add' }}</mat-icon>
+                </div>
+                <div class="h-px flex-1 bg-gray-300"></div>
+            </div>
+        </mat-expansion-panel-header>
+
+        <app-social-media-form [form]="form().controls.socialMedia" [typeSocialMediaForm]="typeSocialMediaForm()" />
+    </mat-expansion-panel>
+
+    <div class="mt-4 flex justify-end gap-2">
+        <button mat-button type="button" (click)="closeDrawer.emit()">
+            {{ 'common.actions.annuler' | transloco }}
+        </button>
+        <button mat-flat-button color="primary" type="submit">
+            {{ 'common.actions.enregistrer' | transloco }}
+        </button>
+    </div>
+</form>

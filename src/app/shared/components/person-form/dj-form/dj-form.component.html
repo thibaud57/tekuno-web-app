@@ -1,0 +1,73 @@
+<div class="section-divider flex items-center">
+    <div class="h-px flex-1 bg-gray-300"></div>
+    <h3 class="text-lg font-medium">{{ 'enums.person-type.DJ' | transloco }}</h3>
+    <div class="h-px flex-1 bg-gray-300"></div>
+</div>
+
+<mat-form-field class="w-full">
+    <mat-label>{{ TRANSLATION_PREFIX + 'fields.alias' | transloco }}</mat-label>
+    <input matInput [formControl]="form.controls.alias" />
+    <mat-error *ngIf="form.controls.alias.errors?.['required']">
+        {{ 'common.errors.required' | transloco }}
+    </mat-error>
+</mat-form-field>
+
+<div class="grid grid-cols-10 gap-4">
+    <mat-form-field class="col-span-7">
+        <mat-label>{{ TRANSLATION_PREFIX + 'fields.agency-id.agence' | transloco }}</mat-label>
+        <mat-select [formControl]="form.controls.agencyId">
+            @for (agency of agencies$ | async; track agency.id) {
+                <mat-option>{{ TRANSLATION_PREFIX + 'fields.agency-id.aucune-agence' | transloco }}</mat-option>
+                <mat-option [value]="agency.id">{{ agency.name }}</mat-option>
+            } @empty {
+                <mat-option disabled>{{ TRANSLATION_PREFIX + 'fields.agency-id.aucune-agence-disponible' | transloco }}</mat-option>
+            }
+        </mat-select>
+    </mat-form-field>
+
+    <mat-form-field class="col-span-3">
+        <mat-label>{{ TRANSLATION_PREFIX + 'fields.price' | transloco }}</mat-label>
+        <input matInput type="text" [formControl]="form.controls.price" mask="separator.2" suffix=" €" thousandSeparator=" " class="text-right" />
+    </mat-form-field>
+</div>
+
+<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+    <mat-form-field>
+        <mat-label>{{ TRANSLATION_PREFIX + 'fields.siret' | transloco }}</mat-label>
+        <input matInput [formControl]="form.controls.siret" class="hide-number-spinners" />
+        <mat-error *ngIf="form.controls.siret.errors?.['pattern']">
+            {{ TRANSLATION_PREFIX + 'errors.siret-format' | transloco }}
+        </mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>{{ TRANSLATION_PREFIX + 'fields.vat' | transloco }}</mat-label>
+        <input matInput [formControl]="form.controls.vat" />
+    </mat-form-field>
+</div>
+
+<mat-form-field class="w-full">
+    <mat-label>{{ TRANSLATION_PREFIX + 'fields.biography' | transloco }}</mat-label>
+    <textarea matInput [formControl]="form.controls.biography" rows="3"></textarea>
+</mat-form-field>
+
+<mat-expansion-panel
+    class="border-0 bg-transparent shadow-none"
+    #bankPanel="matExpansionPanel"
+    (afterExpand)="enableBankDetailsForm(true)"
+    (afterCollapse)="enableBankDetailsForm(false)">
+    <mat-expansion-panel-header>
+        <div class="flex w-full items-center gap-4">
+            <div class="h-px flex-1 bg-gray-300"></div>
+            <div class="flex items-center gap-2">
+                <span class="text-gray-700">
+                    {{ TRANSLATION_PREFIX + (bankPanel.expanded ? 'retirer-coordonnees-bancaires' : 'ajouter-coordonnees-bancaires') | transloco }}
+                </span>
+                <mat-icon class="text-gray-500">{{ bankPanel.expanded ? 'remove' : 'add' }}</mat-icon>
+            </div>
+            <div class="h-px flex-1 bg-gray-300"></div>
+        </div>
+    </mat-expansion-panel-header>
+
+    <app-bank-details-form [form]="form.controls.bankDetails" />
+</mat-expansion-panel>

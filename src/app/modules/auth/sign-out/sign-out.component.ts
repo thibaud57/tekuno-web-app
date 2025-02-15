@@ -25,6 +25,10 @@ interface CountdownMapping {
     imports: [RouterLink, I18nPluralPipe, TranslocoPipe],
 })
 export class AuthSignOutComponent implements OnInit {
+    private readonly authService = inject(AuthService)
+    private readonly router = inject(Router)
+    private readonly destroyRef = inject(DestroyRef)
+
     readonly TRANSLATION_PREFIX = 'modules.auth.sign-out.'
 
     countdown = 5
@@ -32,10 +36,6 @@ export class AuthSignOutComponent implements OnInit {
         '=1': '# second',
         other: '# seconds',
     }
-
-    private readonly authService = inject(AuthService)
-    private readonly router = inject(Router)
-    private readonly destroyRef = inject(DestroyRef)
 
     ngOnInit(): void {
         this.authService.signOut()

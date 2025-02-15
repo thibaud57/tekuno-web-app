@@ -31,13 +31,13 @@ import { take } from 'rxjs'
     imports: [MatButtonModule, MatMenuModule, NgTemplateOutlet, NgFor],
 })
 export class LanguagesComponent implements OnInit {
+    private readonly _fuseNavigationService = inject(FuseNavigationService)
+    private readonly _translocoService = inject(TranslocoService)
+    private readonly _destroyRef = inject(DestroyRef)
+
     availableLangs: AvailableLangs
     activeLang: string
     flagCodes: Record<string, string>
-
-    private _fuseNavigationService = inject(FuseNavigationService)
-    private _translocoService = inject(TranslocoService)
-    private _destroyRef = inject(DestroyRef)
 
     ngOnInit(): void {
         this.availableLangs = this._translocoService.getAvailableLangs()

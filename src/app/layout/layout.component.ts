@@ -42,6 +42,17 @@ import { CompactLayoutComponent } from './layouts/vertical/compact/compact.compo
     ],
 })
 export class LayoutComponent implements OnInit {
+    private readonly _activatedRoute = inject(ActivatedRoute)
+    private readonly _document = inject(DOCUMENT)
+    private readonly _renderer2 = inject(Renderer2)
+    private readonly _router = inject(Router)
+    private readonly _fuseConfigService = inject(FuseConfigService)
+    private readonly _fuseMediaWatcherService = inject(FuseMediaWatcherService)
+    private readonly _fusePlatformService = inject(FusePlatformService)
+    private readonly _authService = inject(AuthService)
+    private readonly _navigationService = inject(NavigationService)
+    private readonly _destroyRef = inject(DestroyRef)
+
     config: FuseConfig
     layout: TypeLayout = TypeLayout.MODERN
     scheme: TypeScheme
@@ -56,17 +67,6 @@ export class LayoutComponent implements OnInit {
     )
 
     protected TypeLayout = TypeLayout
-
-    private _activatedRoute = inject(ActivatedRoute)
-    private _document = inject(DOCUMENT)
-    private _renderer2 = inject(Renderer2)
-    private _router = inject(Router)
-    private _fuseConfigService = inject(FuseConfigService)
-    private _fuseMediaWatcherService = inject(FuseMediaWatcherService)
-    private _fusePlatformService = inject(FusePlatformService)
-    private _authService = inject(AuthService)
-    private _navigationService = inject(NavigationService)
-    private _destroyRef = inject(DestroyRef)
 
     ngOnInit(): void {
         this._fuseMediaWatcherService.onMediaChange$

@@ -2,7 +2,7 @@ import { NgIf } from '@angular/common'
 import { Component, EventEmitter, Input, Output } from '@angular/core'
 import { MatButtonModule } from '@angular/material/button'
 import { MatIconModule } from '@angular/material/icon'
-import { Person } from '@backend/persons/models/person.model'
+import { Person } from '@backend/persons/models/person/person.model'
 import { TranslocoPipe } from '@ngneat/transloco'
 import { AvatarComponent } from 'app/shared/components/avatar/avatar.component'
 
@@ -23,9 +23,10 @@ export class PersonDetailComponent {
     readonly TRANSLATION_PREFIX = 'modules.admin.address-book.person-detail.'
 
     @Input({ required: true }) person: Person
-    @Output() close = new EventEmitter<void>()
+
+    @Output() closeDrawer = new EventEmitter<void>()
 
     onClose(): void {
-        this.close.emit()
+        this.closeDrawer.emit()
     }
 }

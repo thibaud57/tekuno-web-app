@@ -39,6 +39,12 @@ import { Message } from 'app/layout/common/messages/messages.types'
     ],
 })
 export class MessagesComponent implements OnInit {
+    private readonly _changeDetectorRef = inject(ChangeDetectorRef)
+    private readonly _messagesService = inject(MessagesService)
+    private readonly _overlay = inject(Overlay)
+    private readonly _viewContainerRef = inject(ViewContainerRef)
+    private readonly _destroyRef = inject(DestroyRef)
+
     @ViewChild('messagesOrigin') private _messagesOrigin: MatButton
     @ViewChild('messagesPanel') private _messagesPanel: TemplateRef<Message>
 
@@ -46,12 +52,6 @@ export class MessagesComponent implements OnInit {
     unreadCount = 0
 
     private _overlayRef: OverlayRef
-
-    private _changeDetectorRef = inject(ChangeDetectorRef)
-    private _messagesService = inject(MessagesService)
-    private _overlay = inject(Overlay)
-    private _viewContainerRef = inject(ViewContainerRef)
-    private _destroyRef = inject(DestroyRef)
 
     ngOnInit(): void {
         this._messagesService.messages$

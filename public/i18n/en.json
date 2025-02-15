@@ -134,7 +134,11 @@
     },
     "common": {
         "erreur-api": "An error occurred: {erreur}",
-        "ok": "OK"
+        "ok": "OK",
+        "alerts": {
+            "avatar-uploaded": "Profile picture successfully updated",
+            "avatar-upload-error": "Error updating profile picture"
+        }
     },
     "enums": {
         "role-type": {
@@ -151,6 +155,18 @@
             "DJ": "DJ",
             "ORGANIZATION": "Organization",
             "CUSTOMER": "Customer"
+        }
+    },
+    "shared": {
+        "person-form": {
+            "title": "New contact",
+            "fields": {},
+            "alertes": {
+                "contact-ajoute": "Contact has been added successfully",
+                "erreur-creation-contact": "Error creating contact: {erreur}",
+                "avatar-uploaded": "Profile picture successfully updated",
+                "avatar-upload-error": "Error updating profile picture"
+            }
         }
     }
 }

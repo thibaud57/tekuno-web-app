@@ -14,6 +14,7 @@ import { Observable } from 'rxjs'
 @Injectable({ providedIn: 'root' })
 export class FirebaseAuthWrapper {
     private auth = inject(Auth)
+
     private user$ = user(this.auth)
 
     getFirebaseUser$(): Observable<User | null> {

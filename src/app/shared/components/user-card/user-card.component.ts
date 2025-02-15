@@ -31,6 +31,8 @@ import { AvatarComponent } from '../avatar/avatar.component'
     templateUrl: './user-card.component.html',
 })
 export class UserCardComponent implements OnInit {
+    private readonly formBuilder = inject(FormBuilder)
+
     @Input({ required: true }) user!: User
     @Input() showDeleteButton = true
 
@@ -43,8 +45,6 @@ export class UserCardComponent implements OnInit {
     form: FormGroup
 
     protected readonly RoleType = RoleType
-
-    private readonly formBuilder = inject(FormBuilder)
 
     ngOnInit(): void {
         this.form = this.formBuilder.group({

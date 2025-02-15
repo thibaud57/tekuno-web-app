@@ -40,16 +40,16 @@ import { TranslocoPipe } from '@ngneat/transloco'
     ],
 })
 export class FuseHorizontalNavigationBasicItemComponent implements OnInit {
-    @Input() item: FuseNavigationItem
-    @Input() name: string
-
-    isActiveMatchOptions: IsActiveMatchOptions
-
     private _fuseHorizontalNavigationComponent: FuseHorizontalNavigationComponent
     private _changeDetectorRef = inject(ChangeDetectorRef)
     private _fuseNavigationService = inject(FuseNavigationService)
     private _fuseUtilsService = inject(FuseUtilsService)
     private _destroyRef = inject(DestroyRef)
+
+    @Input() item: FuseNavigationItem
+    @Input() name: string
+
+    isActiveMatchOptions: IsActiveMatchOptions
 
     ngOnInit(): void {
         this.isActiveMatchOptions =
